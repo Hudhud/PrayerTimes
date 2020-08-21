@@ -1,3 +1,9 @@
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.AssemblyInfoInputs.cache
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.AssemblyInfo.cs
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csproj.CoreCompileInputs.cache
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.MvcApplicationPartsAssemblyInfo.cache
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorAssemblyInfo.cache
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorAssemblyInfo.cs
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\appsettings.Development.json
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\appsettings.json
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
@@ -9,13 +15,7 @@ D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\PrayerTimes.dll
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\PrayerTimes.pdb
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\PrayerTimes.Views.dll
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\PrayerTimes.Views.pdb
-D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csprojAssemblyReference.cache
-D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.AssemblyInfoInputs.cache
-D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.AssemblyInfo.cs
-D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csproj.CoreCompileInputs.cache
-D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.MvcApplicationPartsAssemblyInfo.cache
-D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorAssemblyInfo.cache
-D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorAssemblyInfo.cs
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.TagHelpers.input.cache
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.TagHelpers.output.cache
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorCoreGenerate.cache
@@ -29,9 +29,10 @@ D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\Razor\Views\_ViewStart.cshtml.g.cs
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorTargetAssemblyInfo.cache
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorTargetAssemblyInfo.cs
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.Views.pdb
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csproj.CopyComplete
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\staticwebassets\PrayerTimes.StaticWebAssets.Manifest.cache
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\staticwebassets\PrayerTimes.StaticWebAssets.xml
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.dll
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.pdb
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.genruntimeconfig.cache
-D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csproj.CopyComplete
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csprojAssemblyReference.cache
