@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "yixto2pLtq0ON3MrfjnS7V1d/0uQFEBekUxXY7LnakaA9L6dLAX7WrkvweZuNcX9I3pVEdV8WrrVUeDbv2M9gw==",
+  "dgSpecHash": "3NQRmEW0k9PAZvYaB7Gx+Q0Sl9EScfs+bKb5y7bfXOHcsOpWd3jdAK6qrmardCP7bEF6/hBhmRGz8/ZN8MAVtQ==",
   "success": true,
   "projectFilePath": "D:\\Source\\PrayerTimes\\PrayerTimes.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\HH-PC\\.nuget\\packages\\bootstrap\\4.5.2\\bootstrap.4.5.2.nupkg.sha512",
+    "C:\\Users\\HH-PC\\.nuget\\packages\\jquery\\3.0.0\\jquery.3.0.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.cryptography.internal\\2.2.0\\microsoft.aspnetcore.cryptography.internal.2.2.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.dataprotection\\2.2.0\\microsoft.aspnetcore.dataprotection.2.2.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnetcore.dataprotection.abstractions\\2.2.0\\microsoft.aspnetcore.dataprotection.abstractions.2.2.0.nupkg.sha512",
@@ -23,6 +25,7 @@
     "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.netcore.platforms\\2.0.0\\microsoft.netcore.platforms.2.0.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.win32.registry\\4.5.0\\microsoft.win32.registry.4.5.0.nupkg.sha512",
     "C:\\Users\\HH-PC\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\HH-PC\\.nuget\\packages\\popper.js\\1.16.1\\popper.js.1.16.1.nupkg.sha512",
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.componentmodel.annotations\\4.5.0\\system.componentmodel.annotations.4.5.0.nupkg.sha512",
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.memory\\4.5.1\\system.memory.4.5.1.nupkg.sha512",
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.5.1\\system.runtime.compilerservices.unsafe.4.5.1.nupkg.sha512",
