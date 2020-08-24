@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -74,6 +75,12 @@ namespace PrayerTimes.Controllers
                 }
             }
 
+            if (ctx.Contains("429"))
+            {
+                Thread.Sleep(10000);
+                return RedirectToAction("Index");
+            }
+               
             ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(ctx).list;
 
             return View();
