@@ -74,12 +74,6 @@ namespace PrayerTimes.Controllers
                     }
                 }
             }
-
-            if (ctx.Contains("429"))
-            {
-                Thread.Sleep(10000);
-                return RedirectToAction("Index");
-            }
                
             ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(ctx).list;
 
