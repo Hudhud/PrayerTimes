@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PrayerTimes.Models;
 using System.Collections.Generic;
-
+using PrayerTimes.Persistence;
 
 namespace PrayerTimes.Controllers
 {
