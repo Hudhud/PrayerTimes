@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PrayerTimes.Models;
+using System.Collections.Generic;
+
 
 namespace PrayerTimes.Controllers
 {
@@ -17,7 +19,7 @@ namespace PrayerTimes.Controllers
         public async Task<IActionResult> Index()
         {
             if (Database.api == null)
-                Database.api = new System.Collections.Generic.List<APIResult>();
+                Database.api = new List<APIResult>();
             var result = Database.api.FirstOrDefault(x => x.cityName == selected_City);
             string muwaqqit_URL = string.Empty;
   
