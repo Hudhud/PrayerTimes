@@ -29,24 +29,19 @@ namespace PrayerTimes.Controllers
                 {
                     case "cph":
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
-                        //sessionString = "PrayerData_cph";
                         break;
                     case "odense":
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
-                        //sessionString = "PrayerData_odense";
                         break;
                     case "aarhus":
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
-                        //sessionString = "PrayerData_aarhus";
                         break;
                     case "aalborg":
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
-                        //sessionString = "PrayerData_aalborg";
                         break;
                     default:
                         result.cityName = "cph";
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
-                        //sessionString = "PrayerData_cph";
                         break;
                 }
             }
