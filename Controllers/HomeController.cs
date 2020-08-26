@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using PrayerTimes.Models;
 using System.Collections.Generic;
 using PrayerTimes.Persistence;
+using OfficeOpenXml;
+using System.IO;
 
 namespace PrayerTimes.Controllers
 {
@@ -30,20 +32,20 @@ namespace PrayerTimes.Controllers
                 switch (selected_City)
                 {
                     case "cph":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
                         break;
                     case "odense":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
                         break;
                     case "aarhus":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
                         break;
                     case "aalborg":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
                         break;
                     default:
                         result.cityName = "cph";
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
                         break;
                 }
             }
@@ -62,10 +64,48 @@ namespace PrayerTimes.Controllers
                 }
             }
 
+
             ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(result.content).list;
             var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
             if(findcity==null)
                 Database.api.Add(result);
+
+            using (ExcelPackage excel = new ExcelPackage())
+            {
+                excel.Workbook.Worksheets.Add("September");
+
+                var excelWorksheet = excel.Workbook.Worksheets["September"];
+
+                var headerRow = new List<string[]>()
+                {
+                    new string[] { "Dato", "Fajr", "Shuruk", "Zuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha" }
+                };
+
+                // Determine the header range (e.g. A1:D1)
+                string headerRange = "A1:" + Char.ConvertFromUtf32(headerRow[0].Length + 64) + "1";
+
+
+                // Popular header row data
+                excelWorksheet.Cells[headerRange].LoadFromArrays(headerRow);
+                var prayersData = ViewData["prayers"] as List<PrayerViewModel>;
+
+                for (int i = 2; i < 33; i++)
+                {
+                    excelWorksheet.Cells["A"+i].Value = prayersData[i-2].fajr_date;
+                    excelWorksheet.Cells["B" + i].Value = Convert.ToDateTime(prayersData[i - 2].fajr_time).AddMinutes(2).ToString("HH:mm");
+                    excelWorksheet.Cells["C" + i].Value = Convert.ToDateTime(prayersData[i - 2].sunrise_time).AddMinutes(2).ToString("HH:mm");
+                    excelWorksheet.Cells["D" + i].Value = Convert.ToDateTime(prayersData[i - 2].zohr_time).AddMinutes(2).ToString("HH:mm");
+                    excelWorksheet.Cells["E" + i].Value = Convert.ToDateTime(prayersData[i - 2].mithl_time).AddMinutes(2).ToString("HH:mm");
+                    excelWorksheet.Cells["F" + i].Value = Convert.ToDateTime(prayersData[i - 2].mithlain_time).AddMinutes(2).ToString("HH:mm");
+                    excelWorksheet.Cells["G" + i].Value = Convert.ToDateTime(prayersData[i - 2].sunset_time).AddMinutes(2).ToString("HH:mm");
+                    excelWorksheet.Cells["H" + i].Value = Convert.ToDateTime(prayersData[i - 2].esha_time).AddMinutes(2).ToString("HH:mm");
+
+                }
+
+                FileInfo excelFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\prayers.xlsx");
+                excel.SaveAs(excelFile);
+            }
+
             return View();
         }
 

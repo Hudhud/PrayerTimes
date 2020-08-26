@@ -372,7 +372,6 @@ D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\PrayerTimes.TagHelpers.i
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\PrayerTimes.TagHelpers.output.cache
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\PrayerTimes.RazorCoreGenerate.cache
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\Razor\Views\Home\Index.cshtml.g.cs
-D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\Razor\Views\Home\Privacy.cshtml.g.cs
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\Razor\Views\Shared\Error.cshtml.g.cs
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\Razor\Views\Shared\_Layout.cshtml.g.cs
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
@@ -387,3 +386,4 @@ D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\staticwebassets\PrayerTi
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\PrayerTimes.dll
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\PrayerTimes.pdb
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\PrayerTimes.genruntimeconfig.cache
+D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\PrayerTimes.csprojAssemblyReference.cache

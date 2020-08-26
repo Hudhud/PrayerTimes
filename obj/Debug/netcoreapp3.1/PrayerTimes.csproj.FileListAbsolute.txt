@@ -35,3 +35,15 @@ D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.genruntimeconfig.cache
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csprojAssemblyReference.cache
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csproj.CoreCompileInputs.cache
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.MvcApplicationPartsAssemblyInfo.cache
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\EPPlus.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Json.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Physical.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileSystemGlobbing.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\System.Text.Encoding.CodePages.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\System.Xml.XPath.XmlDocument.dll
+D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Text.Encoding.CodePages.dll
