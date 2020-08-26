@@ -51,7 +51,7 @@ namespace PrayerTimes.Controllers
             }
 
             if (result.content == null ||
-                !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == getTodayDate()))
+                !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == "2020-10-01"))
             {
 
                 using (var httpClient = new HttpClient())
