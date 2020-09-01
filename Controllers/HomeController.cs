@@ -63,7 +63,7 @@ namespace PrayerTimes.Controllers
             }
 
             ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(result.content).list;
-            var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
+             var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
             if(findcity==null)
                 Database.api.Add(result);
             return View();
@@ -88,7 +88,7 @@ namespace PrayerTimes.Controllers
         public string getTodayDate()
         {
             DateTime dt = DateTime.Today;
-            string dateFormatted = dt.Date.ToString("yyyy-MM-d");
+            string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
             return dateFormatted;
         }
     }
