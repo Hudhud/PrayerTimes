@@ -51,7 +51,9 @@ namespace PrayerTimes.Controllers
             if (result.content == null ||
                 !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == getTodayDate()))
             {
-
+                if (result.content != null && !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == getTodayDate()))
+                    Database.api = new List<APIResult>();
+                
                 using (var httpClient = new HttpClient())
                 {
                     using (var response = await httpClient.GetAsync(muwaqqit_URL))
@@ -60,17 +62,24 @@ namespace PrayerTimes.Controllers
                         result.content = apiResponse;
                     }
                 }
+
+
             }
 
             ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(result.content).list;
-             var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
+            var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
+            
             if(findcity==null)
                 Database.api.Add(result);
+
+            ViewData["Active"] = HttpContext.Session.GetString("Active");
             return View();
         }
 
         public IActionResult check(string button_value)
         {
+            ViewData["Active"] = button_value;
+            HttpContext.Session.SetString("Active", button_value);
             if (!string.IsNullOrEmpty(button_value))
             {
                 selected_City = button_value;

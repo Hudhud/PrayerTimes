@@ -34,3 +34,4 @@ D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\staticwebassets\PrayerTimes.Stat
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\PrayerTimes.dll
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\PrayerTimes.pdb
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\PrayerTimes.genruntimeconfig.cache
+D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\PrayerTimes.csprojAssemblyReference.cache

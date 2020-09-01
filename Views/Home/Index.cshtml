@@ -9,31 +9,40 @@
         string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
         var prayer = result.First(x => x.fajr_date == dateFormatted);
     }
+    @{
+        var active = ViewData["Active"] as string;
+    }
     <form>
         <table style="width: 100%; margin-bottom: 25px">
             <tr>
                 <td>
-                    <button name="button_value" style="background-color: transparent; color: yellow" value="cph" asp-action="check">
+                    <button class="@(active == "cph" ? "active" : "")" onclick="changeColor(this)" name="button_value" style="background-color: transparent; color: yellow" value="cph" asp-action="check">
                         København
                     </button>
                 </td>
                 <td>
-                    <button name="button_value" style="background-color: transparent; color: yellow" value="odense" asp-action="check">
+                    <button class="@(active == "odense" ? "active" : "")" onclick="changeColor(this)" name="button_value" style="background-color: transparent; color: yellow" value="odense" asp-action="check">
                         Odense
                     </button>
                 </td>
                 <td>
-                    <button name="button_value" style="background-color: transparent; color: yellow" value="aarhus" asp-action="check">
+                    <button class="@(active == "aarhus" ? "active" : "")" name="button_value" style="background-color: transparent; color: yellow" value="aarhus" asp-action="check">
                         Århus
                     </button>
                 </td>
                 <td>
-                    <button name="button_value" style="background-color: transparent; color: yellow" value="aalborg" asp-action="check">
+                    <button class="@(active == "aalborg" ? "active" : "")" name="button_value" style="background-color: transparent; color: yellow" value="aalborg" asp-action="check">
                         Aalborg
                     </button>
                 </td>
             </tr>
         </table>
+        <style>
+            .active {
+                background-color: #4b8514 !important;
+            }
+        </style>
+        
     </form>
 
     <table style="width: 100%">
