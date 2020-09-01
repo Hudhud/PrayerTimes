@@ -9,12 +9,19 @@ using Newtonsoft.Json;
 using PrayerTimes.Models;
 using System.Collections.Generic;
 using PrayerTimes.Persistence;
+using Microsoft.Extensions.Logging;
 
 namespace PrayerTimes.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ILogger _logger;
         static string selected_City;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
 
         public async Task<IActionResult> Index()
         {
@@ -22,7 +29,7 @@ namespace PrayerTimes.Controllers
                 Database.api = new List<APIResult>();
             var result = Database.api.FirstOrDefault(x => x.cityName == selected_City);
             string muwaqqit_URL = string.Empty;
-  
+
             if (result == null)
             {
                 result = new APIResult();
@@ -48,28 +55,36 @@ namespace PrayerTimes.Controllers
                 }
             }
 
-            if (result.content == null ||
-                !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == getTodayDate()))
+            try
             {
-                if (result.content != null && !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == getTodayDate()))
-                    Database.api = new List<APIResult>();
-                
-                using (var httpClient = new HttpClient())
+                if (result.content == null ||
+                              !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == getTodayDate()))
                 {
-                    using (var response = await httpClient.GetAsync(muwaqqit_URL))
+                    if (result.content != null && !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == getTodayDate()))
+                        Database.api = new List<APIResult>();
+
+                    using (var httpClient = new HttpClient())
                     {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        result.content = apiResponse;
+                        using (var response = await httpClient.GetAsync(muwaqqit_URL))
+                        {
+                            string apiResponse = await response.Content.ReadAsStringAsync();
+                            result.content = apiResponse;
+                        }
                     }
+                    _logger.LogError("success");
+
+
                 }
-
-
+            } catch (Exception e)
+            {
+                _logger.LogError("log error");
+                _logger.LogError(e.Message);
             }
 
             ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(result.content).list;
             var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
-            
-            if(findcity==null)
+
+            if (findcity == null)
                 Database.api.Add(result);
 
             ViewData["Active"] = HttpContext.Session.GetString("Active");
