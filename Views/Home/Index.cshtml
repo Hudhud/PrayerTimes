@@ -6,7 +6,7 @@
     @{var result = ViewData["prayers"] as List<PrayerViewModel>;}
     @{
         DateTime dt = DateTime.Today;
-        string dateFormatted = dt.Date.ToString("yyyy-MM-d");
+        string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
         var prayer = result.First(x => x.fajr_date == dateFormatted);
     }
     <form>
