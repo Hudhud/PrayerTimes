@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace PrayerTimes
 {
@@ -32,7 +33,7 @@ namespace PrayerTimes
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
 		{
 			if (env.IsDevelopment())
 			{
@@ -52,6 +53,8 @@ namespace PrayerTimes
 			app.UseRouting();
 
 			app.UseAuthorization();
+
+			loggerFactory.AddFile("Logs/mylog-{Date}.txt");
 
 			app.UseEndpoints(endpoints =>
 			{

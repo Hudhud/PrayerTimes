@@ -71,14 +71,13 @@ namespace PrayerTimes.Controllers
                             result.content = apiResponse;
                         }
                     }
-                    _logger.LogError("success");
-
 
                 }
             } catch (Exception e)
             {
-                _logger.LogError("log error");
-                _logger.LogError(e.Message);
+                _logger.LogInformation("ERROR IS HERE");
+                _logger.LogInformation(e.Message);
+                _logger.LogInformation(e.StackTrace);
             }
 
             ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(result.content).list;
