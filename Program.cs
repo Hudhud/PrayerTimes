@@ -23,6 +23,7 @@ namespace PrayerTimes
 				logging.ClearProviders();
 				logging.AddConsole(options => options.IncludeScopes = true);
 				logging.AddDebug();
+				logging.AddTraceSource("Information, ActivityTracing");
 			})
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
