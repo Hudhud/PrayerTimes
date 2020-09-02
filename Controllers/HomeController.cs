@@ -51,6 +51,7 @@ namespace PrayerTimes.Controllers
                     default:
                         result.cityName = "cph";
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=" + getTodayDate() + "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+                        HttpContext.Session.SetString("Active", result.cityName);
                         break;
                 }
             }
@@ -73,7 +74,8 @@ namespace PrayerTimes.Controllers
                     }
 
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 _logger.LogInformation("ERROR IS HERE");
                 _logger.LogInformation(e.Message);
@@ -87,11 +89,22 @@ namespace PrayerTimes.Controllers
                 Database.api.Add(result);
 
             ViewData["Active"] = HttpContext.Session.GetString("Active");
+            ViewData["Deactive"] = HttpContext.Session.GetString("Deactive");
+
             return View();
         }
 
         public IActionResult check(string button_value)
         {
+            if (!button_value.Equals("cph")) { 
+                ViewData["Deactive"] = "cph";
+                HttpContext.Session.SetString("Deactive", "cph");
+            } else
+            {
+                ViewData["Deactive"] = null;
+                HttpContext.Session.SetString("Deactive", string.Empty);
+            }
+
             ViewData["Active"] = button_value;
             HttpContext.Session.SetString("Active", button_value);
             if (!string.IsNullOrEmpty(button_value))
