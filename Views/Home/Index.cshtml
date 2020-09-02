@@ -11,17 +11,18 @@
     }
     @{
         var active = ViewData["Active"] as string;
+        var deactive = ViewData["Deactive"] as string;
     }
     <form>
         <table style="width: 100%; margin-bottom: 25px">
             <tr>
                 <td>
-                    <button class="@(active == "cph" ? "active" : "")" onclick="changeColor(this)" name="button_value" style="background-color: transparent; color: yellow" value="cph" asp-action="check">
+                    <button class="@(active == "cph" ? "active": "") @(deactive == "cph" ? "deactive": "")" name="button_value" style="background-color: #4b8514; color: yellow" value="cph" asp-action="check">
                         København
                     </button>
                 </td>
                 <td>
-                    <button class="@(active == "odense" ? "active" : "")" onclick="changeColor(this)" name="button_value" style="background-color: transparent; color: yellow" value="odense" asp-action="check">
+                    <button class="@(active == "odense" ? "active" : "")"  name="button_value" style="background-color: transparent; color: yellow" value="odense" asp-action="check">
                         Odense
                     </button>
                 </td>
@@ -41,8 +42,11 @@
             .active {
                 background-color: #4b8514 !important;
             }
+            .deactive {
+                background-color: transparent !important;
+            }
         </style>
-        
+
     </form>
 
     <table style="width: 100%">
