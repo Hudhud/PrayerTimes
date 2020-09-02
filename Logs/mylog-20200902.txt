@@ -230,3 +230,6 @@ Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type '
 2020-09-02T13:43:40.1109602+02:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
 2020-09-02T13:43:40.1180317+02:00  [INF] Hosting environment: "Development" (c3307c92)
 2020-09-02T13:43:40.1193132+02:00  [INF] Content root path: "D:\Source\PrayerTimes" (b5d60022)
+2020-09-02T13:47:48.0395170+02:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
+2020-09-02T13:47:48.0471162+02:00  [INF] Hosting environment: "Development" (c3307c92)
+2020-09-02T13:47:48.0488741+02:00  [INF] Content root path: "D:\Source\PrayerTimes" (b5d60022)
