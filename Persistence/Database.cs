@@ -8,7 +8,7 @@ namespace PrayerTimes.Persistence
         public string cityName { get; set; }
         public string content { get; set; }
     }
-    public class Database
+    public static class Database
     {
         public static List<APIResult> api { get; set; }
     }
