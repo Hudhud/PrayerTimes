@@ -11,5 +11,6 @@ namespace PrayerTimes.Persistence
     public static class Database
     {
         public static List<APIResult> api { get; set; }
+        public static string remoteAddress { get; set; }
     }
 }

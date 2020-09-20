@@ -27,14 +27,15 @@ namespace PrayerTimes.Controllers
         {
             string userIP = HttpContext.Connection.RemoteIpAddress.ToString();
             _logger.LogInformation("Current user IP: " + userIP);
-            _logger.LogInformation("Previous user IP: " + HttpContext.Session.GetString("UserIp"));
+            _logger.LogInformation("Previous user IP: " + Database.remoteAddress);
 
-            HttpContext.Session.SetString("UserIp", userIP);
 
-            if (HttpContext.Connection.RemoteIpAddress.ToString() != HttpContext.Session.GetString("UserIp"))
+            if (HttpContext.Connection.RemoteIpAddress.ToString() != Database.remoteAddress)
             {
                 HttpContext.Session.SetString("Active", "cph");
+                selected_City = "cph";
                 _logger.LogInformation("Active variable set to: " + HttpContext.Session.GetString("Active"));
+                Database.remoteAddress = userIP;
             }
 
             if (Database.api == null)
