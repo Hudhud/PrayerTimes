@@ -25,18 +25,25 @@ namespace PrayerTimes.Controllers
 
         public async Task<IActionResult> Index()
         {
-            string userIP = HttpContext.Connection.RemoteIpAddress.ToString();
-            _logger.LogInformation("Current user IP: " + userIP);
-            _logger.LogInformation("Previous user IP: " + Database.remoteAddress);
+            //      string userIP = HttpContext.Connection.RemoteIpAddress.ToString();
+            //    _logger.LogInformation("Current user IP: " + userIP);
+            //      _logger.LogInformation("Previous user IP: " + Database.remoteAddress);
 
-
-            if (HttpContext.Connection.RemoteIpAddress.ToString() != Database.remoteAddress)
+            if (HttpContext.Session.GetString("SameSession") == string.Empty || HttpContext.Session.GetString("SameSession") == null)
             {
                 HttpContext.Session.SetString("Active", "cph");
                 selected_City = "cph";
                 _logger.LogInformation("Active variable set to: " + HttpContext.Session.GetString("Active"));
-                Database.remoteAddress = userIP;
+                HttpContext.Session.SetString("SameSession", "true");
             }
+
+            //if (HttpContext.Connection.RemoteIpAddress.ToString() != Database.remoteAddress)
+            //{
+            //    HttpContext.Session.SetString("Active", "cph");
+            //    selected_City = "cph";
+            //    _logger.LogInformation("Active variable set to: " + HttpContext.Session.GetString("Active"));
+            //    Database.remoteAddress = userIP;
+            //}
 
             if (Database.api == null)
                 Database.api = new List<APIResult>();
