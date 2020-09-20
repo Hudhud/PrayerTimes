@@ -226,7 +226,6 @@ D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\dbgshim.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\hostfxr.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\hostpolicy.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscordaccore.dll
-D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscordaccore_x86_x86_4.700.20.36602.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscordbi.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscorrc.debug.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscorrc.dll
@@ -394,3 +393,4 @@ D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Serilog.Formatting.Compa
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Serilog.Sinks.Async.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Serilog.Sinks.File.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Serilog.Sinks.RollingFile.dll
+D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscordaccore_x86_x86_4.700.20.41105.dll

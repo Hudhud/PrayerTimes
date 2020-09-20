@@ -9,45 +9,48 @@
 
 </head>
 <body style="background-color:#85144B">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3">
-            <div class="container" style="color:yellow">
-                <h1>Salah Times</h1>
-                <a>
-                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("da-DK")) @DateTime.Today.Date.ToString("d-MMM-yyyy", new System.Globalization.CultureInfo("da-DK"))
-                </a>
+<!--<body style="background-image: url(https://rb.gy/kishhn);
+        background-size: 100vw 100vh;
+        background-repeat: no-repeat">-->
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3">
+        <div class="container" style="color:yellow">
+            <h1>Salah Times</h1>
+            <a>
+                @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("da-DK")) @DateTime.Today.Date.ToString("d-MMM-yyyy", new System.Globalization.CultureInfo("da-DK"))
+            </a>
 
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <!--   <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-        <ul class="navbar-nav flex-grow-1">
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </li>
-        </ul>
-    </div>-->
-            </div> 
-</nav>
-        </header>
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!--   <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                </ul>
+            </div>-->
         </div>
+    </nav>
+</header>
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
 
-        <footer class="border-top footer text-muted">
-            <div class="container" style="color:#FFDC00">
-                2020 - Salah Times<a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
-            </div>
-        </footer>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        @RenderSection("Scripts", required: false)
-    </body>
-    </html>
+<footer class="border-top footer text-muted" style="background-color: #343a40">
+    <div class="container" style="color:#FFDC00">
+        2020 - Salah Times<a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
+    </div>
+</footer>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@RenderSection("Scripts", required: false)
+</body>
+</html>
