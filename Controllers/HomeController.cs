@@ -25,9 +25,23 @@ namespace PrayerTimes.Controllers
 
         public async Task<IActionResult> Index()
         {
+            string userIP = HttpContext.Connection.RemoteIpAddress.ToString();
+            _logger.LogInformation("Current user IP: " + userIP);
+            _logger.LogInformation("Previous user IP: " + HttpContext.Session.GetString("UserIp"));
+
+            HttpContext.Session.SetString("UserIp", userIP);
+
+            if (HttpContext.Connection.RemoteIpAddress.ToString() != HttpContext.Session.GetString("UserIp"))
+            {
+                HttpContext.Session.SetString("Active", "cph");
+                _logger.LogInformation("Active variable set to: " + HttpContext.Session.GetString("Active"));
+            }
+
             if (Database.api == null)
                 Database.api = new List<APIResult>();
             var result = Database.api.FirstOrDefault(x => x.cityName == selected_City);
+            _logger.LogInformation("Database result:");
+
             string muwaqqit_URL = string.Empty;
 
             if (result == null)
@@ -54,6 +68,9 @@ namespace PrayerTimes.Controllers
                         HttpContext.Session.SetString("Active", result.cityName);
                         break;
                 }
+            } else
+            {
+                _logger.LogInformation(result.content);
             }
 
             try
@@ -72,8 +89,13 @@ namespace PrayerTimes.Controllers
                             result.content = apiResponse;
                         }
                     }
-
                 }
+
+                ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(result.content).list;
+                var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
+
+                if (findcity == null)
+                    Database.api.Add(result);
             }
             catch (Exception e)
             {
@@ -82,12 +104,7 @@ namespace PrayerTimes.Controllers
                 _logger.LogInformation(e.StackTrace);
             }
 
-            ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(result.content).list;
-            var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
-
-            if (findcity == null)
-                Database.api.Add(result);
-
+            
             ViewData["Active"] = HttpContext.Session.GetString("Active");
             ViewData["Deactive"] = HttpContext.Session.GetString("Deactive");
 
