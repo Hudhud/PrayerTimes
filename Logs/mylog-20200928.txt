@@ -1,0 +1,8 @@
+2020-09-28T02:20:11.2087461+02:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
+2020-09-28T02:20:11.2168851+02:00  [INF] Hosting environment: "Development" (c3307c92)
+2020-09-28T02:20:11.2185147+02:00  [INF] Content root path: "D:\Source\PrayerTimes" (b5d60022)
+2020-09-28T02:20:36.4405573+02:00 8000003a-0002-ff00-b63f-84710c7967bb [INF] Active variable set to: cph (98b979bb)
+2020-09-28T02:25:11.2542326+02:00 80000068-0006-fe00-b63f-84710c7967bb [INF] Active variable set to: cph (98b979bb)
+2020-09-28T02:34:48.7945850+02:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
+2020-09-28T02:34:48.8033487+02:00  [INF] Hosting environment: "Development" (c3307c92)
+2020-09-28T02:34:48.8047112+02:00  [INF] Content root path: "D:\Source\PrayerTimes" (b5d60022)
