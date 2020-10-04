@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PrayerTimes.Models;
 using PrayerTimes.Persistence;
 
 namespace PrayerTimes
@@ -23,13 +24,12 @@ namespace PrayerTimes
         {
             services.AddControllersWithViews();
             services.AddDistributedMemoryCache();
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(1);//You can set Time   
-            });
+            services.AddSession();
             services.AddMvc();
+            services.AddScoped<Database>();
+            services.AddSingleton(_ => 
+            new PrayeTimesContext("server=mysql106.unoeuro.com,3306;Database=salahtimes_dk_db;User Id=USERID;Password=PASSWORD;"));
 
-            services.AddSingleton<Database>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
