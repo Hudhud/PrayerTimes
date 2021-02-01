@@ -32,7 +32,7 @@ namespace PrayerTimes.Controllers
                 switch (selected_City)
                 {
                     case "cph":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2020-12-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
                         break;
                     case "odense":
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
@@ -45,13 +45,13 @@ namespace PrayerTimes.Controllers
                         break;
                     default:
                         result.cityName = "cph";
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2020-12-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
                         break;
                 }
             }
 
             if (result.content == null ||
-                !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == "2020-10-01"))
+                !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == "2020-12-01"))
             {
 
                 using (var httpClient = new HttpClient())
@@ -60,6 +60,7 @@ namespace PrayerTimes.Controllers
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
                         result.content = apiResponse;
+                        Console.WriteLine(apiResponse);
                     }
                 }
             }
@@ -72,9 +73,9 @@ namespace PrayerTimes.Controllers
 
             using (ExcelPackage excel = new ExcelPackage())
             {
-                excel.Workbook.Worksheets.Add("September");
+                excel.Workbook.Worksheets.Add("December");
 
-                var excelWorksheet = excel.Workbook.Worksheets["September"];
+                var excelWorksheet = excel.Workbook.Worksheets["December"];
 
                 var headerRow = new List<string[]>()
                 {
@@ -102,7 +103,7 @@ namespace PrayerTimes.Controllers
 
                 }
 
-                FileInfo excelFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\prayers.xlsx");
+                FileInfo excelFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\December.xlsx");
                 excel.SaveAs(excelFile);
             }
 
