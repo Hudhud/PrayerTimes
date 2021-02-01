@@ -1,6 +1,5 @@
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\appsettings.Development.json
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\appsettings.json
-D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\Properties\launchSettings.json
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\PrayerTimes.exe
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\PrayerTimes.deps.json
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\PrayerTimes.runtimeconfig.json
@@ -56,3 +55,4 @@ D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\System.Configuration.Configurati
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\System.Xml.XPath.XmlDocument.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\scopedcss\bundle\PrayerTimes.styles.css

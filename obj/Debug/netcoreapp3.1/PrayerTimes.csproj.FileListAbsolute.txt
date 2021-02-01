@@ -4,7 +4,6 @@ D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorAssemblyInfo.cach
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.RazorAssemblyInfo.cs
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\appsettings.Development.json
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\appsettings.json
-D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\PrayerTimes.exe
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\PrayerTimes.deps.json
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\PrayerTimes.runtimeconfig.json
@@ -56,3 +55,4 @@ D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\System.Xml.XPath.XmlDocument.dll
 D:\Source\PrayerTimes\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.csproj.CoreCompileInputs.cache
 D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\PrayerTimes.MvcApplicationPartsAssemblyInfo.cache
+D:\Source\PrayerTimes\obj\Debug\netcoreapp3.1\scopedcss\bundle\PrayerTimes.styles.css

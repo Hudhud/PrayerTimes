@@ -1,6 +1,5 @@
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\appsettings.Development.json
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\appsettings.json
-D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Properties\launchSettings.json
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\PrayerTimes.exe
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\PrayerTimes.deps.json
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\PrayerTimes.runtimeconfig.json
@@ -393,7 +392,6 @@ D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Serilog.Formatting.Compa
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Serilog.Sinks.Async.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Serilog.Sinks.File.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Serilog.Sinks.RollingFile.dll
-D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscordaccore_x86_x86_4.700.20.41105.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\BouncyCastle.Crypto.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\Google.Protobuf.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\K4os.Compression.LZ4.dll
@@ -407,3 +405,5 @@ D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\SshNet.Security.Cryptogr
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\System.Configuration.ConfigurationManager.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\System.Security.Cryptography.ProtectedData.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\System.Xml.XPath.XmlDocument.dll
+D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscordaccore_x86_x86_4.700.20.56602.dll
+D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\scopedcss\bundle\PrayerTimes.styles.css
