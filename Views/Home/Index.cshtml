@@ -22,7 +22,7 @@
                     </button>
                 </td>
                 <td>
-                    <button class="@(active == "odense" ? "active" : "")"  name="button_value" style="background-color: transparent; color: yellow" value="odense" asp-action="check">
+                    <button class="@(active == "odense" ? "active" : "")" name="button_value" style="background-color: transparent; color: yellow" value="odense" asp-action="check">
                         Odense
                     </button>
                 </td>
@@ -42,6 +42,7 @@
             .active {
                 background-color: #4b8514 !important;
             }
+
             .deactive {
                 background-color: transparent !important;
             }
@@ -60,7 +61,29 @@
         </tr>
         <tr style="color: #FFDC00">
             <td>
-                @Convert.ToDateTime(prayer.fajr_time).AddMinutes(2).ToString("HH:mm")
+                @if (prayer.fajr_angle.Equals("anti-transit"))
+                {
+                    @if (active == "cph")
+                    {
+                        @Convert.ToDateTime("01:22:27").AddMinutes(2).ToString("HH:mm")
+                    }
+                    else if (active == "odense")
+                    {
+                        @Convert.ToDateTime("01:29:42").AddMinutes(2).ToString("HH:mm");
+                    }
+                    else if (active == "aarhus")
+                    {
+                        @Convert.ToDateTime("01:39:30").AddMinutes(2).ToString("HH:mm");
+                    }
+                    else if (active == "aalborg")
+                    {
+                        @Convert.ToDateTime("01:42:13").AddMinutes(2).ToString("HH:mm");
+                    }
+                }
+                else
+                {
+                    @Convert.ToDateTime(prayer.fajr_time).AddMinutes(2).ToString("HH:mm")
+                }
             </td>
             <td>
                 @Convert.ToDateTime(prayer.sunrise_time).AddMinutes(2).ToString("HH:mm")
@@ -75,7 +98,33 @@
                 @Convert.ToDateTime(prayer.sunset_time).AddMinutes(2).ToString("HH:mm")
             </td>
             <td>
-                @Convert.ToDateTime(prayer.esha_time).AddMinutes(2).ToString("HH:mm")
+                @if (String.IsNullOrEmpty(prayer.esha_time))
+                {
+                    @if (active == "cph")
+                    {
+                        @Convert.ToDateTime("00:37:33").AddMinutes(2).ToString("HH:mm");
+                    }
+                    else if (active == "odense")
+                    {
+                        @Convert.ToDateTime("00:46:10").AddMinutes(2).ToString("HH:mm");
+                    }
+                    else if (active == "aarhus")
+                    {
+                        @Convert.ToDateTime("00:43:07").AddMinutes(2).ToString("HH:mm");
+                    }
+                    else if (active == "aalborg")
+                    {
+                        @Convert.ToDateTime("00:45:51").AddMinutes(2).ToString("HH:mm");
+                    }
+                }
+                else if (dateFormatted.Equals("2021-05-06") && active == "aarhus")
+                {
+                    
+                }
+                else
+                {
+                    @Convert.ToDateTime(prayer.esha_time).AddMinutes(2).ToString("HH:mm");
+                }
             </td>
         </tr>
     </table>

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "SUgnN6kz/wJOm4AVyw5hn4zPmEFcFCdXhDY0nKr43I3xnN9lgPs9f+ItoM5NEVKlqj58xp0q8aJx4jN+UUf+qQ==",
+  "dgSpecHash": "N1U4SNwfW5ONeaHy5LPUK9VolbRdbSJJPuZc436pMHiUP3ST3hrXw+CYIOL1JUdUITVwwnhxq2QIj8SnBWrzqw==",
   "success": true,
   "projectFilePath": "D:\\Source\\PrayerTimes\\PrayerTimes.csproj",
   "expectedPackageFiles": [
@@ -168,9 +168,10 @@
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.xml.xmldocument\\4.0.1\\system.xml.xmldocument.4.0.1.nupkg.sha512",
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.xml.xpath\\4.0.1\\system.xml.xpath.4.0.1.nupkg.sha512",
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
-    "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x86\\3.1.11\\microsoft.netcore.app.runtime.win-x86.3.1.11.nupkg.sha512",
-    "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x86\\3.1.11\\microsoft.windowsdesktop.app.runtime.win-x86.3.1.11.nupkg.sha512",
-    "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x86\\3.1.11\\microsoft.aspnetcore.app.runtime.win-x86.3.1.11.nupkg.sha512"
+    "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x86\\3.1.13\\microsoft.netcore.app.runtime.win-x86.3.1.13.nupkg.sha512",
+    "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x86\\3.1.13\\microsoft.windowsdesktop.app.runtime.win-x86.3.1.13.nupkg.sha512",
+    "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x86\\3.1.13\\microsoft.aspnetcore.app.runtime.win-x86.3.1.13.nupkg.sha512",
+    "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.netcore.app.host.win-x86\\3.1.13\\microsoft.netcore.app.host.win-x86.3.1.13.nupkg.sha512"
   ],
   "logs": []
 }

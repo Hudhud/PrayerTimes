@@ -405,5 +405,5 @@ D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\SshNet.Security.Cryptogr
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\System.Configuration.ConfigurationManager.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\System.Security.Cryptography.ProtectedData.dll
 D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\System.Xml.XPath.XmlDocument.dll
-D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscordaccore_x86_x86_4.700.20.56602.dll
 D:\Source\PrayerTimes\obj\Release\netcoreapp3.1\win-x86\scopedcss\bundle\PrayerTimes.styles.css
+D:\Source\PrayerTimes\bin\Release\netcoreapp3.1\win-x86\mscordaccore_x86_x86_4.700.21.11102.dll

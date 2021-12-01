@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hExzJfvVQd7NmC/SUNzeQaYI/1Uqzvz4gGYmUtBdzDNmDKuY9RdWG67f28GUb6dQLzxQ5pi3xTRHSQ/VRti3Qw==",
+  "dgSpecHash": "Ji6lG6ajd+mIWVE92gjtfKaIf6o6odWYTJnOjljgsK+B4GDgDaLVZ5J1cVbhZq8VMztzfSewBARaAE/Ni38eHQ==",
   "success": true,
   "projectFilePath": "D:\\Source\\PrayerTimes\\PrayerTimes.csproj",
   "expectedPackageFiles": [
@@ -140,7 +140,8 @@
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.xml.xmldocument\\4.0.1\\system.xml.xmldocument.4.0.1.nupkg.sha512",
     "C:\\Users\\HH-PC\\.nuget\\packages\\system.xml.xpath\\4.0.1\\system.xml.xpath.4.0.1.nupkg.sha512",
-    "C:\\Users\\HH-PC\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512"
+    "C:\\Users\\HH-PC\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
+    "C:\\Users\\HH-PC\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.13\\microsoft.netcore.app.host.win-x64.3.1.13.nupkg.sha512"
   ],
   "logs": []
 }
