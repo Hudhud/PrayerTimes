@@ -25,6 +25,7 @@ namespace PrayerTimes.Controllers
             var result = Database.api.FirstOrDefault(x => x.cityName == selected_City);
             string muwaqqit_URL = string.Empty;
   
+
             if (result == null)
             {
                 result = new APIResult();
@@ -32,7 +33,7 @@ namespace PrayerTimes.Controllers
                 switch (selected_City)
                 {
                     case "cph":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2020-12-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2022-02-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
                         break;
                     case "odense":
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
@@ -44,14 +45,14 @@ namespace PrayerTimes.Controllers
                         muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
                         break;
                     default:
-                        result.cityName = "cph";
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2020-12-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+                        result.cityName = "aarhus";
+                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=2022-09-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
                         break;
                 }
             }
 
             if (result.content == null ||
-                !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == "2020-12-01"))
+                !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == "2022-09-01"))
             {
 
                 using (var httpClient = new HttpClient())
@@ -73,13 +74,13 @@ namespace PrayerTimes.Controllers
 
             using (ExcelPackage excel = new ExcelPackage())
             {
-                excel.Workbook.Worksheets.Add("December");
+                excel.Workbook.Worksheets.Add("September");
 
-                var excelWorksheet = excel.Workbook.Worksheets["December"];
+                var excelWorksheet = excel.Workbook.Worksheets["September"];
 
-                var headerRow = new List<string[]>()
+                List<string[]> headerRow = new List<string[]>()
                 {
-                    new string[] { "Dato", "Fajr", "Shuruk", "Zuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha" }
+                    new string[] { "Dato", "Fajr", "Shuruk", "Zuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha (shafiyy)" }
                 };
 
                 // Determine the header range (e.g. A1:D1)
@@ -89,10 +90,9 @@ namespace PrayerTimes.Controllers
                 // Popular header row data
                 excelWorksheet.Cells[headerRange].LoadFromArrays(headerRow);
                 var prayersData = ViewData["prayers"] as List<PrayerViewModel>;
-
-                for (int i = 2; i < 33; i++)
+                for (int i = 2; i < prayersData.Count + 2 ; i++)
                 {
-                    excelWorksheet.Cells["A"+i].Value = prayersData[i-2].fajr_date;
+                    excelWorksheet.Cells["A" + i].Value = prayersData[i - 2].fajr_date;
                     excelWorksheet.Cells["B" + i].Value = Convert.ToDateTime(prayersData[i - 2].fajr_time).AddMinutes(2).ToString("HH:mm");
                     excelWorksheet.Cells["C" + i].Value = Convert.ToDateTime(prayersData[i - 2].sunrise_time).AddMinutes(2).ToString("HH:mm");
                     excelWorksheet.Cells["D" + i].Value = Convert.ToDateTime(prayersData[i - 2].zohr_time).AddMinutes(2).ToString("HH:mm");
@@ -103,7 +103,7 @@ namespace PrayerTimes.Controllers
 
                 }
 
-                FileInfo excelFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\December.xlsx");
+                FileInfo excelFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\BønnetiderÅrhus\September.xlsx");
                 excel.SaveAs(excelFile);
             }
 
