@@ -1,136 +1,174 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using PrayerTimes.Models;
-using System.Collections.Generic;
-using PrayerTimes.Persistence;
 using OfficeOpenXml;
-using System.IO;
+using PrayerTimes.Models;
+using PrayerTimes.Persistence;
 
 namespace PrayerTimes.Controllers
 {
     public class HomeController : Controller
     {
-        static string selected_City;
+        private static string _selectedCity;
 
-        public async Task<IActionResult> Index()
+        public IActionResult Check(string buttonValue)
         {
-            if (Database.api == null)
-                Database.api = new List<APIResult>();
-            var result = Database.api.FirstOrDefault(x => x.cityName == selected_City);
-            string muwaqqit_URL = string.Empty;
-  
-
-            if (result == null)
+            if (!string.IsNullOrEmpty(buttonValue))
             {
-                result = new APIResult();
-                result.cityName = selected_City;
-                switch (selected_City)
-                {
-                    case "cph":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=2022-02-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
-                        break;
-                    case "odense":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
-                        break;
-                    case "aarhus":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
-                        break;
-                    case "aalborg":
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2020-10-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-18.0&fea=0&rsa=0";
-                        break;
-                    default:
-                        result.cityName = "aarhus";
-                        muwaqqit_URL = "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=2022-09-01&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
-                        break;
-                }
-            }
-
-            if (result.content == null ||
-                !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == "2022-09-01"))
-            {
-
-                using (var httpClient = new HttpClient())
-                {
-                    using (var response = await httpClient.GetAsync(muwaqqit_URL))
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        result.content = apiResponse;
-                        Console.WriteLine(apiResponse);
-                    }
-                }
-            }
-
-
-            ViewData["prayers"] = JsonConvert.DeserializeObject<Root>(result.content).list;
-            var findcity = Database.api.FirstOrDefault(x => x.cityName == result.cityName);
-            if(findcity==null)
-                Database.api.Add(result);
-
-            using (ExcelPackage excel = new ExcelPackage())
-            {
-                excel.Workbook.Worksheets.Add("September");
-
-                var excelWorksheet = excel.Workbook.Worksheets["September"];
-
-                List<string[]> headerRow = new List<string[]>()
-                {
-                    new string[] { "Dato", "Fajr", "Shuruk", "Zuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha (shafiyy)" }
-                };
-
-                // Determine the header range (e.g. A1:D1)
-                string headerRange = "A1:" + Char.ConvertFromUtf32(headerRow[0].Length + 64) + "1";
-
-
-                // Popular header row data
-                excelWorksheet.Cells[headerRange].LoadFromArrays(headerRow);
-                var prayersData = ViewData["prayers"] as List<PrayerViewModel>;
-                for (int i = 2; i < prayersData.Count + 2 ; i++)
-                {
-                    excelWorksheet.Cells["A" + i].Value = prayersData[i - 2].fajr_date;
-                    excelWorksheet.Cells["B" + i].Value = Convert.ToDateTime(prayersData[i - 2].fajr_time).AddMinutes(2).ToString("HH:mm");
-                    excelWorksheet.Cells["C" + i].Value = Convert.ToDateTime(prayersData[i - 2].sunrise_time).AddMinutes(2).ToString("HH:mm");
-                    excelWorksheet.Cells["D" + i].Value = Convert.ToDateTime(prayersData[i - 2].zohr_time).AddMinutes(2).ToString("HH:mm");
-                    excelWorksheet.Cells["E" + i].Value = Convert.ToDateTime(prayersData[i - 2].mithl_time).AddMinutes(2).ToString("HH:mm");
-                    excelWorksheet.Cells["F" + i].Value = Convert.ToDateTime(prayersData[i - 2].mithlain_time).AddMinutes(2).ToString("HH:mm");
-                    excelWorksheet.Cells["G" + i].Value = Convert.ToDateTime(prayersData[i - 2].sunset_time).AddMinutes(2).ToString("HH:mm");
-                    excelWorksheet.Cells["H" + i].Value = Convert.ToDateTime(prayersData[i - 2].esha_time).AddMinutes(2).ToString("HH:mm");
-
-                }
-
-                FileInfo excelFile = new FileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\BønnetiderÅrhus\September.xlsx");
-                excel.SaveAs(excelFile);
-            }
-
-            return View();
-        }
-
-        public IActionResult check(string button_value)
-        {
-            if (!string.IsNullOrEmpty(button_value))
-            {
-                selected_City = button_value;
+                _selectedCity = buttonValue;
             }
 
             return RedirectToAction("Index");
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public async Task Index()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (Database.api == null)
+                Database.api = new List<APIResult>();
+
+            // Set default selected city if it's null
+            if (string.IsNullOrEmpty(_selectedCity))
+                _selectedCity = "cph";
+
+            APIResult result = GetOrCreateApiResult(_selectedCity);
+            string muwaqqitUrl = GenerateMuwaqqitUrl(_selectedCity);
+
+            using (ExcelPackage excel = new ExcelPackage())
+            {
+                for (int month = 1; month <= 12; month++)
+                {
+                    string currentMonth = DateTime.Now.Year + "-" + month.ToString("D2") + "-01";
+                    muwaqqitUrl = UpdateMuwaqqitUrlDate(muwaqqitUrl, currentMonth);
+
+                    if (result.content == null ||
+                        !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == currentMonth))
+                    {
+                        string apiResponse = await FetchApiResponse(muwaqqitUrl);
+                        result.content = apiResponse;
+                        Console.WriteLine(apiResponse);
+                    }
+
+                    List<PrayerViewModel> prayersData = JsonConvert.DeserializeObject<Root>(result.content).list;
+                    CreateMonthWorksheet(excel, month, prayersData);
+
+                    if (month < 12)
+                    {
+                        await Task.Delay(30000);
+                    }
+                }
+
+                SaveExcelFile(excel);
+            }
         }
 
-        public string getTodayDate()
+
+        private APIResult GetOrCreateApiResult(string cityName)
         {
-            DateTime dt = DateTime.Today;
-            string dateFormatted = dt.Date.ToString("yyyy-MM-d");
-            return dateFormatted;
+            APIResult result = Database.api.FirstOrDefault(x => x.cityName == cityName);
+
+            if (result == null)
+            {
+                result = new APIResult { cityName = cityName };
+                Database.api.Add(result);
+            }
+
+            return result;
+        }
+
+        private string GenerateMuwaqqitUrl(string cityName)
+        {
+            string baseUrl = "https://www.muwaqqit.com/api.json?";
+            string defaultDate = "2023-01-01";
+            string timeZone = "Europe%2FCopenhagen";
+            string fajrAngle = "-18.0";
+            string eshaAngle = "-18.0";
+            string fixedEsha = "0";
+            string roundedSunriseAngle = "0";
+
+            Dictionary<string, (double lat, double lon)> cities = new Dictionary<string, (double, double)>
+            {
+                { "cph", (55.6759142, 12.5691285) },
+                { "odense", (55.4037560, 10.4023700) },
+                { "aarhus", (56.1629390, 10.2039210) },
+                { "aalborg", (57.0488195, 9.9217470) }
+            };
+
+            if (!cities.ContainsKey(cityName))
+                cityName = "cph";
+
+            (double lat, double lon) = cities[cityName];
+
+            CultureInfo invariantCulture = CultureInfo.InvariantCulture;
+
+            return $"{baseUrl}lt={lat.ToString(invariantCulture)}&ln={lon.ToString(invariantCulture)}&d={defaultDate}&tz={timeZone}&fa={fajrAngle}&ea={eshaAngle}&fea={fixedEsha}&rsa={roundedSunriseAngle}";
+        }
+
+        private string UpdateMuwaqqitUrlDate(string url, string date)
+        {
+            int dateStartIndex = url.IndexOf("d=") + 2;
+            int dateEndIndex = url.IndexOf("&", dateStartIndex);
+            return url.Substring(0, dateStartIndex) + date + url.Substring(dateEndIndex);
+        }
+
+        private async Task<string> FetchApiResponse(string url)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(url))
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+            }
+        }
+
+        private void CreateMonthWorksheet(ExcelPackage excel, int month, List<PrayerViewModel> prayersData)
+        {
+            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+            excel.Workbook.Worksheets.Add(monthName);
+
+            var excelWorksheet = excel.Workbook.Worksheets[monthName];
+
+            List<string[]> headerRow = new List<string[]>
+        {
+            new string[] { "Dato", "Fajr", "Shuruk", "Zuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha" }
+        };
+
+            string headerRange = "A1:" + char.ConvertFromUtf32(headerRow[0].Length + 64) + "1";
+            excelWorksheet.Cells[headerRange].LoadFromArrays(headerRow);
+
+            for (int i = 2; i < prayersData.Count + 2; i++)
+            {
+                excelWorksheet.Cells["A" + i].Value = prayersData[i - 2].fajr_date;
+                excelWorksheet.Cells["B" + i].Value = ProcessPrayerTime(prayersData[i - 2].fajr_time, prayersData);
+                excelWorksheet.Cells["C" + i].Value = ProcessPrayerTime(prayersData[i - 2].sunrise_time, prayersData);
+                excelWorksheet.Cells["D" + i].Value = ProcessPrayerTime(prayersData[i - 2].zohr_time, prayersData);
+                excelWorksheet.Cells["E" + i].Value = ProcessPrayerTime(prayersData[i - 2].mithl_time, prayersData);
+                excelWorksheet.Cells["F" + i].Value = ProcessPrayerTime(prayersData[i - 2].mithlain_time, prayersData);
+                excelWorksheet.Cells["G" + i].Value = ProcessPrayerTime(prayersData[i - 2].sunset_time, prayersData);
+                excelWorksheet.Cells["H" + i].Value = ProcessPrayerTime(prayersData[i - 2].esha_time, prayersData);
+            }
+        }
+
+        private void SaveExcelFile(ExcelPackage excel)
+        {
+            FileInfo excelFile = new(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\PrayerTimes.xlsx");
+            excel.SaveAs(excelFile);
+        }
+
+        private static string ProcessPrayerTime(string timeString, List<PrayerViewModel> prayersData)
+        {
+            if (timeString == null)
+                return string.Empty;
+
+            DateTime time = DateTime.ParseExact(timeString, "HH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime roundedTime = time.AddSeconds(60 - time.Second).AddMinutes(2);
+            return roundedTime.ToString("HH:mm");
         }
     }
 }
