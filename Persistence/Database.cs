@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using PrayerTimes.Models;
 

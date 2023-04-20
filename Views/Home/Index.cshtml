@@ -2,56 +2,77 @@
     ViewData["Title"] = "Home Page";
 }
 
+<style>
+    body {
+        background-color: #1a1a1a;
+        color: #FFFFFF;
+    }
+
+    .prayer-buttons {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 25px;
+    }
+
+    .prayer-button {
+        background-color: transparent;
+        color: #FFDC00;
+        font-size: 16px;
+        border: 1px solid #FFDC00;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .prayer-button:hover {
+            background-color: #FFDC00;
+            color: #1a1a1a;
+        }
+
+    .prayer-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .prayer-table th,
+        .prayer-table td {
+            border: 1px solid #FFDC00;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .prayer-table th {
+            background-color: #333333;
+        }
+
+    .hanafi-asr {
+        color: #FFDC00;
+        text-align: right;
+        margin-top: 25px;
+    }
+</style>
+
 <div class="text-center">
-    @{var result = ViewData["prayers"] as List<PrayerViewModel>;}
+    @{
+        var result = ViewData["prayers"] as List<PrayerViewModel>;
+    }
     @{
         DateTime dt = DateTime.Today;
-        string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
+        string dateFormatted = dt.Date.ToString("yyyy-MM-d");
         var prayer = result.First(x => x.fajr_date == dateFormatted);
     }
-    @{
-        var active = ViewData["Active"] as string;
-        var deactive = ViewData["Deactive"] as string;
-    }
+
     <form>
-        <table style="width: 100%; margin-bottom: 25px">
-            <tr>
-                <td>
-                    <button class="@(active == "cph" ? "active": "") @(deactive == "cph" ? "deactive": "")" name="button_value" style="background-color: #4b8514; color: yellow" value="cph" asp-action="check">
-                        København
-                    </button>
-                </td>
-                <td>
-                    <button class="@(active == "odense" ? "active" : "")" name="button_value" style="background-color: transparent; color: yellow" value="odense" asp-action="check">
-                        Odense
-                    </button>
-                </td>
-                <td>
-                    <button class="@(active == "aarhus" ? "active" : "")" name="button_value" style="background-color: transparent; color: yellow" value="aarhus" asp-action="check">
-                        Århus
-                    </button>
-                </td>
-                <td>
-                    <button class="@(active == "aalborg" ? "active" : "")" name="button_value" style="background-color: transparent; color: yellow" value="aalborg" asp-action="check">
-                        Aalborg
-                    </button>
-                </td>
-            </tr>
-        </table>
-        <style>
-            .active {
-                background-color: #4b8514 !important;
-            }
-
-            .deactive {
-                background-color: transparent !important;
-            }
-        </style>
-
+        <div class="prayer-buttons">
+            <button class="prayer-button" name="button_value" value="cph" asp-action="check">København</button>
+            <button class="prayer-button" name="button_value" value="odense" asp-action="check">Odense</button>
+            <button class="prayer-button" name="button_value" value="aarhus" asp-action="check">Århus</button>
+            <button class="prayer-button" name="button_value" value="aalborg" asp-action="check">Aalborg</button>
+        </div>
     </form>
 
-    <table style="width: 100%;">
-        <tr style="color: #FFDC00">
+    <table class="prayer-table">
+        <tr>
             <th>Fajr</th>
             <th>Shuruk</th>
             <th>Dhuhr</th>
@@ -59,81 +80,17 @@
             <th>Maghreb</th>
             <th>Isha</th>
         </tr>
-        <tr style="color: #FFDC00">
-            <td>
-                @if (prayer.fajr_angle.Equals("anti-transit"))
-                {
-                    @if (active == "cph")
-                    {
-                        @Convert.ToDateTime("01:22:27").AddMinutes(2).ToString("HH:mm")
-                    }
-                    else if (active == "odense")
-                    {
-                        @Convert.ToDateTime("01:29:42").AddMinutes(2).ToString("HH:mm");
-                    }
-                    else if (active == "aarhus")
-                    {
-                        @Convert.ToDateTime("01:39:30").AddMinutes(2).ToString("HH:mm");
-                    }
-                    else if (active == "aalborg")
-                    {
-                        @Convert.ToDateTime("01:42:13").AddMinutes(2).ToString("HH:mm");
-                    }
-                }
-                else
-                {
-                    @Convert.ToDateTime(prayer.fajr_time).AddMinutes(2).ToString("HH:mm")
-                }
-            </td>
-            <td>
-                @Convert.ToDateTime(prayer.sunrise_time).AddMinutes(2).ToString("HH:mm")
-            </td>
-            <td>
-                @Convert.ToDateTime(prayer.zohr_time).AddMinutes(2).ToString("HH:mm")
-            </td>
-            <td>
-                @Convert.ToDateTime(prayer.mithl_time).AddMinutes(2).ToString("HH:mm")
-            </td>
-            <td>
-                @Convert.ToDateTime(prayer.sunset_time).AddMinutes(2).ToString("HH:mm")
-            </td>
-            <td>
-                @if (String.IsNullOrEmpty(prayer.esha_time))
-                {
-                    @if (active == "cph")
-                    {
-                        @Convert.ToDateTime("00:37:33").AddMinutes(2).ToString("HH:mm");
-                    }
-                    else if (active == "odense")
-                    {
-                        @Convert.ToDateTime("00:46:10").AddMinutes(2).ToString("HH:mm");
-                    }
-                    else if (active == "aarhus")
-                    {
-                        @Convert.ToDateTime("00:43:07").AddMinutes(2).ToString("HH:mm");
-                    }
-                    else if (active == "aalborg")
-                    {
-                        @Convert.ToDateTime("00:45:51").AddMinutes(2).ToString("HH:mm");
-                    }
-                }
-                else if (dateFormatted.Equals("2021-05-06") && active == "aarhus")
-                {
-                    
-                }
-                else
-                {
-                    @Convert.ToDateTime(prayer.esha_time).AddMinutes(2).ToString("HH:mm");
-                }
-            </td>
-        </tr>
-    </table>
-    <table style="width:100%; margin-top: 25px;">
-        <tr style="color: #FFDC00; text-align:right">
-            <td>
-                Hanafi asr: @Convert.ToDateTime(prayer.mithlain_time).AddMinutes(2).ToString("HH:mm")
-            </td>
+        <tr>
+            <td>@Convert.ToDateTime(prayer.fajr_time).AddMinutes(3).ToString("HH:mm")</td>
+            <td>@Convert.ToDateTime(prayer.sunrise_time).AddMinutes(3).ToString("HH:mm")</td>
+            <td>@Convert.ToDateTime(prayer.zohr_time).AddMinutes(3).ToString("HH:mm")</td>
+            <td>@Convert.ToDateTime(prayer.mithl_time).AddMinutes(3).ToString("HH:mm")</td>
+            <td>@Convert.ToDateTime(prayer.sunset_time).AddMinutes(3).ToString("HH:mm")</td>
+            <td>@Convert.ToDateTime(prayer.esha_time).AddMinutes(3).ToString("HH:mm")</td>
         </tr>
     </table>
 
+    <div class="hanafi-asr">
+        Hanafi asr: @Convert.ToDateTime(prayer.mithlain_time).AddMinutes(3).ToString("HH:mm")
+    </div>
 </div>

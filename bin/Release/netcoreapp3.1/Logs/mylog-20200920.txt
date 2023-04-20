@@ -1,6 +1,0 @@
-2020-09-20T16:08:27.1300033+02:00  [INF] Now listening on: "http://localhost:5000" (d826f4b8)
-2020-09-20T16:08:27.1329779+02:00  [INF] Now listening on: "https://localhost:5001" (d826f4b8)
-2020-09-20T16:08:27.1331137+02:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
-2020-09-20T16:08:27.1331376+02:00  [INF] Hosting environment: "Production" (c3307c92)
-2020-09-20T16:08:27.1331498+02:00  [INF] Content root path: "D:\Source\PrayerTimes\bin\Release\netcoreapp3.1" (b5d60022)
-2020-09-20T16:08:34.3922211+02:00  [INF] Application is shutting down... (90f52c38)

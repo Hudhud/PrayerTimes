@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,7 +27,7 @@ namespace PrayerTimes
             services.AddMvc();
             services.AddScoped<Database>();
             services.AddSingleton(_ => 
-            new PrayeTimesContext("server=mysql106.unoeuro.com,3306;Database=salahtimes_dk_db;User Id=USERID;Password=PASSWORD;"));
+            new PrayeTimesContext("server=mysql106.unoeuro.com,3306;Database=USERNAME;User Id=salahtimes_dk;Password=PASSWORD;"));
 
         }
 
@@ -54,7 +53,7 @@ namespace PrayerTimes
 
             app.UseAuthorization();
 
-            loggerFactory.AddFile("Logs/mylog-{Date}.txt");
+          //  loggerFactory.AddFile("Logs/mylog-{Date}.txt");
 
             app.UseEndpoints(endpoints =>
             {
