@@ -16,6 +16,8 @@ namespace PrayerTimes.Controllers
     public class HomeController : Controller
     {
         private static string _selectedCity;
+        private string _lastEshaTime;
+
 
         public IActionResult Check(string buttonValue)
         {
@@ -29,6 +31,8 @@ namespace PrayerTimes.Controllers
 
         public async Task Index()
         {
+            _lastEshaTime = null;
+
             if (Database.api == null)
                 Database.api = new List<APIResult>();
 
@@ -84,10 +88,10 @@ namespace PrayerTimes.Controllers
         private string GenerateMuwaqqitUrl(string cityName)
         {
             string baseUrl = "https://www.muwaqqit.com/api.json?";
-            string defaultDate = "2023-01-01";
+            string defaultDate = "2023-06-01";
             string timeZone = "Europe%2FCopenhagen";
             string fajrAngle = "-18.0";
-            string eshaAngle = "-18.0";
+            string eshaAngle = "-17.0";
             string fixedEsha = "0";
             string roundedSunriseAngle = "0";
 
@@ -118,13 +122,10 @@ namespace PrayerTimes.Controllers
 
         private async Task<string> FetchApiResponse(string url)
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(url))
-                {
-                    return await response.Content.ReadAsStringAsync();
-                }
-            }
+            using var httpClient = new HttpClient();
+            using var response = await httpClient.GetAsync(url);
+
+            return await response.Content.ReadAsStringAsync();
         }
 
         private void CreateMonthWorksheet(ExcelPackage excel, int month, List<PrayerViewModel> prayersData)
@@ -134,10 +135,10 @@ namespace PrayerTimes.Controllers
 
             var excelWorksheet = excel.Workbook.Worksheets[monthName];
 
-            List<string[]> headerRow = new List<string[]>
-        {
-            new string[] { "Dato", "Fajr", "Shuruk", "Zuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha" }
-        };
+            List<string[]> headerRow = new()
+            {
+            new string[] { "Dato", "Fajr", "Shuruk", "Dhuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha" }
+            };
 
             string headerRange = "A1:" + char.ConvertFromUtf32(headerRow[0].Length + 64) + "1";
             excelWorksheet.Cells[headerRange].LoadFromArrays(headerRow);
@@ -145,27 +146,35 @@ namespace PrayerTimes.Controllers
             for (int i = 2; i < prayersData.Count + 2; i++)
             {
                 excelWorksheet.Cells["A" + i].Value = prayersData[i - 2].fajr_date;
-                excelWorksheet.Cells["B" + i].Value = ProcessPrayerTime(prayersData[i - 2].fajr_time, prayersData);
-                excelWorksheet.Cells["C" + i].Value = ProcessPrayerTime(prayersData[i - 2].sunrise_time, prayersData);
-                excelWorksheet.Cells["D" + i].Value = ProcessPrayerTime(prayersData[i - 2].zohr_time, prayersData);
-                excelWorksheet.Cells["E" + i].Value = ProcessPrayerTime(prayersData[i - 2].mithl_time, prayersData);
-                excelWorksheet.Cells["F" + i].Value = ProcessPrayerTime(prayersData[i - 2].mithlain_time, prayersData);
-                excelWorksheet.Cells["G" + i].Value = ProcessPrayerTime(prayersData[i - 2].sunset_time, prayersData);
-                excelWorksheet.Cells["H" + i].Value = ProcessPrayerTime(prayersData[i - 2].esha_time, prayersData);
+
+                string fajrTime = prayersData[i - 2].fajr_angle.ToString() == "anti-transit" ? "01:30" : ProcessPrayerTime(prayersData[i - 2].fajr_time);
+                excelWorksheet.Cells["B" + i].Value = fajrTime;
+
+                excelWorksheet.Cells["C" + i].Value = ProcessPrayerTime(prayersData[i - 2].sunrise_time);
+                excelWorksheet.Cells["D" + i].Value = ProcessPrayerTime(prayersData[i - 2].zohr_time);
+                excelWorksheet.Cells["E" + i].Value = ProcessPrayerTime(prayersData[i - 2].mithl_time);
+                excelWorksheet.Cells["F" + i].Value = ProcessPrayerTime(prayersData[i - 2].mithlain_time);
+                excelWorksheet.Cells["G" + i].Value = ProcessPrayerTime(prayersData[i - 2].sunset_time);
+
+                object eshaTimeObject = prayersData[i - 2].esha_time;
+                string eshaTime = eshaTimeObject != null ? ProcessPrayerTime(eshaTimeObject.ToString(), _lastEshaTime) : _lastEshaTime;
+                excelWorksheet.Cells["H" + i].Value = eshaTime;
+
+                if (!string.IsNullOrEmpty(eshaTime))
+                {
+                    _lastEshaTime = eshaTime;
+                }
             }
         }
-
+        
         private void SaveExcelFile(ExcelPackage excel)
         {
             FileInfo excelFile = new(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\PrayerTimes.xlsx");
             excel.SaveAs(excelFile);
         }
 
-        private static string ProcessPrayerTime(string timeString, List<PrayerViewModel> prayersData)
+        private static string ProcessPrayerTime(string timeString, string lastValidTimeString = null)
         {
-            if (timeString == null)
-                return string.Empty;
-
             DateTime time = DateTime.ParseExact(timeString, "HH:mm:ss", CultureInfo.InvariantCulture);
             DateTime roundedTime = time.AddSeconds(60 - time.Second).AddMinutes(2);
             return roundedTime.ToString("HH:mm");
