@@ -27,7 +27,7 @@ namespace PrayerTimes
             services.AddMvc();
             services.AddScoped<Database>();
             services.AddSingleton(_ => 
-            new PrayeTimesContext("server=mysql106.unoeuro.com,3306;Database=USERNAME;User Id=salahtimes_dk;Password=PASSWORD;"));
+            new PrayeTimesContext("server=mysql106.unoeuro.com,3306;Database=DATABASE;User Id=salahtimes_dk;Password=PASSWORD;"));
 
         }
 

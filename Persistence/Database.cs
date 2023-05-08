@@ -32,18 +32,44 @@ namespace PrayerTimes.Persistence
         {
             var api = RetrievePrayersTimesData();
             var apiResult = api[cityName.ToLower()];
-            if (string.IsNullOrEmpty(apiResult.content) || 
-                !JsonConvert.DeserializeObject<Root>(apiResult.content).list.Any(n => n.fajr_date == getTodayDate()))
+            if (string.IsNullOrEmpty(apiResult.content) ||
+                !JsonConvert.DeserializeObject<Root>(apiResult.content).list.Any(n => n.fajr_date.ToString("yyyy-MM-dd") == GetTodayDate()))
             {
-                var url = $"{apiResult.url}{getTodayDate()}{URL_SUFFIX}";
+                var url = $"{apiResult.url}{GetTodayDate():yyyy-MM-dd}{URL_SUFFIX}";
                 var content = await GetApiContent(url);
-                apiResult.content = content;
+
+                // Deserialize the content into a Root object
+                var root = JsonConvert.DeserializeObject<Root>(content);
+
+                // Find the last elements that meet the conditions
+                var lastValidFajr = root.list.LastOrDefault(prayer => prayer.fajr_angle == "-18.0");
+                var lastValidEsha = root.list.LastOrDefault(prayer => !string.IsNullOrEmpty(prayer.esha_time));
+
+                // Find the current day based on the fajr_date property matching today's date
+                var currentDay = root.list.FirstOrDefault(prayer => prayer.fajr_date.ToString("yyyy-MM-dd") == GetTodayDate());
+
+                // Update the fajr_time and esha_time of the current day
+                if (currentDay != null)
+                {
+                    if (currentDay.fajr_angle.Equals("anti-transit") && lastValidFajr != null)
+                    {
+                        currentDay.fajr_time = lastValidFajr.fajr_time;
+                    }
+                    if (lastValidEsha != null && string.IsNullOrEmpty(currentDay.esha_time))
+                    {
+                        currentDay.esha_time = lastValidEsha.esha_time;
+                    }
+                }
+
+                // Serialize the updated Root object back to a JSON string
+                apiResult.content = JsonConvert.SerializeObject(root);
 
                 UpdatePrayerTimesData(apiResult);
             }
 
             return apiResult.content;
         }
+
 
         private async Task<string> GetApiContent(string url)
         {
@@ -57,7 +83,7 @@ namespace PrayerTimes.Persistence
             }
         }
 
-        private string getTodayDate()
+        private string GetTodayDate()
         {
             DateTime dt = DateTime.Today;
             string dateFormatted = dt.Date.ToString("yyyy-MM-dd");

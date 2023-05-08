@@ -2,6 +2,7 @@
     ViewData["Title"] = "Home Page";
 }
 
+
 <style>
     body {
         background-color: #1a1a1a;
@@ -23,11 +24,6 @@
         cursor: pointer;
         transition: background-color 0.3s, color 0.3s;
     }
-
-        .prayer-button:hover {
-            background-color: #FFDC00;
-            color: #1a1a1a;
-        }
 
     .prayer-table {
         width: 100%;
@@ -58,18 +54,25 @@
     }
     @{
         DateTime dt = DateTime.Today;
-        string dateFormatted = dt.Date.ToString("yyyy-MM-d");
-        var prayer = result.First(x => x.fajr_date == dateFormatted);
+        string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
+        var prayer = result.First(x => x.fajr_date.ToString("yyyy-MM-dd") == dateFormatted);
     }
 
     <form>
         <div class="prayer-buttons">
-            <button class="prayer-button" name="button_value" value="cph" asp-action="check">København</button>
-            <button class="prayer-button" name="button_value" value="odense" asp-action="check">Odense</button>
-            <button class="prayer-button" name="button_value" value="aarhus" asp-action="check">Århus</button>
-            <button class="prayer-button" name="button_value" value="aalborg" asp-action="check">Aalborg</button>
+            <button class="prayer-button" name="button_value" value="cph" asp-action="Check">København</button>
+            <button class="prayer-button" name="button_value" value="odense" asp-action="Check">Odense</button>
+            <button class="prayer-button" name="button_value" value="aarhus" asp-action="Check">Århus</button>
+            <button class="prayer-button" name="button_value" value="aalborg" asp-action="Check">Aalborg</button>
         </div>
     </form>
+
+    @functions {
+        string FormatPrayerTime(string time)
+        {
+            return Convert.ToDateTime(time).AddMinutes(3).ToString("HH:mm");
+        }
+    }
 
     <table class="prayer-table">
         <tr>
@@ -81,16 +84,16 @@
             <th>Isha</th>
         </tr>
         <tr>
-            <td>@Convert.ToDateTime(prayer.fajr_time).AddMinutes(3).ToString("HH:mm")</td>
-            <td>@Convert.ToDateTime(prayer.sunrise_time).AddMinutes(3).ToString("HH:mm")</td>
-            <td>@Convert.ToDateTime(prayer.zohr_time).AddMinutes(3).ToString("HH:mm")</td>
-            <td>@Convert.ToDateTime(prayer.mithl_time).AddMinutes(3).ToString("HH:mm")</td>
-            <td>@Convert.ToDateTime(prayer.sunset_time).AddMinutes(3).ToString("HH:mm")</td>
-            <td>@Convert.ToDateTime(prayer.esha_time).AddMinutes(3).ToString("HH:mm")</td>
+            <td>@FormatPrayerTime(prayer.fajr_time)</td>
+            <td>@FormatPrayerTime(prayer.sunrise_time)</td>
+            <td>@FormatPrayerTime(prayer.zohr_time)</td>
+            <td>@FormatPrayerTime(prayer.mithl_time)</td>
+            <td>@FormatPrayerTime(prayer.sunset_time)</td>
+            <td>@FormatPrayerTime(prayer.esha_time)</td>
         </tr>
     </table>
 
     <div class="hanafi-asr">
-        Hanafi asr: @Convert.ToDateTime(prayer.mithlain_time).AddMinutes(3).ToString("HH:mm")
+        Hanafi asr: @FormatPrayerTime(prayer.mithlain_time)
     </div>
 </div>

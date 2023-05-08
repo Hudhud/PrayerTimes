@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PrayerTimes.Models;
-using System.Collections.Generic;
 using PrayerTimes.Persistence;
 using Microsoft.Extensions.Logging;
 
@@ -56,7 +53,7 @@ namespace PrayerTimes.Controllers
             return View();
         }
 
-        public IActionResult check(string button_value)
+        public IActionResult Check(string button_value)
         {
             if (!button_value.Equals("cph"))
             {
@@ -78,6 +75,7 @@ namespace PrayerTimes.Controllers
 
             return RedirectToAction("Index");
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
