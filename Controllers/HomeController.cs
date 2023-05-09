@@ -1,12 +1,12 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PrayerTimes.Models;
 using PrayerTimes.Persistence;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace PrayerTimes.Controllers
 {

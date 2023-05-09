@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using PrayerTimes.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using PrayerTimes.Models;
 
 namespace PrayerTimes.Persistence
 {
-    public class APIResult
+    public class ApiResult
     {
         public int Id { get; set; }
         public string cityName { get; set; }
@@ -35,40 +35,10 @@ namespace PrayerTimes.Persistence
             var api = RetrievePrayersTimesData();
             var apiResult = api[cityName.ToLower()];
 
-            if (string.IsNullOrEmpty(apiResult.content) ||
-                !JsonConvert.DeserializeObject<Root>(apiResult.content).list.Any(n => n.fajr_date.ToString("yyyy-MM-dd") == GetTodayDate()))
+            if (string.IsNullOrEmpty(apiResult.content))
             {
-                var url = $"{apiResult.url}{GetTodayDate():yyyy-MM-dd}{URL_SUFFIX}";
-                var content = await GetApiContent(url);
-
-                // Deserialize the content into a Root object
-                var root = JsonConvert.DeserializeObject<Root>(content);
-
-                // Find the last elements that meet the conditions
-                var lastValidFajr = root.list.LastOrDefault(prayer => prayer.fajr_angle == "-18.0");
-                var lastValidEsha = root.list.LastOrDefault(prayer => !string.IsNullOrEmpty(prayer.esha_time));
-
-                // Find the current day based on the fajr_date property matching today's date
-                var currentDay = root.list.FirstOrDefault(prayer => prayer.fajr_date.ToString("yyyy-MM-dd") == GetTodayDate());
-
-                // Update the fajr_time and esha_time of the current day
-                if (currentDay != null)
-                {
-                    if (currentDay.fajr_angle.Equals("anti-transit") && lastValidFajr != null)
-                    {
-                        currentDay.fajr_time = lastValidFajr.fajr_time;
-                    }
-                    if (lastValidEsha != null && string.IsNullOrEmpty(currentDay.esha_time))
-                    {
-                        currentDay.esha_time = lastValidEsha.esha_time;
-                    }
-                }
-
-                // Serialize the updated Root object back to a JSON string
-                apiResult.content = JsonConvert.SerializeObject(root);
-                apiResult.contentDate = DateTime.Today.ToString("yyyy-MM");
-
-                UpdatePrayerTimesData(apiResult);
+                // Initial run, no data in the cache
+                await FetchAndUpdateApiData(apiResult);
             }
             else
             {
@@ -78,28 +48,55 @@ namespace PrayerTimes.Persistence
 
                 if (currentMonth.Month != cachedMonth.Month || currentMonth.Year != cachedMonth.Year)
                 {
-                    // If the months are different, clear the cached content and update the month
-                    apiResult.content = string.Empty;
-                    apiResult.contentDate = currentMonth.ToString("yyyy-MM");
-                    UpdatePrayerTimesData(apiResult);
+                    await FetchAndUpdateApiData(apiResult);
                 }
             }
 
             return apiResult.content;
         }
 
+        private async Task FetchAndUpdateApiData(ApiResult apiResult)
+        {
+            var url = $"{apiResult.url}{GetTodayDate():yyyy-MM-dd}{URL_SUFFIX}";
+            var content = await GetApiContent(url);
+
+            // Deserialize the content into a Root object
+            var root = JsonConvert.DeserializeObject<Root>(content);
+
+            // Find the last elements that meet the conditions
+            var lastValidFajr = root.list.LastOrDefault(prayer => prayer.fajr_angle == "-18.0");
+            var lastValidEsha = root.list.LastOrDefault(prayer => !string.IsNullOrEmpty(prayer.esha_time));
+
+            // Find the current day based on the fajr_date property matching today's date
+            var currentDay = root.list.FirstOrDefault(prayer => prayer.fajr_date.ToString("yyyy-MM-dd") == GetTodayDate());
+
+            // Update the fajr_time and esha_time of the current day
+            if (currentDay != null)
+            {
+                if (currentDay.fajr_angle.Equals("anti-transit") && lastValidFajr != null)
+                {
+                    currentDay.fajr_time = lastValidFajr.fajr_time;
+                }
+                if (lastValidEsha != null && string.IsNullOrEmpty(currentDay.esha_time))
+                {
+                    currentDay.esha_time = lastValidEsha.esha_time;
+                }
+            }
+
+            // Serialize the updated Root object back to a JSON string
+            apiResult.content = JsonConvert.SerializeObject(root);
+            apiResult.contentDate = DateTime.Today.ToString("yyyy-MM");
+
+            UpdatePrayerTimesData(apiResult);
+        }
 
 
         private async Task<string> GetApiContent(string url)
         {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(url))
-                {
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    return apiResponse;
-                }
-            }
+            using var httpClient = new HttpClient();
+            using var response = await httpClient.GetAsync(url);
+            string apiResponse = await response.Content.ReadAsStringAsync();
+            return apiResponse;
         }
 
         private string GetTodayDate()
@@ -114,35 +111,35 @@ namespace PrayerTimes.Persistence
             var apiResultFromDB = RetrievePrayersTimesData();
             if (apiResultFromDB.Count > 0) return;
 
-            var cph = new APIResult
+            var cph = new ApiResult
             {
                 cityName = "cph",
                 url = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=",
                 contentDate = DateTime.Now.ToString("yyyy-MM-dd")
             };
 
-            var odense = new APIResult
+            var odense = new ApiResult
             {
                 cityName = "odense",
                 url = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=",
                 contentDate = DateTime.Now.ToString("yyyy-MM-dd")
             };
 
-            var aarhus = new APIResult
+            var aarhus = new ApiResult
             {
                 cityName = "aarhus",
                 url = "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=",
                 contentDate = DateTime.Now.ToString("yyyy-MM-dd")
             };
 
-            var aalborg = new APIResult
+            var aalborg = new ApiResult
             {
                 cityName = "aalborg",
                 url = "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=",
                 contentDate = DateTime.Now.ToString("yyyy-MM-dd")
             };
 
-            var apis = new List<APIResult>
+            var apis = new List<ApiResult>
             {
                 cph,
                 odense,
@@ -167,7 +164,7 @@ namespace PrayerTimes.Persistence
             }
         }
 
-        private void UpdatePrayerTimesData(APIResult apiResult)
+        private void UpdatePrayerTimesData(ApiResult apiResult)
         {
             using (var conn = prayeTimesContext.Connection)
             {
@@ -183,9 +180,9 @@ namespace PrayerTimes.Persistence
             }
         }
 
-        private Dictionary<string, APIResult> RetrievePrayersTimesData()
+        private Dictionary<string, ApiResult> RetrievePrayersTimesData()
         {
-            var api = new Dictionary<string, APIResult>();
+            var api = new Dictionary<string, ApiResult>();
             using (var conn = prayeTimesContext.Connection)
             {
                 conn.Open();
@@ -194,7 +191,7 @@ namespace PrayerTimes.Persistence
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    var apiResult = new APIResult
+                    var apiResult = new ApiResult
                     {
                         Id = int.Parse(reader["id"].ToString()),
                         cityName = reader["city"].ToString(),

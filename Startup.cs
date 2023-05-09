@@ -26,7 +26,7 @@ namespace PrayerTimes
             services.AddSession();
             services.AddMvc();
             services.AddScoped<Database>();
-            services.AddSingleton(_ => 
+            services.AddSingleton(_ =>
             new PrayeTimesContext("server=mysql106.unoeuro.com,3306;Database=DATABASE;User Id=salahtimes_dk;Password=PASSWORD;"));
 
         }
@@ -53,7 +53,7 @@ namespace PrayerTimes
 
             app.UseAuthorization();
 
-          //  loggerFactory.AddFile("Logs/mylog-{Date}.txt");
+            //  loggerFactory.AddFile("Logs/mylog-{Date}.txt");
 
             app.UseEndpoints(endpoints =>
             {
