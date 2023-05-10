@@ -14,7 +14,6 @@ namespace PrayerTimes.Persistence
         public int Id { get; set; }
         public string cityName { get; set; }
         public string content { get; set; }
-        public string contentDate { get; set; }
         public string url { get; set; }
     }
 
@@ -42,12 +41,16 @@ namespace PrayerTimes.Persistence
             }
             else
             {
-                // Check if the month of the cached data is different from the current month
-                var cachedMonth = DateTime.ParseExact(apiResult.contentDate, "yyyy-MM", CultureInfo.InvariantCulture);
-                var currentMonth = DateTime.Today;
+                // Deserialize the content into a Root object
+                var root = JsonConvert.DeserializeObject<Root>(apiResult.content);
 
-                if (currentMonth.Month != cachedMonth.Month || currentMonth.Year != cachedMonth.Year)
+                // Check if the fajr_date of the first item in the list is in the current month
+                var firstItemMonth = root.list.FirstOrDefault()?.fajr_date.Month;
+                var currentMonth = DateTime.Today.Month;
+
+                if (firstItemMonth != currentMonth)
                 {
+                    // Cached data is not for the current month
                     await FetchAndUpdateApiData(apiResult);
                 }
             }
@@ -85,7 +88,6 @@ namespace PrayerTimes.Persistence
 
             // Serialize the updated Root object back to a JSON string
             apiResult.content = JsonConvert.SerializeObject(root);
-            apiResult.contentDate = DateTime.Today.ToString("yyyy-MM");
 
             UpdatePrayerTimesData(apiResult);
         }
@@ -114,29 +116,25 @@ namespace PrayerTimes.Persistence
             var cph = new ApiResult
             {
                 cityName = "cph",
-                url = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=",
-                contentDate = DateTime.Now.ToString("yyyy-MM-dd")
+                url = "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d="
             };
 
             var odense = new ApiResult
             {
                 cityName = "odense",
-                url = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=",
-                contentDate = DateTime.Now.ToString("yyyy-MM-dd")
+                url = "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d="
             };
 
             var aarhus = new ApiResult
             {
                 cityName = "aarhus",
                 url = "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=",
-                contentDate = DateTime.Now.ToString("yyyy-MM-dd")
             };
 
             var aalborg = new ApiResult
             {
                 cityName = "aalborg",
                 url = "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=",
-                contentDate = DateTime.Now.ToString("yyyy-MM-dd")
             };
 
             var apis = new List<ApiResult>
@@ -157,7 +155,6 @@ namespace PrayerTimes.Persistence
                     cmd.Parameters.AddWithValue("@city", apiResult.cityName);
                     cmd.Parameters.AddWithValue("@url", apiResult.url);
                     cmd.Parameters.AddWithValue("@content", apiResult.content);
-                    cmd.Parameters.AddWithValue("@date", apiResult.contentDate);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -170,11 +167,10 @@ namespace PrayerTimes.Persistence
             {
                 conn.Open();
                 var cmd = conn.CreateCommand();
-                cmd.CommandText = "UPDATE PrayerTimes SET content=@content, date=@date WHERE id=@id";
+                cmd.CommandText = "UPDATE PrayerTimes SET content=@content WHERE id=@id";
 
                 cmd.Parameters.AddWithValue("@id", apiResult.Id);
                 cmd.Parameters.AddWithValue("@content", apiResult.content);
-                cmd.Parameters.AddWithValue("@date", apiResult.contentDate);
 
                 cmd.ExecuteNonQuery();
             }
@@ -197,7 +193,6 @@ namespace PrayerTimes.Persistence
                         cityName = reader["city"].ToString(),
                         content = reader["content"].ToString(),
                         url = reader["url"].ToString(),
-                        contentDate = reader["date"].ToString()
                     };
 
                     api.Add(apiResult.cityName, apiResult);
