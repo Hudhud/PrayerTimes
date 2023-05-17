@@ -1,0 +1,32 @@
+2023-05-14 00:06:42.511 +02:00 [INF] Starting web host
+2023-05-14 00:06:44.083 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-05-14 00:06:44.337 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-05-14 00:06:44.338 +02:00 [INF] Hosting environment: Development
+2023-05-14 00:06:44.338 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes
+2023-05-14 00:06:44.363 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-05-14 00:06:44.425 +02:00 [INF] Executing endpoint 'PrayerTimes.Controllers.HomeController.Index (PrayerTimes)'
+2023-05-14 00:06:44.473 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller PrayerTimes.Controllers.HomeController (PrayerTimes).
+2023-05-14 00:06:44.623 +02:00 [INF] Initializing Database
+2023-05-14 00:06:45.205 +02:00 [INF] Prayer times data already available
+2023-05-14 00:06:45.280 +02:00 [INF] Getting API result for city: cph
+2023-05-14 00:16:58.083 +02:00 [INF] Starting web host
+2023-05-14 00:16:58.814 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-05-14 00:16:58.989 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-05-14 00:16:58.989 +02:00 [INF] Hosting environment: Development
+2023-05-14 00:16:58.989 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes
+2023-05-14 00:16:59.005 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-05-14 00:16:59.059 +02:00 [INF] Executing endpoint 'PrayerTimes.Controllers.HomeController.Index (PrayerTimes)'
+2023-05-14 00:16:59.123 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller PrayerTimes.Controllers.HomeController (PrayerTimes).
+2023-05-14 00:16:59.636 +02:00 [INF] Prayer times data already available
+2023-05-14 00:16:59.645 +02:00 [INF] Getting API result for city: cph
+2023-05-14 00:17:06.460 +02:00 [INF] First item month: 5, current month: 5
+2023-05-14 00:17:06.470 +02:00 [INF] Executing ViewResult, running view Index.
+2023-05-14 00:17:06.623 +02:00 [INF] Executed ViewResult - view Index executed in 155.9172ms.
+2023-05-14 00:17:06.628 +02:00 [INF] Executed action PrayerTimes.Controllers.HomeController.Index (PrayerTimes) in 7504.0754ms
+2023-05-14 00:17:06.628 +02:00 [INF] Executed endpoint 'PrayerTimes.Controllers.HomeController.Index (PrayerTimes)'
+2023-05-14 00:17:06.634 +02:00 [INF] Session started; Key:0da17611-0b53-9ec8-db28-9bbb5eb4b33a, Id:659b8ad8-56cf-ef85-f07a-30504f29a816
+2023-05-14 00:17:06.711 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 7708.2038ms
+2023-05-14 00:17:06.766 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-05-14 00:17:06.766 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-05-14 00:17:06.777 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11992 application/javascript;+charset=utf-8 7.1560ms
+2023-05-14 00:17:06.847 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 80.7512ms

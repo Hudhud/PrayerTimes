@@ -1,0 +1,20 @@
+﻿@model Web.ViewModels.CustomErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Error</h1>
+    <p>
+        Error Code: @Model.ErrorCode
+    </p>
+    <p>
+        Error Message: @Model.ErrorMessage
+    </p>
+    @if (Model.ShowRequestId)
+    {
+        <p>
+            <strong>Request ID:</strong> @Model.RequestId
+        </p>
+    }
+</div>
