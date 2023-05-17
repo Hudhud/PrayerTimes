@@ -1,0 +1,37 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+
+    - name: Publish
+      run: dotnet publish --configuration Release --no-build --output ./publish
+
+    - name: Setup MSDeploy
+      uses: warrenbuckley/Setup-MSDeploy@v1
+
+    - name: Deploy
+      run: |
+        msdeploy -verb:sync -source:iisApp="./publish" -dest:iisApp="salahtimes.dk",ComputerName="https://nt38.unoeuro.com:8172/msdeploy.axd?site=salahtimes.dk",UserName="salahtimes.dk",Password="${{ secrets.DATABASE_PASSWORD }}",AuthType="Basic" -allowUntrusted
