@@ -29,9 +29,6 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release --no-build --output ./publish
 
-      - name: Setup MSDeploy
-        uses: warrenbuckley/Setup-MSDeploy@v1
-
       - name: Set Environment Variable
         run: echo "CONNECTION_STRING=${{ secrets.CONNECTION_STRING }}" >> $GITHUB_ENV
 
