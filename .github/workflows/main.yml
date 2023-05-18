@@ -35,4 +35,4 @@ jobs:
       - name: Deploy to IIS
         run: |
           $msdeployPath = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-          & $msdeployPath -verb:sync -source:contentPath="./publish" -dest:contentPath="salahtimes.dk",ComputerName="https://nt38.unoeuro.com:8172/msdeploy.axd?site=salahtimes.dk",UserName="salahtimes.dk",Password="${{ secrets.DEPLOYMENT_PASSWORD }}",AuthType="Basic" -allowUntrusted
+          & $msdeployPath -verb:sync -source:contentPath="./publish" -dest:contentPath="salahtimes.dk",ComputerName="https://nt38.unoeuro.com:21/msdeploy.axd?site=salahtimes.dk",UserName="salahtimes.dk",Password="${{ secrets.DEPLOYMENT_PASSWORD }}",AuthType="Basic" -allowUntrusted
