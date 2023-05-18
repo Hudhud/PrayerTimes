@@ -44,9 +44,9 @@ jobs:
     # Username used by Basic authentication to the MS Deploy Service
           msdeploy-username: "salahtimes.dk"
     # Password used by Basic authentication to the MS Deploy Service
-          msdeploy-password: "${{ secrets.DEPLOYMENT_PASSWORD }}"
+          msdeploy-password: "zEfkwd4mc3xA"
     # The path to the source directory that will be deployed
-          source-path: ./publish
+          source-path: "./publish"
 
       - name: Deploy to IIS
         run: |
