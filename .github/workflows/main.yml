@@ -44,11 +44,6 @@ jobs:
     # Username used by Basic authentication to the MS Deploy Service
           msdeploy-username: "salahtimes.dk"
     # Password used by Basic authentication to the MS Deploy Service
-          msdeploy-password: "zEfkwd4mc3xA"
+          msdeploy-password: "${{ secrets.DATABASE_PASSWORD }}"
     # The path to the source directory that will be deployed
           source-path: "./publish"
-
-      - name: Deploy to IIS
-        run: |
-          $msdeployPath = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-          & $msdeployPath -verb:sync -source:contentPath="./publish" -dest:contentPath="salahtimes.dk",ComputerName="https://nt38.unoeuro.com:21/msdeploy.axd?site=salahtimes.dk",UserName="salahtimes.dk",Password="${{ secrets.DEPLOYMENT_PASSWORD }}",AuthType="Basic" -allowUntrusted
