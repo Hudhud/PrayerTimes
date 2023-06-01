@@ -32,6 +32,18 @@ jobs:
       - name: Set Environment Variable
         run: echo "CONNECTION_STRING=${{ secrets.CONNECTION_STRING }}" >> $GITHUB_ENV
 
-      - name: Deploy
-        run: |
-          msdeploy -verb:sync -source:iisApp="./publish" -dest:iisApp="salahtimes.dk",ComputerName="https://nt38.unoeuro.com:8172/msdeploy.axd?site=salahtimes.dk",UserName="salahtimes.dk",Password="${{ secrets.DATABASE_PASSWORD }}",AuthType="Basic" -allowUntrusted
+      - name: IIS Deploy
+  # You may pin to the exact commit or the version.
+  # uses: ChristopheLav/iis-deploy@3b6a141da6e1923a4af25e01734ab58c081f8444
+        uses: ChristopheLav/iis-deploy@v1.0.0
+        with:
+    # IIS website name
+          website-name: 'http://salahtimes.dk'
+    # MS Deploy Service URL
+          msdeploy-service-url: "http://salahtimes.dk.nt38.unoeuro-server.com:8172"
+    # Username used by Basic authentication to the MS Deploy Service
+          msdeploy-username: "salahtimes.dk"
+    # Password used by Basic authentication to the MS Deploy Service
+          msdeploy-password: "${{ secrets.DATABASE_PASSWORD }}"
+    # The path to the source directory that will be deployed
+          source-path: "./publish"
