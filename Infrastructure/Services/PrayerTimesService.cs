@@ -113,14 +113,18 @@ namespace Infrastructure.Services
 
             foreach (var prayerTimeData in muwaqqitResponse.PrayerTimesDataList)
             {
-                if (prayerTimeData.FajrAngle.Equals("anti-transit") && lastValidFajr != null)
-                {
-                    prayerTimeData.FajrTime = lastValidFajr.FajrTime;
-                }
-                if (lastValidEsha != null && string.IsNullOrEmpty(prayerTimeData.EshaTime))
-                {
-                    prayerTimeData.EshaTime = lastValidEsha.EshaTime;
-                }
+                /*   if (prayerTimeData.FajrAngle.Equals("anti-transit") && lastValidFajr != null)
+                   {
+                       prayerTimeData.FajrTime = "01:32:00";
+                   }
+                   if (lastValidEsha != null && string.IsNullOrEmpty(prayerTimeData.EshaTime))
+                   {
+                       prayerTimeData.EshaTime = "00:47:00";
+                   }*/
+
+                prayerTimeData.FajrTime = "01:32:00";
+                prayerTimeData.EshaTime = "00:47:00";
+
 
                 dailyPrayerTimesList.Add(new DailyPrayerTimes
                 {
