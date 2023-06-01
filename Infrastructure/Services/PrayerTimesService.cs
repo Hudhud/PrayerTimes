@@ -108,36 +108,29 @@ namespace Infrastructure.Services
 
             var dailyPrayerTimesList = new List<DailyPrayerTimes>();
 
-            var lastValidFajr = muwaqqitResponse.PrayerTimesDataList.LastOrDefault(prayer => prayer.FajrAngle is double fajrAngle && fajrAngle == -18.0);
-            var lastValidEsha = muwaqqitResponse.PrayerTimesDataList.LastOrDefault(prayer => !string.IsNullOrEmpty(prayer.EshaTime));
-
             foreach (var prayerTimeData in muwaqqitResponse.PrayerTimesDataList)
             {
-                /*   if (prayerTimeData.FajrAngle.Equals("anti-transit") && lastValidFajr != null)
-                   {
-                       prayerTimeData.FajrTime = "01:32:00";
-                   }
-                   if (lastValidEsha != null && string.IsNullOrEmpty(prayerTimeData.EshaTime))
-                   {
-                       prayerTimeData.EshaTime = "00:47:00";
-                   }*/
-
-                prayerTimeData.FajrTime = "01:32:00";
-                prayerTimeData.EshaTime = "00:47:00";
-
-
-                dailyPrayerTimesList.Add(new DailyPrayerTimes
+                var dailyPrayerTimes = new DailyPrayerTimes
                 {
                     Date = DateTime.Parse(prayerTimeData.FajrDate),
-                    FajrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.FajrTime, 3),
                     SunriseTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.SunriseTime, 3),
                     DhuhrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.ZohrTime, 3),
                     AsrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.AsrTime, 3),
                     AsrHanafiTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.MithlainTime, 3),
                     MaghribTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.SunsetTime, 3),
-                    IshaTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.EshaTime, 3)
-                });
+                };
 
+                if (!prayerTimeData.FajrAngle.Equals("anti-transit"))
+                {
+                    dailyPrayerTimes.FajrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.FajrTime, 3);
+                }
+
+                if (!string.IsNullOrEmpty(prayerTimeData.EshaTime))
+                {
+                    dailyPrayerTimes.IshaTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.EshaTime, 3);
+                }
+
+                dailyPrayerTimesList.Add(dailyPrayerTimes);
             }
 
             cityPrayerTimes.DailyPrayerTimesList = dailyPrayerTimesList;
