@@ -111,6 +111,14 @@ namespace Infrastructure.Services
 
             var dailyPrayerTimesList = new List<DailyPrayerTimes>();
 
+            MuwaqqitResponse muwaqqitResponseForMay = new();
+            if (DateTime.Now.Month >= 5 && DateTime.Now.Month <= 8)
+            {
+                var mayDate = new DateTime(DateTime.Now.Year, 5, 31);
+                var urlForMay = BuildApiUrl(city, mayDate);
+                muwaqqitResponseForMay = await GetApiPrayerData(urlForMay);
+            }
+
             foreach (var prayerTimeData in muwaqqitResponse.PrayerTimesDataList)
             {
                 var dailyPrayerTimes = new DailyPrayerTimes
@@ -129,9 +137,6 @@ namespace Infrastructure.Services
                 }
                 else
                 {
-                    var mayDate = new DateTime(DateTime.Now.Year, 5, 25);
-                    var url = BuildApiUrl(city, mayDate);
-                    var muwaqqitResponseForMay = await GetApiPrayerData(url);
                     var lastValidFajrTimeInMay = muwaqqitResponseForMay.PrayerTimesDataList
                         .Where(pt => !pt.FajrAngle.Equals("anti-transit"))
                         .OrderByDescending(pt => DateTime.Parse(pt.FajrDate))
@@ -146,9 +151,6 @@ namespace Infrastructure.Services
                 }
                 else
                 {
-                    var mayDate = new DateTime(DateTime.Now.Year, 5, 25);
-                    var url = BuildApiUrl(city, mayDate);
-                    var muwaqqitResponseForMay = await GetApiPrayerData(url);
                     var lastValidIshaTimeInMay = muwaqqitResponseForMay.PrayerTimesDataList
                         .Where(pt => !string.IsNullOrEmpty(pt.EshaTime))
                         .OrderByDescending(pt => DateTime.Parse(pt.FajrDate))
