@@ -47,7 +47,7 @@ namespace Infrastructure.Services
                 var muwaqqitResponse = await GetApiPrayerData(url);
 
                 // Process and store the API data in the database
-                return await ProcessAndStoreApiData(cityPrayerTimes, muwaqqitResponse);
+                return await ProcessAndStoreApiData(cityPrayerTimes, muwaqqitResponse, city);
             }
             else
             {
@@ -68,7 +68,7 @@ namespace Infrastructure.Services
             return firstItemMonth == currentMonth;
         }
 
-        private string BuildApiUrl(string city)
+        private string BuildApiUrl(string city, DateTime? date = null)
         {
             // Replace with the appropriate API URLs based on the city
             string baseUrl = city switch
@@ -80,8 +80,11 @@ namespace Infrastructure.Services
                 _ => throw new ArgumentException($"Invalid city: {city}"),
             };
 
-            var currentDate = DateTime.UtcNow.ToString("yyyy-MM-dd");
-            return $"{baseUrl}{currentDate}{URL_SUFFIX}";
+            // Use the provided date if available, otherwise use the current date
+            var targetDate = date ?? DateTime.Now;
+            var dateString = targetDate.ToString("yyyy-MM-dd");
+
+            return $"{baseUrl}{dateString}{URL_SUFFIX}";
         }
 
         private async Task<MuwaqqitResponse> GetApiPrayerData(string url)
@@ -99,7 +102,7 @@ namespace Infrastructure.Services
             return deserializedResponse;
         }
 
-        private async Task<CityPrayerTimes> ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse)
+        private async Task<CityPrayerTimes> ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, string city)
         {
             if (muwaqqitResponse.PrayerTimesDataList == null)
             {
@@ -124,10 +127,34 @@ namespace Infrastructure.Services
                 {
                     dailyPrayerTimes.FajrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.FajrTime, 3);
                 }
+                else
+                {
+                    var mayDate = new DateTime(DateTime.Now.Year, 5, 25);
+                    var url = BuildApiUrl(city, mayDate);
+                    var muwaqqitResponseForMay = await GetApiPrayerData(url);
+                    var lastValidFajrTimeInMay = muwaqqitResponseForMay.PrayerTimesDataList
+                        .Where(pt => !pt.FajrAngle.Equals("anti-transit"))
+                        .OrderByDescending(pt => DateTime.Parse(pt.FajrDate))
+                        .First();
+
+                    dailyPrayerTimes.FajrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(lastValidFajrTimeInMay.FajrTime, 3);
+                }
 
                 if (!string.IsNullOrEmpty(prayerTimeData.EshaTime))
                 {
                     dailyPrayerTimes.IshaTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.EshaTime, 3);
+                }
+                else
+                {
+                    var mayDate = new DateTime(DateTime.Now.Year, 5, 25);
+                    var url = BuildApiUrl(city, mayDate);
+                    var muwaqqitResponseForMay = await GetApiPrayerData(url);
+                    var lastValidIshaTimeInMay = muwaqqitResponseForMay.PrayerTimesDataList
+                        .Where(pt => !string.IsNullOrEmpty(pt.EshaTime))
+                        .OrderByDescending(pt => DateTime.Parse(pt.FajrDate))
+                        .First();
+
+                    dailyPrayerTimes.IshaTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(lastValidIshaTimeInMay.EshaTime, 3);
                 }
 
                 dailyPrayerTimesList.Add(dailyPrayerTimes);
