@@ -32,5 +32,13 @@ namespace Infrastructure.Repositories
                 .SingleOrDefaultAsync(c => c.City.ToLower() == city.ToLower());
             return result;
         }
+
+        public async Task TruncateTablesAsync()
+        {
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [DailyPrayerTimes]");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [CityPrayerTimes]");
+        }
+
+
     }
 }

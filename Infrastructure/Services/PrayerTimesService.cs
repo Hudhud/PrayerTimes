@@ -23,17 +23,19 @@ namespace Infrastructure.Services
         {
             _logger.LogInformation("Getting API result for city: {CityName}", city);
 
+            if (DateTime.Today.Day == 1)
+            {
+                await _cityPrayerTimesRepository.TruncateTablesAsync();
+            }
+
             // Fetch the CityPrayerTimes data from the database
             var cityPrayerTimes = await _cityPrayerTimesRepository.GetByCityAsync(city);
 
-            if (cityPrayerTimes == null)
+            cityPrayerTimes ??= new CityPrayerTimes
             {
-                cityPrayerTimes = new CityPrayerTimes
-                {
-                    City = city,
-                    DailyPrayerTimesList = new List<DailyPrayerTimes>()
-                };
-            }
+                City = city,
+                DailyPrayerTimesList = new List<DailyPrayerTimes>()
+            };
 
             // Check if the data for the current month is already available
             var currentMonthDataAvailable = IsCurrentMonthDataAvailable((List<DailyPrayerTimes>)cityPrayerTimes.DailyPrayerTimesList);
