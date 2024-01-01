@@ -1,0 +1,1448 @@
+2023-06-01 19:10:13.170 +02:00 [INF] Starting web host
+2023-06-01 19:10:14.323 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-06-01 19:10:14.375 +02:00 [INF] Creating key {9183e949-55e1-40a0-8353-7abc3165620e} with creation date 2023-06-01 17:10:14Z, activation date 2023-06-01 17:10:14Z, and expiration date 2023-08-30 17:10:14Z.
+2023-06-01 19:10:14.381 +02:00 [INF] Writing data to file 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys\key-9183e949-55e1-40a0-8353-7abc3165620e.xml'.
+2023-06-01 19:10:14.556 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-06-01 19:10:14.556 +02:00 [INF] Hosting environment: Development
+2023-06-01 19:10:14.556 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-06-01 19:10:14.582 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:10:14.637 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:10:14.678 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:13:31.587 +02:00 [INF] Starting web host
+2023-06-01 19:13:32.379 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-06-01 19:13:32.564 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-06-01 19:13:32.564 +02:00 [INF] Hosting environment: Development
+2023-06-01 19:13:32.564 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-06-01 19:13:32.581 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:13:32.628 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:13:32.658 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:13:33.059 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:13:34.305 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:13:53.401 +02:00 [ERR] Error occurred while fetching prayer data for city cph
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at System.DateTime.ParseExact(String s, String format, IFormatProvider provider)
+   at Shared.PrayerTimesHelper.AddMinutesAndConvertToDateTime(String inputDateTimeString, Int32 minutesToAdd) in C:\Users\hadih\source\repos\PrayerTimes\Shared\PrayerTimesHelper.cs:line 9
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 125
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 50
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 49
+2023-06-01 19:13:53.476 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:13:55.910 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 23248.7767ms
+2023-06-01 19:13:55.912 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:13:55.919 +02:00 [INF] Session started; Key:bba2b7de-72dd-a984-125a-a120a990e1fa, Id:caf955c0-13f9-df6c-6471-426404a06ba5
+2023-06-01 19:13:55.923 +02:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot convert type 'Domain.Models.MuwaqqitResponse' to 'Domain.Models.CityPrayerTimes'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at AspNetCoreGeneratedDocument.Views_Home_Index.ExecuteAsync() in C:\Users\hadih\source\repos\PrayerTimes\Web\Views\Home\Index.cshtml:line 55
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-06-01 19:13:56.134 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:13:56.135 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:13:56.154 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 16.5383ms
+2023-06-01 19:13:56.166 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 500 - text/html;+charset=utf-8 23588.2256ms
+2023-06-01 19:13:56.213 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 79.5592ms
+2023-06-01 19:13:56.340 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/favicon.ico - -
+2023-06-01 19:13:56.351 +02:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\favicon.ico'
+2023-06-01 19:13:56.351 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/favicon.ico - - - 200 32038 image/x-icon 11.7179ms
+2023-06-01 19:14:03.931 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:14:03.935 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:14:03.935 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:14:03.953 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:14:04.003 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:14:59.084 +02:00 [ERR] Error occurred while fetching prayer data for city cph
+System.ArgumentNullException: Value cannot be null. (Parameter 's')
+   at System.DateTime.ParseExact(String s, String format, IFormatProvider provider)
+   at Shared.PrayerTimesHelper.AddMinutesAndConvertToDateTime(String inputDateTimeString, Int32 minutesToAdd) in C:\Users\hadih\source\repos\PrayerTimes\Shared\PrayerTimesHelper.cs:line 9
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 125
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 50
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 49
+2023-06-01 19:14:59.085 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:14:59.722 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 55786.9935ms
+2023-06-01 19:14:59.723 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:14:59.723 +02:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot convert type 'Domain.Models.MuwaqqitResponse' to 'Domain.Models.CityPrayerTimes'
+   at CallSite.Target(Closure , CallSite , Object )
+   at AspNetCoreGeneratedDocument.Views_Home_Index.ExecuteAsync() in C:\Users\hadih\source\repos\PrayerTimes\Web\Views\Home\Index.cshtml:line 55
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-06-01 19:14:59.749 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 500 - text/html;+charset=utf-8 55818.0722ms
+2023-06-01 19:14:59.758 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:14:59.759 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:14:59.760 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 1.3653ms
+2023-06-01 19:14:59.785 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 26.5689ms
+2023-06-01 19:15:05.604 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:15:05.605 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:15:05.605 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:15:05.613 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:15:05.668 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:17:12.135 +02:00 [INF] Starting web host
+2023-06-01 19:17:12.946 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-06-01 19:17:13.120 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-06-01 19:17:13.121 +02:00 [INF] Hosting environment: Development
+2023-06-01 19:17:13.121 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-06-01 19:17:13.137 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:17:13.185 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:17:13.215 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:17:13.711 +02:00 [INF] Accessing expired session, Key:bba2b7de-72dd-a984-125a-a120a990e1fa
+2023-06-01 19:17:13.712 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:17:14.929 +02:00 [INF] Executed DbCommand (46ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:17:49.628 +02:00 [INF] Starting web host
+2023-06-01 19:17:50.322 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-06-01 19:17:50.492 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-06-01 19:17:50.492 +02:00 [INF] Hosting environment: Development
+2023-06-01 19:17:50.492 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-06-01 19:17:50.508 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:17:50.557 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:17:50.587 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:17:50.960 +02:00 [INF] Accessing expired session, Key:bba2b7de-72dd-a984-125a-a120a990e1fa
+2023-06-01 19:17:50.961 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:17:52.178 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:20:45.618 +02:00 [INF] Starting web host
+2023-06-01 19:20:46.385 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-06-01 19:20:46.566 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-06-01 19:20:46.567 +02:00 [INF] Hosting environment: Development
+2023-06-01 19:20:46.567 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-06-01 19:20:46.582 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:20:46.631 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:20:46.660 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:20:47.036 +02:00 [INF] Accessing expired session, Key:bba2b7de-72dd-a984-125a-a120a990e1fa
+2023-06-01 19:20:47.037 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:20:48.275 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:21:10.240 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@p0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `CityPrayerTimes` (`City`)
+VALUES (@p0);
+SELECT `Id`
+FROM `CityPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-06-01 19:21:10.279 +02:00 [INF] Executed DbCommand (12ms) [Parameters=[@p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = DateTime), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Size = 4000), @p20='?' (Size = 4000), @p21='?' (DbType = Int32), @p22='?' (DbType = DateTime), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (DbType = Int32), @p40='?' (DbType = DateTime), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Size = 4000), @p47='?' (Size = 4000), @p48='?' (DbType = Int32), @p49='?' (DbType = DateTime), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Size = 4000), @p54='?' (Size = 4000), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (DbType = Int32), @p58='?' (DbType = DateTime), @p59='?' (Size = 4000), @p60='?' (Size = 4000), @p61='?' (Size = 4000), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (DbType = Int32), @p67='?' (DbType = DateTime), @p68='?' (Size = 4000), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Size = 4000), @p75='?' (DbType = Int32), @p76='?' (DbType = DateTime), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 4000), @p81='?' (Size = 4000), @p82='?' (Size = 4000), @p83='?' (Size = 4000), @p84='?' (DbType = Int32), @p85='?' (DbType = DateTime), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Size = 4000), @p89='?' (Size = 4000), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (DbType = Int32), @p94='?' (DbType = DateTime), @p95='?' (Size = 4000), @p96='?' (Size = 4000), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (DbType = Int32), @p103='?' (DbType = DateTime), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Size = 4000), @p110='?' (Size = 4000), @p111='?' (DbType = Int32), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Size = 4000), @p117='?' (Size = 4000), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (DbType = Int32), @p121='?' (DbType = DateTime), @p122='?' (Size = 4000), @p123='?' (Size = 4000), @p124='?' (Size = 4000), @p125='?' (Size = 4000), @p126='?' (Size = 4000), @p127='?' (Size = 4000), @p128='?' (Size = 4000), @p129='?' (DbType = Int32), @p130='?' (DbType = DateTime), @p131='?' (Size = 4000), @p132='?' (Size = 4000), @p133='?' (Size = 4000), @p134='?' (Size = 4000), @p135='?' (Size = 4000), @p136='?' (Size = 4000), @p137='?' (Size = 4000), @p138='?' (DbType = Int32), @p139='?' (DbType = DateTime), @p140='?' (Size = 4000), @p141='?' (Size = 4000), @p142='?' (Size = 4000), @p143='?' (Size = 4000), @p144='?' (Size = 4000), @p145='?' (Size = 4000), @p146='?' (Size = 4000), @p147='?' (DbType = Int32), @p148='?' (DbType = DateTime), @p149='?' (Size = 4000), @p150='?' (Size = 4000), @p151='?' (Size = 4000), @p152='?' (Size = 4000), @p153='?' (Size = 4000), @p154='?' (Size = 4000), @p155='?' (Size = 4000), @p156='?' (DbType = Int32), @p157='?' (DbType = DateTime), @p158='?' (Size = 4000), @p159='?' (Size = 4000), @p160='?' (Size = 4000), @p161='?' (Size = 4000), @p162='?' (Size = 4000), @p163='?' (Size = 4000), @p164='?' (Size = 4000), @p165='?' (DbType = Int32), @p166='?' (DbType = DateTime), @p167='?' (Size = 4000), @p168='?' (Size = 4000), @p169='?' (Size = 4000), @p170='?' (Size = 4000), @p171='?' (Size = 4000), @p172='?' (Size = 4000), @p173='?' (Size = 4000), @p174='?' (DbType = Int32), @p175='?' (DbType = DateTime), @p176='?' (Size = 4000), @p177='?' (Size = 4000), @p178='?' (Size = 4000), @p179='?' (Size = 4000), @p180='?' (Size = 4000), @p181='?' (Size = 4000), @p182='?' (Size = 4000), @p183='?' (DbType = Int32), @p184='?' (DbType = DateTime), @p185='?' (Size = 4000), @p186='?' (Size = 4000), @p187='?' (Size = 4000), @p188='?' (Size = 4000), @p189='?' (Size = 4000), @p190='?' (Size = 4000), @p191='?' (Size = 4000), @p192='?' (DbType = Int32), @p193='?' (DbType = DateTime), @p194='?' (Size = 4000), @p195='?' (Size = 4000), @p196='?' (Size = 4000), @p197='?' (Size = 4000), @p198='?' (Size = 4000), @p199='?' (Size = 4000), @p200='?' (Size = 4000), @p201='?' (DbType = Int32), @p202='?' (DbType = DateTime), @p203='?' (Size = 4000), @p204='?' (Size = 4000), @p205='?' (Size = 4000), @p206='?' (Size = 4000), @p207='?' (Size = 4000), @p208='?' (Size = 4000), @p209='?' (Size = 4000), @p210='?' (DbType = Int32), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 4000), @p214='?' (Size = 4000), @p215='?' (Size = 4000), @p216='?' (Size = 4000), @p217='?' (Size = 4000), @p218='?' (Size = 4000), @p219='?' (DbType = Int32), @p220='?' (DbType = DateTime), @p221='?' (Size = 4000), @p222='?' (Size = 4000), @p223='?' (Size = 4000), @p224='?' (Size = 4000), @p225='?' (Size = 4000), @p226='?' (Size = 4000), @p227='?' (Size = 4000), @p228='?' (DbType = Int32), @p229='?' (DbType = DateTime), @p230='?' (Size = 4000), @p231='?' (Size = 4000), @p232='?' (Size = 4000), @p233='?' (Size = 4000), @p234='?' (Size = 4000), @p235='?' (Size = 4000), @p236='?' (Size = 4000), @p237='?' (DbType = Int32), @p238='?' (DbType = DateTime), @p239='?' (Size = 4000), @p240='?' (Size = 4000), @p241='?' (Size = 4000), @p242='?' (Size = 4000), @p243='?' (Size = 4000), @p244='?' (Size = 4000), @p245='?' (Size = 4000), @p246='?' (DbType = Int32), @p247='?' (DbType = DateTime), @p248='?' (Size = 4000), @p249='?' (Size = 4000), @p250='?' (Size = 4000), @p251='?' (Size = 4000), @p252='?' (Size = 4000), @p253='?' (Size = 4000), @p254='?' (Size = 4000), @p255='?' (DbType = Int32), @p256='?' (DbType = DateTime), @p257='?' (Size = 4000), @p258='?' (Size = 4000), @p259='?' (Size = 4000), @p260='?' (Size = 4000), @p261='?' (Size = 4000), @p262='?' (Size = 4000), @p263='?' (Size = 4000), @p264='?' (DbType = Int32), @p265='?' (DbType = DateTime), @p266='?' (Size = 4000), @p267='?' (Size = 4000), @p268='?' (Size = 4000), @p269='?' (Size = 4000), @p270='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p73, @p74, @p75, @p76, @p77, @p78, @p79, @p80, @p81);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p163, @p164, @p165, @p166, @p167, @p168, @p169, @p170, @p171);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, @p180);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197, @p198);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p208, @p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, @p225);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p235, @p236, @p237, @p238, @p239, @p240, @p241, @p242, @p243);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p253, @p254, @p255, @p256, @p257, @p258, @p259, @p260, @p261);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, @p270);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-06-01 19:21:10.406 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:21:10.573 +02:00 [INF] Executed ViewResult - view Index executed in 168.2832ms.
+2023-06-01 19:21:10.577 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 23916.2871ms
+2023-06-01 19:21:10.577 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:21:10.583 +02:00 [INF] Session started; Key:bba2b7de-72dd-a984-125a-a120a990e1fa, Id:ac4ac9b7-db5e-f838-52b0-225d8ddb398c
+2023-06-01 19:21:10.619 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/css/bootstrap.min.css - -
+2023-06-01 19:21:10.621 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/jquery/dist/jquery.min.js - -
+2023-06-01 19:21:10.627 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/css/site.css - -
+2023-06-01 19:21:10.643 +02:00 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\css\site.css'
+2023-06-01 19:21:10.644 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/css/site.css - - - 200 1417 text/css 16.0744ms
+2023-06-01 19:21:10.645 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 24065.5003ms
+2023-06-01 19:21:10.652 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/js/bootstrap.bundle.min.js - -
+2023-06-01 19:21:10.659 +02:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.min.css'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css'
+2023-06-01 19:21:10.665 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/css/bootstrap.min.css - - - 200 155764 text/css 45.7730ms
+2023-06-01 19:21:10.667 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/js/site.js?v=4q1jwFhaPaZgr8WAUSrux6hAuh0XDg9kPS3xIVq36I0 - -
+2023-06-01 19:21:10.669 +02:00 [INF] Sending file. Request path: '/js/site.js'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\js\site.js'
+2023-06-01 19:21:10.669 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/js/site.js?v=4q1jwFhaPaZgr8WAUSrux6hAuh0XDg9kPS3xIVq36I0 - - - 200 230 application/javascript 1.8765ms
+2023-06-01 19:21:10.670 +02:00 [INF] Sending file. Request path: '/lib/jquery/dist/jquery.min.js'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\lib\jquery\dist\jquery.min.js'
+2023-06-01 19:21:10.672 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:21:10.673 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/jquery/dist/jquery.min.js - - - 200 89478 application/javascript 52.7961ms
+2023-06-01 19:21:10.675 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.5327ms
+2023-06-01 19:21:10.680 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:21:10.682 +02:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.min.js'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js'
+2023-06-01 19:21:10.683 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/js/bootstrap.bundle.min.js - - - 200 78641 application/javascript 30.8573ms
+2023-06-01 19:21:10.707 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 26.9102ms
+2023-06-01 19:21:14.838 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - -
+2023-06-01 19:21:14.841 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:21:14.849 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:21:14.869 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:21:14.869 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 19.8121ms
+2023-06-01 19:21:14.869 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:21:14.870 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - - - 302 - - 31.6242ms
+2023-06-01 19:21:14.872 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:21:14.873 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:21:14.873 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:21:14.881 +02:00 [INF] Getting API result for city: odense
+2023-06-01 19:21:14.900 +02:00 [INF] Executed DbCommand (6ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:30:48.456 +02:00 [INF] Starting web host
+2023-06-01 19:30:49.205 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-06-01 19:30:49.364 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-06-01 19:30:49.364 +02:00 [INF] Hosting environment: Development
+2023-06-01 19:30:49.364 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-06-01 19:30:49.382 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:30:49.433 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:30:49.462 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:30:49.841 +02:00 [INF] Accessing expired session, Key:bba2b7de-72dd-a984-125a-a120a990e1fa
+2023-06-01 19:30:49.842 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:30:51.059 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:30:51.176 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:30:51.340 +02:00 [INF] Executed ViewResult - view Index executed in 163.9702ms.
+2023-06-01 19:30:51.344 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 1881.4542ms
+2023-06-01 19:30:51.344 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:30:51.349 +02:00 [INF] Session started; Key:bba2b7de-72dd-a984-125a-a120a990e1fa, Id:ddcdd8d1-ae43-27ea-e7d8-4f5bf3654ec0
+2023-06-01 19:30:51.374 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:30:51.380 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 3.7249ms
+2023-06-01 19:30:51.387 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:30:51.398 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2019.8566ms
+2023-06-01 19:30:51.415 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 28.3569ms
+2023-06-01 19:30:52.753 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - -
+2023-06-01 19:30:52.755 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:30:52.763 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:30:52.792 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:30:52.792 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 29.3305ms
+2023-06-01 19:30:52.792 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:30:52.793 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - - - 302 - - 40.2135ms
+2023-06-01 19:30:52.798 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:30:52.798 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:30:52.798 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:30:52.809 +02:00 [INF] Getting API result for city: odense
+2023-06-01 19:30:52.848 +02:00 [INF] Executed DbCommand (11ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:30:59.441 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@p0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `CityPrayerTimes` (`City`)
+VALUES (@p0);
+SELECT `Id`
+FROM `CityPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-06-01 19:30:59.479 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = DateTime), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Size = 4000), @p20='?' (Size = 4000), @p21='?' (DbType = Int32), @p22='?' (DbType = DateTime), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (DbType = Int32), @p40='?' (DbType = DateTime), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Size = 4000), @p47='?' (Size = 4000), @p48='?' (DbType = Int32), @p49='?' (DbType = DateTime), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Size = 4000), @p54='?' (Size = 4000), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (DbType = Int32), @p58='?' (DbType = DateTime), @p59='?' (Size = 4000), @p60='?' (Size = 4000), @p61='?' (Size = 4000), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (DbType = Int32), @p67='?' (DbType = DateTime), @p68='?' (Size = 4000), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Size = 4000), @p75='?' (DbType = Int32), @p76='?' (DbType = DateTime), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 4000), @p81='?' (Size = 4000), @p82='?' (Size = 4000), @p83='?' (Size = 4000), @p84='?' (DbType = Int32), @p85='?' (DbType = DateTime), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Size = 4000), @p89='?' (Size = 4000), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (DbType = Int32), @p94='?' (DbType = DateTime), @p95='?' (Size = 4000), @p96='?' (Size = 4000), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (DbType = Int32), @p103='?' (DbType = DateTime), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Size = 4000), @p110='?' (Size = 4000), @p111='?' (DbType = Int32), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Size = 4000), @p117='?' (Size = 4000), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (DbType = Int32), @p121='?' (DbType = DateTime), @p122='?' (Size = 4000), @p123='?' (Size = 4000), @p124='?' (Size = 4000), @p125='?' (Size = 4000), @p126='?' (Size = 4000), @p127='?' (Size = 4000), @p128='?' (Size = 4000), @p129='?' (DbType = Int32), @p130='?' (DbType = DateTime), @p131='?' (Size = 4000), @p132='?' (Size = 4000), @p133='?' (Size = 4000), @p134='?' (Size = 4000), @p135='?' (Size = 4000), @p136='?' (Size = 4000), @p137='?' (Size = 4000), @p138='?' (DbType = Int32), @p139='?' (DbType = DateTime), @p140='?' (Size = 4000), @p141='?' (Size = 4000), @p142='?' (Size = 4000), @p143='?' (Size = 4000), @p144='?' (Size = 4000), @p145='?' (Size = 4000), @p146='?' (Size = 4000), @p147='?' (DbType = Int32), @p148='?' (DbType = DateTime), @p149='?' (Size = 4000), @p150='?' (Size = 4000), @p151='?' (Size = 4000), @p152='?' (Size = 4000), @p153='?' (Size = 4000), @p154='?' (Size = 4000), @p155='?' (Size = 4000), @p156='?' (DbType = Int32), @p157='?' (DbType = DateTime), @p158='?' (Size = 4000), @p159='?' (Size = 4000), @p160='?' (Size = 4000), @p161='?' (Size = 4000), @p162='?' (Size = 4000), @p163='?' (Size = 4000), @p164='?' (Size = 4000), @p165='?' (DbType = Int32), @p166='?' (DbType = DateTime), @p167='?' (Size = 4000), @p168='?' (Size = 4000), @p169='?' (Size = 4000), @p170='?' (Size = 4000), @p171='?' (Size = 4000), @p172='?' (Size = 4000), @p173='?' (Size = 4000), @p174='?' (DbType = Int32), @p175='?' (DbType = DateTime), @p176='?' (Size = 4000), @p177='?' (Size = 4000), @p178='?' (Size = 4000), @p179='?' (Size = 4000), @p180='?' (Size = 4000), @p181='?' (Size = 4000), @p182='?' (Size = 4000), @p183='?' (DbType = Int32), @p184='?' (DbType = DateTime), @p185='?' (Size = 4000), @p186='?' (Size = 4000), @p187='?' (Size = 4000), @p188='?' (Size = 4000), @p189='?' (Size = 4000), @p190='?' (Size = 4000), @p191='?' (Size = 4000), @p192='?' (DbType = Int32), @p193='?' (DbType = DateTime), @p194='?' (Size = 4000), @p195='?' (Size = 4000), @p196='?' (Size = 4000), @p197='?' (Size = 4000), @p198='?' (Size = 4000), @p199='?' (Size = 4000), @p200='?' (Size = 4000), @p201='?' (DbType = Int32), @p202='?' (DbType = DateTime), @p203='?' (Size = 4000), @p204='?' (Size = 4000), @p205='?' (Size = 4000), @p206='?' (Size = 4000), @p207='?' (Size = 4000), @p208='?' (Size = 4000), @p209='?' (Size = 4000), @p210='?' (DbType = Int32), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 4000), @p214='?' (Size = 4000), @p215='?' (Size = 4000), @p216='?' (Size = 4000), @p217='?' (Size = 4000), @p218='?' (Size = 4000), @p219='?' (DbType = Int32), @p220='?' (DbType = DateTime), @p221='?' (Size = 4000), @p222='?' (Size = 4000), @p223='?' (Size = 4000), @p224='?' (Size = 4000), @p225='?' (Size = 4000), @p226='?' (Size = 4000), @p227='?' (Size = 4000), @p228='?' (DbType = Int32), @p229='?' (DbType = DateTime), @p230='?' (Size = 4000), @p231='?' (Size = 4000), @p232='?' (Size = 4000), @p233='?' (Size = 4000), @p234='?' (Size = 4000), @p235='?' (Size = 4000), @p236='?' (Size = 4000), @p237='?' (DbType = Int32), @p238='?' (DbType = DateTime), @p239='?' (Size = 4000), @p240='?' (Size = 4000), @p241='?' (Size = 4000), @p242='?' (Size = 4000), @p243='?' (Size = 4000), @p244='?' (Size = 4000), @p245='?' (Size = 4000), @p246='?' (DbType = Int32), @p247='?' (DbType = DateTime), @p248='?' (Size = 4000), @p249='?' (Size = 4000), @p250='?' (Size = 4000), @p251='?' (Size = 4000), @p252='?' (Size = 4000), @p253='?' (Size = 4000), @p254='?' (Size = 4000), @p255='?' (DbType = Int32), @p256='?' (DbType = DateTime), @p257='?' (Size = 4000), @p258='?' (Size = 4000), @p259='?' (Size = 4000), @p260='?' (Size = 4000), @p261='?' (Size = 4000), @p262='?' (Size = 4000), @p263='?' (Size = 4000), @p264='?' (DbType = Int32), @p265='?' (DbType = DateTime), @p266='?' (Size = 4000), @p267='?' (Size = 4000), @p268='?' (Size = 4000), @p269='?' (Size = 4000), @p270='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p73, @p74, @p75, @p76, @p77, @p78, @p79, @p80, @p81);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p163, @p164, @p165, @p166, @p167, @p168, @p169, @p170, @p171);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, @p180);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197, @p198);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p208, @p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, @p225);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p235, @p236, @p237, @p238, @p239, @p240, @p241, @p242, @p243);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p253, @p254, @p255, @p256, @p257, @p258, @p259, @p260, @p261);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, @p270);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-06-01 19:30:59.518 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:30:59.522 +02:00 [INF] Executed ViewResult - view Index executed in 3.9292ms.
+2023-06-01 19:30:59.522 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 6723.5114ms
+2023-06-01 19:30:59.522 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:30:59.524 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 6725.8085ms
+2023-06-01 19:30:59.531 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:30:59.531 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.6837ms
+2023-06-01 19:30:59.536 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:30:59.556 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 19.8570ms
+2023-06-01 19:31:04.085 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - -
+2023-06-01 19:31:04.086 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:31:04.086 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:31:04.093 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:31:04.093 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.9651ms
+2023-06-01 19:31:04.093 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:31:04.093 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - - - 302 - - 8.4351ms
+2023-06-01 19:31:04.095 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:31:04.096 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:31:04.096 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:31:04.102 +02:00 [INF] Getting API result for city: odense
+2023-06-01 19:31:04.149 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:31:04.149 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:31:04.152 +02:00 [INF] Executed ViewResult - view Index executed in 3.0273ms.
+2023-06-01 19:31:04.152 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 56.8659ms
+2023-06-01 19:31:04.153 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:31:04.154 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 58.5513ms
+2023-06-01 19:31:04.160 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:31:04.160 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5099ms
+2023-06-01 19:31:04.165 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:31:04.184 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 18.8035ms
+2023-06-01 19:31:05.470 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=cph - -
+2023-06-01 19:31:05.471 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:31:05.471 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:31:05.477 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:31:05.477 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.2631ms
+2023-06-01 19:31:05.477 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:31:05.478 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=cph - - - 302 - - 7.2938ms
+2023-06-01 19:31:05.480 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:31:05.480 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:31:05.480 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:31:05.486 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:31:05.501 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:31:05.502 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:31:05.507 +02:00 [INF] Executed ViewResult - view Index executed in 5.2187ms.
+2023-06-01 19:31:05.507 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 26.5831ms
+2023-06-01 19:31:05.507 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:31:05.508 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 28.6036ms
+2023-06-01 19:31:05.513 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:31:05.514 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.6167ms
+2023-06-01 19:31:05.517 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:31:05.537 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 19.6923ms
+2023-06-01 19:31:06.492 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - -
+2023-06-01 19:31:06.493 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:31:06.493 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:31:06.499 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:31:06.499 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 5.8331ms
+2023-06-01 19:31:06.499 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:31:06.499 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - - - 302 - - 6.8423ms
+2023-06-01 19:31:06.501 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:31:06.502 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:31:06.502 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:31:06.507 +02:00 [INF] Getting API result for city: odense
+2023-06-01 19:31:06.521 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:31:06.522 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:31:06.525 +02:00 [INF] Executed ViewResult - view Index executed in 3.1838ms.
+2023-06-01 19:31:06.525 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 23.0408ms
+2023-06-01 19:31:06.525 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:31:06.526 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 24.9972ms
+2023-06-01 19:31:06.531 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:31:06.532 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5202ms
+2023-06-01 19:31:06.535 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:31:06.554 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 19.1226ms
+2023-06-01 19:32:05.537 +02:00 [INF] Starting web host
+2023-06-01 19:32:06.236 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-06-01 19:32:06.395 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-06-01 19:32:06.395 +02:00 [INF] Hosting environment: Development
+2023-06-01 19:32:06.395 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-06-01 19:32:06.411 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:06.460 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:06.490 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:06.866 +02:00 [INF] Accessing expired session, Key:bba2b7de-72dd-a984-125a-a120a990e1fa
+2023-06-01 19:32:06.867 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:32:08.109 +02:00 [INF] Executed DbCommand (46ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:08.227 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:08.384 +02:00 [INF] Executed ViewResult - view Index executed in 156.8287ms.
+2023-06-01 19:32:08.388 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 1897.4594ms
+2023-06-01 19:32:08.388 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:08.393 +02:00 [INF] Session started; Key:bba2b7de-72dd-a984-125a-a120a990e1fa, Id:2a2db1f5-7902-19cf-50f1-708a137b8d59
+2023-06-01 19:32:08.417 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:08.422 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 3.7672ms
+2023-06-01 19:32:08.430 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:08.442 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2034.4180ms
+2023-06-01 19:32:08.463 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 31.2846ms
+2023-06-01 19:32:09.622 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - -
+2023-06-01 19:32:09.625 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:09.632 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:09.661 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:09.661 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 29.6302ms
+2023-06-01 19:32:09.661 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:09.662 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - - - 302 - - 39.8591ms
+2023-06-01 19:32:09.665 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:09.665 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:09.665 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:09.673 +02:00 [INF] Getting API result for city: aarhus
+2023-06-01 19:32:09.704 +02:00 [INF] Executed DbCommand (11ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:16.647 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@p0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `CityPrayerTimes` (`City`)
+VALUES (@p0);
+SELECT `Id`
+FROM `CityPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-06-01 19:32:16.685 +02:00 [INF] Executed DbCommand (12ms) [Parameters=[@p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = DateTime), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Size = 4000), @p20='?' (Size = 4000), @p21='?' (DbType = Int32), @p22='?' (DbType = DateTime), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (DbType = Int32), @p40='?' (DbType = DateTime), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Size = 4000), @p47='?' (Size = 4000), @p48='?' (DbType = Int32), @p49='?' (DbType = DateTime), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Size = 4000), @p54='?' (Size = 4000), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (DbType = Int32), @p58='?' (DbType = DateTime), @p59='?' (Size = 4000), @p60='?' (Size = 4000), @p61='?' (Size = 4000), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (DbType = Int32), @p67='?' (DbType = DateTime), @p68='?' (Size = 4000), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Size = 4000), @p75='?' (DbType = Int32), @p76='?' (DbType = DateTime), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 4000), @p81='?' (Size = 4000), @p82='?' (Size = 4000), @p83='?' (Size = 4000), @p84='?' (DbType = Int32), @p85='?' (DbType = DateTime), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Size = 4000), @p89='?' (Size = 4000), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (DbType = Int32), @p94='?' (DbType = DateTime), @p95='?' (Size = 4000), @p96='?' (Size = 4000), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (DbType = Int32), @p103='?' (DbType = DateTime), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Size = 4000), @p110='?' (Size = 4000), @p111='?' (DbType = Int32), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Size = 4000), @p117='?' (Size = 4000), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (DbType = Int32), @p121='?' (DbType = DateTime), @p122='?' (Size = 4000), @p123='?' (Size = 4000), @p124='?' (Size = 4000), @p125='?' (Size = 4000), @p126='?' (Size = 4000), @p127='?' (Size = 4000), @p128='?' (Size = 4000), @p129='?' (DbType = Int32), @p130='?' (DbType = DateTime), @p131='?' (Size = 4000), @p132='?' (Size = 4000), @p133='?' (Size = 4000), @p134='?' (Size = 4000), @p135='?' (Size = 4000), @p136='?' (Size = 4000), @p137='?' (Size = 4000), @p138='?' (DbType = Int32), @p139='?' (DbType = DateTime), @p140='?' (Size = 4000), @p141='?' (Size = 4000), @p142='?' (Size = 4000), @p143='?' (Size = 4000), @p144='?' (Size = 4000), @p145='?' (Size = 4000), @p146='?' (Size = 4000), @p147='?' (DbType = Int32), @p148='?' (DbType = DateTime), @p149='?' (Size = 4000), @p150='?' (Size = 4000), @p151='?' (Size = 4000), @p152='?' (Size = 4000), @p153='?' (Size = 4000), @p154='?' (Size = 4000), @p155='?' (Size = 4000), @p156='?' (DbType = Int32), @p157='?' (DbType = DateTime), @p158='?' (Size = 4000), @p159='?' (Size = 4000), @p160='?' (Size = 4000), @p161='?' (Size = 4000), @p162='?' (Size = 4000), @p163='?' (Size = 4000), @p164='?' (Size = 4000), @p165='?' (DbType = Int32), @p166='?' (DbType = DateTime), @p167='?' (Size = 4000), @p168='?' (Size = 4000), @p169='?' (Size = 4000), @p170='?' (Size = 4000), @p171='?' (Size = 4000), @p172='?' (Size = 4000), @p173='?' (Size = 4000), @p174='?' (DbType = Int32), @p175='?' (DbType = DateTime), @p176='?' (Size = 4000), @p177='?' (Size = 4000), @p178='?' (Size = 4000), @p179='?' (Size = 4000), @p180='?' (Size = 4000), @p181='?' (Size = 4000), @p182='?' (Size = 4000), @p183='?' (DbType = Int32), @p184='?' (DbType = DateTime), @p185='?' (Size = 4000), @p186='?' (Size = 4000), @p187='?' (Size = 4000), @p188='?' (Size = 4000), @p189='?' (Size = 4000), @p190='?' (Size = 4000), @p191='?' (Size = 4000), @p192='?' (DbType = Int32), @p193='?' (DbType = DateTime), @p194='?' (Size = 4000), @p195='?' (Size = 4000), @p196='?' (Size = 4000), @p197='?' (Size = 4000), @p198='?' (Size = 4000), @p199='?' (Size = 4000), @p200='?' (Size = 4000), @p201='?' (DbType = Int32), @p202='?' (DbType = DateTime), @p203='?' (Size = 4000), @p204='?' (Size = 4000), @p205='?' (Size = 4000), @p206='?' (Size = 4000), @p207='?' (Size = 4000), @p208='?' (Size = 4000), @p209='?' (Size = 4000), @p210='?' (DbType = Int32), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 4000), @p214='?' (Size = 4000), @p215='?' (Size = 4000), @p216='?' (Size = 4000), @p217='?' (Size = 4000), @p218='?' (Size = 4000), @p219='?' (DbType = Int32), @p220='?' (DbType = DateTime), @p221='?' (Size = 4000), @p222='?' (Size = 4000), @p223='?' (Size = 4000), @p224='?' (Size = 4000), @p225='?' (Size = 4000), @p226='?' (Size = 4000), @p227='?' (Size = 4000), @p228='?' (DbType = Int32), @p229='?' (DbType = DateTime), @p230='?' (Size = 4000), @p231='?' (Size = 4000), @p232='?' (Size = 4000), @p233='?' (Size = 4000), @p234='?' (Size = 4000), @p235='?' (Size = 4000), @p236='?' (Size = 4000), @p237='?' (DbType = Int32), @p238='?' (DbType = DateTime), @p239='?' (Size = 4000), @p240='?' (Size = 4000), @p241='?' (Size = 4000), @p242='?' (Size = 4000), @p243='?' (Size = 4000), @p244='?' (Size = 4000), @p245='?' (Size = 4000), @p246='?' (DbType = Int32), @p247='?' (DbType = DateTime), @p248='?' (Size = 4000), @p249='?' (Size = 4000), @p250='?' (Size = 4000), @p251='?' (Size = 4000), @p252='?' (Size = 4000), @p253='?' (Size = 4000), @p254='?' (Size = 4000), @p255='?' (DbType = Int32), @p256='?' (DbType = DateTime), @p257='?' (Size = 4000), @p258='?' (Size = 4000), @p259='?' (Size = 4000), @p260='?' (Size = 4000), @p261='?' (Size = 4000), @p262='?' (Size = 4000), @p263='?' (Size = 4000), @p264='?' (DbType = Int32), @p265='?' (DbType = DateTime), @p266='?' (Size = 4000), @p267='?' (Size = 4000), @p268='?' (Size = 4000), @p269='?' (Size = 4000), @p270='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p73, @p74, @p75, @p76, @p77, @p78, @p79, @p80, @p81);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p163, @p164, @p165, @p166, @p167, @p168, @p169, @p170, @p171);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, @p180);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197, @p198);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p208, @p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, @p225);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p235, @p236, @p237, @p238, @p239, @p240, @p241, @p242, @p243);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p253, @p254, @p255, @p256, @p257, @p258, @p259, @p260, @p261);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, @p270);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-06-01 19:32:16.725 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:16.728 +02:00 [INF] Executed ViewResult - view Index executed in 3.6048ms.
+2023-06-01 19:32:16.728 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 7062.9502ms
+2023-06-01 19:32:16.728 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:16.730 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 7065.2339ms
+2023-06-01 19:32:16.738 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:16.739 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.6124ms
+2023-06-01 19:32:16.745 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:16.764 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 18.9826ms
+2023-06-01 19:32:19.884 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - -
+2023-06-01 19:32:19.885 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:19.885 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:19.892 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:19.892 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.9475ms
+2023-06-01 19:32:19.892 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:19.892 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - - - 302 - - 8.3388ms
+2023-06-01 19:32:19.894 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:19.895 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:19.895 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:19.905 +02:00 [INF] Getting API result for city: odense
+2023-06-01 19:32:19.954 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:19.955 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:19.958 +02:00 [INF] Executed ViewResult - view Index executed in 2.9191ms.
+2023-06-01 19:32:19.958 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 63.0955ms
+2023-06-01 19:32:19.958 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:19.959 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 64.9649ms
+2023-06-01 19:32:19.965 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:19.966 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5357ms
+2023-06-01 19:32:19.972 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:19.992 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 19.2436ms
+2023-06-01 19:32:20.746 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - -
+2023-06-01 19:32:20.746 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:20.746 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:20.752 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:20.752 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.1238ms
+2023-06-01 19:32:20.752 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:20.753 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - - - 302 - - 6.9944ms
+2023-06-01 19:32:20.755 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:20.755 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:20.755 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:20.761 +02:00 [INF] Getting API result for city: aarhus
+2023-06-01 19:32:20.775 +02:00 [INF] Executed DbCommand (8ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:20.776 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:20.779 +02:00 [INF] Executed ViewResult - view Index executed in 2.8952ms.
+2023-06-01 19:32:20.779 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 23.6402ms
+2023-06-01 19:32:20.779 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:20.780 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 25.4945ms
+2023-06-01 19:32:20.786 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:20.786 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5158ms
+2023-06-01 19:32:20.789 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:20.810 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 20.8742ms
+2023-06-01 19:32:21.418 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2023-06-01 19:32:21.419 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:21.419 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:21.425 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:21.425 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.2593ms
+2023-06-01 19:32:21.425 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:21.425 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 7.2294ms
+2023-06-01 19:32:21.427 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:21.428 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:21.428 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:21.433 +02:00 [INF] Getting API result for city: aalborg
+2023-06-01 19:32:21.448 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:26.842 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@p0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `CityPrayerTimes` (`City`)
+VALUES (@p0);
+SELECT `Id`
+FROM `CityPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-06-01 19:32:26.852 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = DateTime), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Size = 4000), @p20='?' (Size = 4000), @p21='?' (DbType = Int32), @p22='?' (DbType = DateTime), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (DbType = Int32), @p40='?' (DbType = DateTime), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Size = 4000), @p47='?' (Size = 4000), @p48='?' (DbType = Int32), @p49='?' (DbType = DateTime), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Size = 4000), @p54='?' (Size = 4000), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (DbType = Int32), @p58='?' (DbType = DateTime), @p59='?' (Size = 4000), @p60='?' (Size = 4000), @p61='?' (Size = 4000), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (DbType = Int32), @p67='?' (DbType = DateTime), @p68='?' (Size = 4000), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Size = 4000), @p75='?' (DbType = Int32), @p76='?' (DbType = DateTime), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 4000), @p81='?' (Size = 4000), @p82='?' (Size = 4000), @p83='?' (Size = 4000), @p84='?' (DbType = Int32), @p85='?' (DbType = DateTime), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Size = 4000), @p89='?' (Size = 4000), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (DbType = Int32), @p94='?' (DbType = DateTime), @p95='?' (Size = 4000), @p96='?' (Size = 4000), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (DbType = Int32), @p103='?' (DbType = DateTime), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Size = 4000), @p110='?' (Size = 4000), @p111='?' (DbType = Int32), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Size = 4000), @p117='?' (Size = 4000), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (DbType = Int32), @p121='?' (DbType = DateTime), @p122='?' (Size = 4000), @p123='?' (Size = 4000), @p124='?' (Size = 4000), @p125='?' (Size = 4000), @p126='?' (Size = 4000), @p127='?' (Size = 4000), @p128='?' (Size = 4000), @p129='?' (DbType = Int32), @p130='?' (DbType = DateTime), @p131='?' (Size = 4000), @p132='?' (Size = 4000), @p133='?' (Size = 4000), @p134='?' (Size = 4000), @p135='?' (Size = 4000), @p136='?' (Size = 4000), @p137='?' (Size = 4000), @p138='?' (DbType = Int32), @p139='?' (DbType = DateTime), @p140='?' (Size = 4000), @p141='?' (Size = 4000), @p142='?' (Size = 4000), @p143='?' (Size = 4000), @p144='?' (Size = 4000), @p145='?' (Size = 4000), @p146='?' (Size = 4000), @p147='?' (DbType = Int32), @p148='?' (DbType = DateTime), @p149='?' (Size = 4000), @p150='?' (Size = 4000), @p151='?' (Size = 4000), @p152='?' (Size = 4000), @p153='?' (Size = 4000), @p154='?' (Size = 4000), @p155='?' (Size = 4000), @p156='?' (DbType = Int32), @p157='?' (DbType = DateTime), @p158='?' (Size = 4000), @p159='?' (Size = 4000), @p160='?' (Size = 4000), @p161='?' (Size = 4000), @p162='?' (Size = 4000), @p163='?' (Size = 4000), @p164='?' (Size = 4000), @p165='?' (DbType = Int32), @p166='?' (DbType = DateTime), @p167='?' (Size = 4000), @p168='?' (Size = 4000), @p169='?' (Size = 4000), @p170='?' (Size = 4000), @p171='?' (Size = 4000), @p172='?' (Size = 4000), @p173='?' (Size = 4000), @p174='?' (DbType = Int32), @p175='?' (DbType = DateTime), @p176='?' (Size = 4000), @p177='?' (Size = 4000), @p178='?' (Size = 4000), @p179='?' (Size = 4000), @p180='?' (Size = 4000), @p181='?' (Size = 4000), @p182='?' (Size = 4000), @p183='?' (DbType = Int32), @p184='?' (DbType = DateTime), @p185='?' (Size = 4000), @p186='?' (Size = 4000), @p187='?' (Size = 4000), @p188='?' (Size = 4000), @p189='?' (Size = 4000), @p190='?' (Size = 4000), @p191='?' (Size = 4000), @p192='?' (DbType = Int32), @p193='?' (DbType = DateTime), @p194='?' (Size = 4000), @p195='?' (Size = 4000), @p196='?' (Size = 4000), @p197='?' (Size = 4000), @p198='?' (Size = 4000), @p199='?' (Size = 4000), @p200='?' (Size = 4000), @p201='?' (DbType = Int32), @p202='?' (DbType = DateTime), @p203='?' (Size = 4000), @p204='?' (Size = 4000), @p205='?' (Size = 4000), @p206='?' (Size = 4000), @p207='?' (Size = 4000), @p208='?' (Size = 4000), @p209='?' (Size = 4000), @p210='?' (DbType = Int32), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 4000), @p214='?' (Size = 4000), @p215='?' (Size = 4000), @p216='?' (Size = 4000), @p217='?' (Size = 4000), @p218='?' (Size = 4000), @p219='?' (DbType = Int32), @p220='?' (DbType = DateTime), @p221='?' (Size = 4000), @p222='?' (Size = 4000), @p223='?' (Size = 4000), @p224='?' (Size = 4000), @p225='?' (Size = 4000), @p226='?' (Size = 4000), @p227='?' (Size = 4000), @p228='?' (DbType = Int32), @p229='?' (DbType = DateTime), @p230='?' (Size = 4000), @p231='?' (Size = 4000), @p232='?' (Size = 4000), @p233='?' (Size = 4000), @p234='?' (Size = 4000), @p235='?' (Size = 4000), @p236='?' (Size = 4000), @p237='?' (DbType = Int32), @p238='?' (DbType = DateTime), @p239='?' (Size = 4000), @p240='?' (Size = 4000), @p241='?' (Size = 4000), @p242='?' (Size = 4000), @p243='?' (Size = 4000), @p244='?' (Size = 4000), @p245='?' (Size = 4000), @p246='?' (DbType = Int32), @p247='?' (DbType = DateTime), @p248='?' (Size = 4000), @p249='?' (Size = 4000), @p250='?' (Size = 4000), @p251='?' (Size = 4000), @p252='?' (Size = 4000), @p253='?' (Size = 4000), @p254='?' (Size = 4000), @p255='?' (DbType = Int32), @p256='?' (DbType = DateTime), @p257='?' (Size = 4000), @p258='?' (Size = 4000), @p259='?' (Size = 4000), @p260='?' (Size = 4000), @p261='?' (Size = 4000), @p262='?' (Size = 4000), @p263='?' (Size = 4000), @p264='?' (DbType = Int32), @p265='?' (DbType = DateTime), @p266='?' (Size = 4000), @p267='?' (Size = 4000), @p268='?' (Size = 4000), @p269='?' (Size = 4000), @p270='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p73, @p74, @p75, @p76, @p77, @p78, @p79, @p80, @p81);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p163, @p164, @p165, @p166, @p167, @p168, @p169, @p170, @p171);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, @p180);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197, @p198);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p208, @p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, @p225);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p235, @p236, @p237, @p238, @p239, @p240, @p241, @p242, @p243);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p253, @p254, @p255, @p256, @p257, @p258, @p259, @p260, @p261);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, @p270);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-06-01 19:32:26.867 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:26.870 +02:00 [INF] Executed ViewResult - view Index executed in 3.0075ms.
+2023-06-01 19:32:26.870 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 5441.582ms
+2023-06-01 19:32:26.870 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:26.871 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 5443.5444ms
+2023-06-01 19:32:26.878 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:26.878 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.6306ms
+2023-06-01 19:32:26.883 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:26.902 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 18.8933ms
+2023-06-01 19:32:29.649 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - -
+2023-06-01 19:32:29.650 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:29.650 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:29.655 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:29.656 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 5.9151ms
+2023-06-01 19:32:29.656 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:29.656 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - - - 302 - - 6.8021ms
+2023-06-01 19:32:29.658 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:29.658 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:29.659 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:29.664 +02:00 [INF] Getting API result for city: aarhus
+2023-06-01 19:32:29.678 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:29.679 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:29.682 +02:00 [INF] Executed ViewResult - view Index executed in 2.9195ms.
+2023-06-01 19:32:29.682 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 23.2549ms
+2023-06-01 19:32:29.682 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:29.683 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 24.8413ms
+2023-06-01 19:32:29.690 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:29.690 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.6124ms
+2023-06-01 19:32:29.694 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:29.713 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 18.8010ms
+2023-06-01 19:32:30.721 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - -
+2023-06-01 19:32:30.722 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:30.722 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:30.728 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:30.728 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.2434ms
+2023-06-01 19:32:30.728 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:30.728 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - - - 302 - - 7.3451ms
+2023-06-01 19:32:30.730 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:30.731 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:30.731 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:30.738 +02:00 [INF] Getting API result for city: odense
+2023-06-01 19:32:30.752 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:30.753 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:30.756 +02:00 [INF] Executed ViewResult - view Index executed in 2.9805ms.
+2023-06-01 19:32:30.756 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 25.1156ms
+2023-06-01 19:32:30.756 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:30.757 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 26.8747ms
+2023-06-01 19:32:30.764 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:30.764 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.6597ms
+2023-06-01 19:32:30.772 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:30.792 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 20.2890ms
+2023-06-01 19:32:31.200 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=cph - -
+2023-06-01 19:32:31.201 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:31.201 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:31.207 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:31.207 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.0056ms
+2023-06-01 19:32:31.207 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:31.207 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=cph - - - 302 - - 6.8638ms
+2023-06-01 19:32:31.212 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:31.213 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:31.213 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:31.219 +02:00 [INF] Getting API result for city: cph
+2023-06-01 19:32:31.234 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:31.234 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:31.237 +02:00 [INF] Executed ViewResult - view Index executed in 2.9796ms.
+2023-06-01 19:32:31.237 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 24.202ms
+2023-06-01 19:32:31.237 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:31.239 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 26.0585ms
+2023-06-01 19:32:31.243 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:31.244 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5491ms
+2023-06-01 19:32:31.247 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:31.266 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 18.8463ms
+2023-06-01 19:32:32.261 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - -
+2023-06-01 19:32:32.262 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:32.262 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:32.268 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:32.268 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.0207ms
+2023-06-01 19:32:32.268 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:32.268 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - - - 302 - - 6.8693ms
+2023-06-01 19:32:32.270 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:32.271 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:32.271 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:32.277 +02:00 [INF] Getting API result for city: aarhus
+2023-06-01 19:32:32.291 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:32.292 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:32.295 +02:00 [INF] Executed ViewResult - view Index executed in 2.8873ms.
+2023-06-01 19:32:32.295 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 23.9938ms
+2023-06-01 19:32:32.295 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:32.296 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 25.5062ms
+2023-06-01 19:32:32.302 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:32.303 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5404ms
+2023-06-01 19:32:32.307 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:32.329 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 21.4436ms
+2023-06-01 19:32:32.635 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2023-06-01 19:32:32.636 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:32.636 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:32.642 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2023-06-01 19:32:32.642 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 6.1752ms
+2023-06-01 19:32:32.642 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2023-06-01 19:32:32.642 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 7.1156ms
+2023-06-01 19:32:32.644 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-06-01 19:32:32.645 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:32.645 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-06-01 19:32:32.651 +02:00 [INF] Getting API result for city: aalborg
+2023-06-01 19:32:32.665 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-06-01 19:32:32.665 +02:00 [INF] Executing ViewResult, running view Index.
+2023-06-01 19:32:32.668 +02:00 [INF] Executed ViewResult - view Index executed in 2.8276ms.
+2023-06-01 19:32:32.668 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 23.134ms
+2023-06-01 19:32:32.668 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-06-01 19:32:32.670 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 25.2457ms
+2023-06-01 19:32:32.675 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-06-01 19:32:32.676 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5502ms
+2023-06-01 19:32:32.680 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-06-01 19:32:32.699 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 19.0901ms

@@ -1,0 +1,98 @@
+2023-08-01 23:12:54.078 +02:00 [INF] Starting web host
+2023-08-01 23:12:55.475 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-08-01 23:12:55.718 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-08-01 23:12:55.719 +02:00 [INF] Hosting environment: Development
+2023-08-01 23:12:55.719 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-08-01 23:12:55.753 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-08-01 23:12:55.818 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-08-01 23:12:55.860 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-08-01 23:15:52.855 +02:00 [INF] Starting web host
+2023-08-01 23:15:53.549 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-08-01 23:15:53.706 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-08-01 23:15:53.706 +02:00 [INF] Hosting environment: Development
+2023-08-01 23:15:53.706 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-08-01 23:15:53.723 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-08-01 23:15:53.772 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-08-01 23:15:53.801 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-08-01 23:15:54.224 +02:00 [INF] Getting API result for city: cph
+2023-08-01 23:15:55.534 +02:00 [INF] Executed DbCommand (81ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-08-01 23:16:14.363 +02:00 [ERR] Error occurred while fetching prayer data for city cph
+Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type 'Domain.Models.MuwaqqitResponse'. Path '', line 1, position 3.
+ ---> System.ArgumentException: Could not cast or convert from System.Int64 to Domain.Models.MuwaqqitResponse.
+   at Newtonsoft.Json.Utilities.ConvertUtils.EnsureTypeAssignable(Object value, Type initialType, Type targetType)
+   at Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(Object initialValue, CultureInfo culture, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   --- End of inner exception stack trace ---
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.Deserialize[T](JsonReader reader)
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 100
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 119
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 50
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 49
+2023-08-01 23:16:14.429 +02:00 [INF] Executing ViewResult, running view Index.
+2023-08-01 23:16:16.754 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 22948.5752ms
+2023-08-01 23:16:16.755 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-08-01 23:16:16.761 +02:00 [INF] Session started; Key:64128676-a626-65a7-9e7e-a6dd6b65985c, Id:bb102c5a-abc7-3d4f-3321-32b7e1ed7554
+2023-08-01 23:16:16.766 +02:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot convert type 'Domain.Models.MuwaqqitResponse' to 'Domain.Models.CityPrayerTimes'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at AspNetCoreGeneratedDocument.Views_Home_Index.ExecuteAsync() in C:\Users\hadih\source\repos\PrayerTimes\Web\Views\Home\Index.cshtml:line 55
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-08-01 23:16:16.940 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-08-01 23:16:16.940 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-08-01 23:16:16.953 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 11.2826ms
+2023-08-01 23:16:16.966 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 500 - text/html;+charset=utf-8 23246.0276ms
+2023-08-01 23:16:16.995 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 54.6653ms
+2023-08-01 23:16:17.115 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/favicon.ico - -
+2023-08-01 23:16:17.132 +02:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\favicon.ico'
+2023-08-01 23:16:17.135 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/favicon.ico - - - 200 32038 image/x-icon 19.7300ms
+2023-08-01 23:16:34.665 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-08-01 23:16:34.668 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-08-01 23:16:34.668 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-08-01 23:16:34.739 +02:00 [INF] Getting API result for city: cph
+2023-08-01 23:16:34.992 +02:00 [INF] Executed DbCommand (143ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`

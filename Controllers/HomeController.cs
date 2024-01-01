@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using OfficeOpenXml;
+using PrayerTimes.Models;
+using PrayerTimes.Persistence;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using OfficeOpenXml;
-using PrayerTimes.Models;
-using PrayerTimes.Persistence;
 
 namespace PrayerTimes.Controllers
 {
@@ -33,8 +33,7 @@ namespace PrayerTimes.Controllers
         {
             _lastEshaTime = null;
 
-            if (Database.api == null)
-                Database.api = new List<APIResult>();
+            Database.api ??= new List<APIResult>();
 
             // Set default selected city if it's null
             if (string.IsNullOrEmpty(_selectedCity))
@@ -43,32 +42,30 @@ namespace PrayerTimes.Controllers
             APIResult result = GetOrCreateApiResult(_selectedCity);
             string muwaqqitUrl = GenerateMuwaqqitUrl(_selectedCity);
 
-            using (ExcelPackage excel = new ExcelPackage())
+            using ExcelPackage excel = new();
+            for (int month = 1; month <= 12; month++)
             {
-                for (int month = 1; month <= 12; month++)
+                string currentMonth = 2024 + "-" + month.ToString("D2") + "-01";
+                muwaqqitUrl = UpdateMuwaqqitUrlDate(muwaqqitUrl, currentMonth);
+
+                if (result.content == null ||
+                    !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == currentMonth))
                 {
-                    string currentMonth = DateTime.Now.Year + "-" + month.ToString("D2") + "-01";
-                    muwaqqitUrl = UpdateMuwaqqitUrlDate(muwaqqitUrl, currentMonth);
-
-                    if (result.content == null ||
-                        !JsonConvert.DeserializeObject<Root>(result.content).list.Any(n => n.fajr_date == currentMonth))
-                    {
-                        string apiResponse = await FetchApiResponse(muwaqqitUrl);
-                        result.content = apiResponse;
-                        Console.WriteLine(apiResponse);
-                    }
-
-                    List<PrayerViewModel> prayersData = JsonConvert.DeserializeObject<Root>(result.content).list;
-                    CreateMonthWorksheet(excel, month, prayersData);
-
-                    if (month < 12)
-                    {
-                        await Task.Delay(30000);
-                    }
+                    string apiResponse = await FetchApiResponse(muwaqqitUrl);
+                    result.content = apiResponse;
+                    Console.WriteLine(apiResponse);
                 }
 
-                SaveExcelFile(excel);
+                List<PrayerViewModel> prayersData = JsonConvert.DeserializeObject<Root>(result.content).list;
+                CreateMonthWorksheet(excel, month, prayersData);
+
+                if (month < 12)
+                {
+                    await Task.Delay(30000);
+                }
             }
+
+            SaveExcelFile(excel);
         }
 
 
@@ -85,17 +82,17 @@ namespace PrayerTimes.Controllers
             return result;
         }
 
-        private string GenerateMuwaqqitUrl(string cityName)
+        private static string GenerateMuwaqqitUrl(string cityName)
         {
             string baseUrl = "https://www.muwaqqit.com/api.json?";
-            string defaultDate = "2023-06-01";
+            string defaultDate = "2024-01-01";
             string timeZone = "Europe%2FCopenhagen";
             string fajrAngle = "-18.0";
-            string eshaAngle = "-17.0";
+            string eshaAngle = "-18.0";
             string fixedEsha = "0";
             string roundedSunriseAngle = "0";
 
-            Dictionary<string, (double lat, double lon)> cities = new Dictionary<string, (double, double)>
+            Dictionary<string, (double lat, double lon)> cities = new()
             {
                 { "cph", (55.6759142, 12.5691285) },
                 { "odense", (55.4037560, 10.4023700) },
@@ -113,14 +110,14 @@ namespace PrayerTimes.Controllers
             return $"{baseUrl}lt={lat.ToString(invariantCulture)}&ln={lon.ToString(invariantCulture)}&d={defaultDate}&tz={timeZone}&fa={fajrAngle}&ea={eshaAngle}&fea={fixedEsha}&rsa={roundedSunriseAngle}";
         }
 
-        private string UpdateMuwaqqitUrlDate(string url, string date)
+        private static string UpdateMuwaqqitUrlDate(string url, string date)
         {
             int dateStartIndex = url.IndexOf("d=") + 2;
             int dateEndIndex = url.IndexOf("&", dateStartIndex);
-            return url.Substring(0, dateStartIndex) + date + url.Substring(dateEndIndex);
+            return string.Concat(url.AsSpan(0, dateStartIndex), date, url.AsSpan(dateEndIndex));
         }
 
-        private async Task<string> FetchApiResponse(string url)
+        private static async Task<string> FetchApiResponse(string url)
         {
             using var httpClient = new HttpClient();
             using var response = await httpClient.GetAsync(url);
@@ -137,7 +134,7 @@ namespace PrayerTimes.Controllers
 
             List<string[]> headerRow = new()
             {
-            new string[] { "Dato", "Fajr", "Shuruk", "Dhuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha" }
+            new string[] { "Dato", "Fajr", "Shuruq", "Dhuhr", "Asr", "Asr (hanafi)", "Maghreb", "Isha" }
             };
 
             string headerRange = "A1:" + char.ConvertFromUtf32(headerRow[0].Length + 64) + "1";
@@ -166,8 +163,8 @@ namespace PrayerTimes.Controllers
                 }
             }
         }
-        
-        private void SaveExcelFile(ExcelPackage excel)
+
+        private static void SaveExcelFile(ExcelPackage excel)
         {
             FileInfo excelFile = new(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\PrayerTimes.xlsx");
             excel.SaveAs(excelFile);

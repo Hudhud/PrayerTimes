@@ -1,0 +1,1330 @@
+2023-07-01 00:51:37.521 +02:00 [INF] Starting web host
+2023-07-01 00:51:38.928 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 00:51:39.176 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 00:51:39.177 +02:00 [INF] Hosting environment: Development
+2023-07-01 00:51:39.177 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 00:51:39.205 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 00:51:39.270 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 00:51:39.312 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 00:57:36.115 +02:00 [INF] Starting web host
+2023-07-01 00:57:36.778 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 00:57:36.938 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 00:57:36.938 +02:00 [INF] Hosting environment: Development
+2023-07-01 00:57:36.938 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 00:57:36.955 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 00:57:37.002 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 00:57:37.030 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 00:57:59.471 +02:00 [INF] Starting web host
+2023-07-01 00:58:00.171 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 00:58:00.335 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 00:58:00.335 +02:00 [INF] Hosting environment: Development
+2023-07-01 00:58:00.335 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 00:58:00.351 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 00:58:00.400 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 00:58:00.430 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 00:58:00.882 +02:00 [INF] Getting API result for city: cph
+2023-07-01 00:58:02.183 +02:00 [INF] Executed DbCommand (47ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 00:58:07.948 +02:00 [INF] Executed DbCommand (8ms) [Parameters=[@p0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `CityPrayerTimes` (`City`)
+VALUES (@p0);
+SELECT `Id`
+FROM `CityPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-07-01 00:58:07.992 +02:00 [ERR] Failed executing DbCommand (15ms) [Parameters=[@p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = DateTime), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Size = 4000), @p20='?' (Size = 4000), @p21='?' (DbType = Int32), @p22='?' (DbType = DateTime), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (DbType = Int32), @p40='?' (DbType = DateTime), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Size = 4000), @p47='?' (Size = 4000), @p48='?' (DbType = Int32), @p49='?' (DbType = DateTime), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Size = 4000), @p54='?' (Size = 4000), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (DbType = Int32), @p58='?' (DbType = DateTime), @p59='?' (Size = 4000), @p60='?' (Size = 4000), @p61='?' (Size = 4000), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (DbType = Int32), @p67='?' (DbType = DateTime), @p68='?' (Size = 4000), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Size = 4000), @p75='?' (DbType = Int32), @p76='?' (DbType = DateTime), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 4000), @p81='?' (Size = 4000), @p82='?' (Size = 4000), @p83='?' (Size = 4000), @p84='?' (DbType = Int32), @p85='?' (DbType = DateTime), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Size = 4000), @p89='?' (Size = 4000), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (DbType = Int32), @p94='?' (DbType = DateTime), @p95='?' (Size = 4000), @p96='?' (Size = 4000), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (DbType = Int32), @p103='?' (DbType = DateTime), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Size = 4000), @p110='?' (Size = 4000), @p111='?' (DbType = Int32), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Size = 4000), @p117='?' (Size = 4000), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (DbType = Int32), @p121='?' (DbType = DateTime), @p122='?' (Size = 4000), @p123='?' (Size = 4000), @p124='?' (Size = 4000), @p125='?' (Size = 4000), @p126='?' (Size = 4000), @p127='?' (Size = 4000), @p128='?' (Size = 4000), @p129='?' (DbType = Int32), @p130='?' (DbType = DateTime), @p131='?' (Size = 4000), @p132='?' (Size = 4000), @p133='?' (Size = 4000), @p134='?' (Size = 4000), @p135='?' (Size = 4000), @p136='?' (Size = 4000), @p137='?' (Size = 4000), @p138='?' (DbType = Int32), @p139='?' (DbType = DateTime), @p140='?' (Size = 4000), @p141='?' (Size = 4000), @p142='?' (Size = 4000), @p143='?' (Size = 4000), @p144='?' (Size = 4000), @p145='?' (Size = 4000), @p146='?' (Size = 4000), @p147='?' (DbType = Int32), @p148='?' (DbType = DateTime), @p149='?' (Size = 4000), @p150='?' (Size = 4000), @p151='?' (Size = 4000), @p152='?' (Size = 4000), @p153='?' (Size = 4000), @p154='?' (Size = 4000), @p155='?' (Size = 4000), @p156='?' (DbType = Int32), @p157='?' (DbType = DateTime), @p158='?' (Size = 4000), @p159='?' (Size = 4000), @p160='?' (Size = 4000), @p161='?' (Size = 4000), @p162='?' (Size = 4000), @p163='?' (Size = 4000), @p164='?' (Size = 4000), @p165='?' (DbType = Int32), @p166='?' (DbType = DateTime), @p167='?' (Size = 4000), @p168='?' (Size = 4000), @p169='?' (Size = 4000), @p170='?' (Size = 4000), @p171='?' (Size = 4000), @p172='?' (Size = 4000), @p173='?' (Size = 4000), @p174='?' (DbType = Int32), @p175='?' (DbType = DateTime), @p176='?' (Size = 4000), @p177='?' (Size = 4000), @p178='?' (Size = 4000), @p179='?' (Size = 4000), @p180='?' (Size = 4000), @p181='?' (Size = 4000), @p182='?' (Size = 4000), @p183='?' (DbType = Int32), @p184='?' (DbType = DateTime), @p185='?' (Size = 4000), @p186='?' (Size = 4000), @p187='?' (Size = 4000), @p188='?' (Size = 4000), @p189='?' (Size = 4000), @p190='?' (Size = 4000), @p191='?' (Size = 4000), @p192='?' (DbType = Int32), @p193='?' (DbType = DateTime), @p194='?' (Size = 4000), @p195='?' (Size = 4000), @p196='?' (Size = 4000), @p197='?' (Size = 4000), @p198='?' (Size = 4000), @p199='?' (Size = 4000), @p200='?' (Size = 4000), @p201='?' (DbType = Int32), @p202='?' (DbType = DateTime), @p203='?' (Size = 4000), @p204='?' (Size = 4000), @p205='?' (Size = 4000), @p206='?' (Size = 4000), @p207='?' (Size = 4000), @p208='?' (Size = 4000), @p209='?' (Size = 4000), @p210='?' (DbType = Int32), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 4000), @p214='?' (Size = 4000), @p215='?' (Size = 4000), @p216='?' (Size = 4000), @p217='?' (Size = 4000), @p218='?' (Size = 4000), @p219='?' (DbType = Int32), @p220='?' (DbType = DateTime), @p221='?' (Size = 4000), @p222='?' (Size = 4000), @p223='?' (Size = 4000), @p224='?' (Size = 4000), @p225='?' (Size = 4000), @p226='?' (Size = 4000), @p227='?' (Size = 4000), @p228='?' (DbType = Int32), @p229='?' (DbType = DateTime), @p230='?' (Size = 4000), @p231='?' (Size = 4000), @p232='?' (Size = 4000), @p233='?' (Size = 4000), @p234='?' (Size = 4000), @p235='?' (Size = 4000), @p236='?' (Size = 4000), @p237='?' (DbType = Int32), @p238='?' (DbType = DateTime), @p239='?' (Size = 4000), @p240='?' (Size = 4000), @p241='?' (Size = 4000), @p242='?' (Size = 4000), @p243='?' (Size = 4000), @p244='?' (Size = 4000), @p245='?' (Size = 4000), @p246='?' (DbType = Int32), @p247='?' (DbType = DateTime), @p248='?' (Size = 4000), @p249='?' (Size = 4000), @p250='?' (Size = 4000), @p251='?' (Size = 4000), @p252='?' (Size = 4000), @p253='?' (Size = 4000), @p254='?' (Size = 4000), @p255='?' (DbType = Int32), @p256='?' (DbType = DateTime), @p257='?' (Size = 4000), @p258='?' (Size = 4000), @p259='?' (Size = 4000), @p260='?' (Size = 4000), @p261='?' (Size = 4000), @p262='?' (Size = 4000), @p263='?' (Size = 4000), @p264='?' (DbType = Int32), @p265='?' (DbType = DateTime), @p266='?' (Size = 4000), @p267='?' (Size = 4000), @p268='?' (Size = 4000), @p269='?' (Size = 4000), @p270='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p73, @p74, @p75, @p76, @p77, @p78, @p79, @p80, @p81);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p163, @p164, @p165, @p166, @p167, @p168, @p169, @p170, @p171);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, @p180);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197, @p198);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p208, @p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, @p225);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p235, @p236, @p237, @p238, @p239, @p240, @p241, @p242, @p243);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p253, @p254, @p255, @p256, @p257, @p258, @p259, @p260, @p261);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, @p270);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-07-01 00:58:08.074 +02:00 [ERR] An exception occurred in the database while saving changes for context type 'Infrastructure.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2023-07-01 00:58:30.255 +02:00 [ERR] Error occurred while fetching prayer data for city cph
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Infrastructure.Repositories.CityPrayerTimesRepository.AddAsync(CityPrayerTimes cityPrayerTimes) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Repositories\CityPrayerTimesRepository.cs:line 20
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 138
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 50
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 49
+2023-07-01 00:58:30.290 +02:00 [INF] Executing ViewResult, running view Index.
+2023-07-01 00:58:31.477 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 31043.4372ms
+2023-07-01 00:58:31.479 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 00:58:31.485 +02:00 [INF] Session started; Key:dc97b255-b648-4e17-aab8-e20637903815, Id:467933a4-031a-dea3-e90d-f7b982e40229
+2023-07-01 00:58:31.490 +02:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot convert type 'Domain.Models.MuwaqqitResponse' to 'Domain.Models.CityPrayerTimes'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at AspNetCoreGeneratedDocument.Views_Home_Index.ExecuteAsync() in C:\Users\hadih\source\repos\PrayerTimes\Web\Views\Home\Index.cshtml:line 55
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-07-01 00:58:31.698 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-07-01 00:58:31.698 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-07-01 00:58:31.711 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 10.0401ms
+2023-07-01 00:58:31.722 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 500 - text/html;+charset=utf-8 31374.1918ms
+2023-07-01 00:58:31.776 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 78.6939ms
+2023-07-01 00:58:31.869 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/favicon.ico - -
+2023-07-01 00:58:31.884 +02:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\favicon.ico'
+2023-07-01 00:58:31.887 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/favicon.ico - - - 200 32038 image/x-icon 17.4574ms
+2023-07-01 00:58:52.144 +02:00 [INF] Starting web host
+2023-07-01 00:58:52.851 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 00:58:53.008 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 00:58:53.008 +02:00 [INF] Hosting environment: Development
+2023-07-01 00:58:53.008 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 00:58:53.025 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 00:58:53.073 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 00:58:53.102 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 00:58:53.553 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 00:58:53.554 +02:00 [INF] Getting API result for city: cph
+2023-07-01 00:58:54.812 +02:00 [INF] Executed DbCommand (51ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 01:00:15.090 +02:00 [INF] Starting web host
+2023-07-01 01:00:15.802 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 01:00:15.965 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 01:00:15.965 +02:00 [INF] Hosting environment: Development
+2023-07-01 01:00:15.965 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 01:00:15.988 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 01:00:16.035 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 01:00:16.064 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 01:00:16.450 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 01:00:16.451 +02:00 [INF] Getting API result for city: cph
+2023-07-01 01:00:17.676 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 01:00:23.002 +02:00 [INF] Executed DbCommand (10ms) [Parameters=[@p0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `CityPrayerTimes` (`City`)
+VALUES (@p0);
+SELECT `Id`
+FROM `CityPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-07-01 01:00:23.047 +02:00 [ERR] Failed executing DbCommand (17ms) [Parameters=[@p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = DateTime), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Size = 4000), @p20='?' (Size = 4000), @p21='?' (DbType = Int32), @p22='?' (DbType = DateTime), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (DbType = Int32), @p40='?' (DbType = DateTime), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Size = 4000), @p47='?' (Size = 4000), @p48='?' (DbType = Int32), @p49='?' (DbType = DateTime), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Size = 4000), @p54='?' (Size = 4000), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (DbType = Int32), @p58='?' (DbType = DateTime), @p59='?' (Size = 4000), @p60='?' (Size = 4000), @p61='?' (Size = 4000), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (DbType = Int32), @p67='?' (DbType = DateTime), @p68='?' (Size = 4000), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Size = 4000), @p75='?' (DbType = Int32), @p76='?' (DbType = DateTime), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 4000), @p81='?' (Size = 4000), @p82='?' (Size = 4000), @p83='?' (Size = 4000), @p84='?' (DbType = Int32), @p85='?' (DbType = DateTime), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Size = 4000), @p89='?' (Size = 4000), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (DbType = Int32), @p94='?' (DbType = DateTime), @p95='?' (Size = 4000), @p96='?' (Size = 4000), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (DbType = Int32), @p103='?' (DbType = DateTime), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Size = 4000), @p110='?' (Size = 4000), @p111='?' (DbType = Int32), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Size = 4000), @p117='?' (Size = 4000), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (DbType = Int32), @p121='?' (DbType = DateTime), @p122='?' (Size = 4000), @p123='?' (Size = 4000), @p124='?' (Size = 4000), @p125='?' (Size = 4000), @p126='?' (Size = 4000), @p127='?' (Size = 4000), @p128='?' (Size = 4000), @p129='?' (DbType = Int32), @p130='?' (DbType = DateTime), @p131='?' (Size = 4000), @p132='?' (Size = 4000), @p133='?' (Size = 4000), @p134='?' (Size = 4000), @p135='?' (Size = 4000), @p136='?' (Size = 4000), @p137='?' (Size = 4000), @p138='?' (DbType = Int32), @p139='?' (DbType = DateTime), @p140='?' (Size = 4000), @p141='?' (Size = 4000), @p142='?' (Size = 4000), @p143='?' (Size = 4000), @p144='?' (Size = 4000), @p145='?' (Size = 4000), @p146='?' (Size = 4000), @p147='?' (DbType = Int32), @p148='?' (DbType = DateTime), @p149='?' (Size = 4000), @p150='?' (Size = 4000), @p151='?' (Size = 4000), @p152='?' (Size = 4000), @p153='?' (Size = 4000), @p154='?' (Size = 4000), @p155='?' (Size = 4000), @p156='?' (DbType = Int32), @p157='?' (DbType = DateTime), @p158='?' (Size = 4000), @p159='?' (Size = 4000), @p160='?' (Size = 4000), @p161='?' (Size = 4000), @p162='?' (Size = 4000), @p163='?' (Size = 4000), @p164='?' (Size = 4000), @p165='?' (DbType = Int32), @p166='?' (DbType = DateTime), @p167='?' (Size = 4000), @p168='?' (Size = 4000), @p169='?' (Size = 4000), @p170='?' (Size = 4000), @p171='?' (Size = 4000), @p172='?' (Size = 4000), @p173='?' (Size = 4000), @p174='?' (DbType = Int32), @p175='?' (DbType = DateTime), @p176='?' (Size = 4000), @p177='?' (Size = 4000), @p178='?' (Size = 4000), @p179='?' (Size = 4000), @p180='?' (Size = 4000), @p181='?' (Size = 4000), @p182='?' (Size = 4000), @p183='?' (DbType = Int32), @p184='?' (DbType = DateTime), @p185='?' (Size = 4000), @p186='?' (Size = 4000), @p187='?' (Size = 4000), @p188='?' (Size = 4000), @p189='?' (Size = 4000), @p190='?' (Size = 4000), @p191='?' (Size = 4000), @p192='?' (DbType = Int32), @p193='?' (DbType = DateTime), @p194='?' (Size = 4000), @p195='?' (Size = 4000), @p196='?' (Size = 4000), @p197='?' (Size = 4000), @p198='?' (Size = 4000), @p199='?' (Size = 4000), @p200='?' (Size = 4000), @p201='?' (DbType = Int32), @p202='?' (DbType = DateTime), @p203='?' (Size = 4000), @p204='?' (Size = 4000), @p205='?' (Size = 4000), @p206='?' (Size = 4000), @p207='?' (Size = 4000), @p208='?' (Size = 4000), @p209='?' (Size = 4000), @p210='?' (DbType = Int32), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 4000), @p214='?' (Size = 4000), @p215='?' (Size = 4000), @p216='?' (Size = 4000), @p217='?' (Size = 4000), @p218='?' (Size = 4000), @p219='?' (DbType = Int32), @p220='?' (DbType = DateTime), @p221='?' (Size = 4000), @p222='?' (Size = 4000), @p223='?' (Size = 4000), @p224='?' (Size = 4000), @p225='?' (Size = 4000), @p226='?' (Size = 4000), @p227='?' (Size = 4000), @p228='?' (DbType = Int32), @p229='?' (DbType = DateTime), @p230='?' (Size = 4000), @p231='?' (Size = 4000), @p232='?' (Size = 4000), @p233='?' (Size = 4000), @p234='?' (Size = 4000), @p235='?' (Size = 4000), @p236='?' (Size = 4000), @p237='?' (DbType = Int32), @p238='?' (DbType = DateTime), @p239='?' (Size = 4000), @p240='?' (Size = 4000), @p241='?' (Size = 4000), @p242='?' (Size = 4000), @p243='?' (Size = 4000), @p244='?' (Size = 4000), @p245='?' (Size = 4000), @p246='?' (DbType = Int32), @p247='?' (DbType = DateTime), @p248='?' (Size = 4000), @p249='?' (Size = 4000), @p250='?' (Size = 4000), @p251='?' (Size = 4000), @p252='?' (Size = 4000), @p253='?' (Size = 4000), @p254='?' (Size = 4000), @p255='?' (DbType = Int32), @p256='?' (DbType = DateTime), @p257='?' (Size = 4000), @p258='?' (Size = 4000), @p259='?' (Size = 4000), @p260='?' (Size = 4000), @p261='?' (Size = 4000), @p262='?' (Size = 4000), @p263='?' (Size = 4000), @p264='?' (DbType = Int32), @p265='?' (DbType = DateTime), @p266='?' (Size = 4000), @p267='?' (Size = 4000), @p268='?' (Size = 4000), @p269='?' (Size = 4000), @p270='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p73, @p74, @p75, @p76, @p77, @p78, @p79, @p80, @p81);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p163, @p164, @p165, @p166, @p167, @p168, @p169, @p170, @p171);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, @p180);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197, @p198);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p208, @p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, @p225);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p235, @p236, @p237, @p238, @p239, @p240, @p241, @p242, @p243);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p253, @p254, @p255, @p256, @p257, @p258, @p259, @p260, @p261);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, @p270);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-07-01 01:00:23.104 +02:00 [ERR] An exception occurred in the database while saving changes for context type 'Infrastructure.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2023-07-01 01:05:40.390 +02:00 [ERR] Error occurred while fetching prayer data for city cph
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Infrastructure.Repositories.CityPrayerTimesRepository.AddAsync(CityPrayerTimes cityPrayerTimes) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Repositories\CityPrayerTimesRepository.cs:line 20
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 138
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 50
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 49
+2023-07-01 01:05:40.414 +02:00 [INF] Executing ViewResult, running view Index.
+2023-07-01 01:05:42.060 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 325992.7591ms
+2023-07-01 01:05:42.062 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 01:05:42.067 +02:00 [INF] Session started; Key:dc97b255-b648-4e17-aab8-e20637903815, Id:9913352f-aed1-908a-5c58-4cc28a42542a
+2023-07-01 01:05:42.072 +02:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot convert type 'Domain.Models.MuwaqqitResponse' to 'Domain.Models.CityPrayerTimes'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at AspNetCoreGeneratedDocument.Views_Home_Index.ExecuteAsync() in C:\Users\hadih\source\repos\PrayerTimes\Web\Views\Home\Index.cshtml:line 55
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-07-01 01:05:42.190 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-07-01 01:05:42.190 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-07-01 01:05:42.199 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 7.8276ms
+2023-07-01 01:05:42.211 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 500 - text/html;+charset=utf-8 326225.6757ms
+2023-07-01 01:05:42.226 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 36.1586ms
+2023-07-01 01:06:16.683 +02:00 [INF] Starting web host
+2023-07-01 01:06:17.373 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 01:06:17.531 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 01:06:17.532 +02:00 [INF] Hosting environment: Development
+2023-07-01 01:06:17.532 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 01:06:17.547 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 01:06:17.595 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 01:06:17.623 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 01:06:17.986 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 01:06:17.987 +02:00 [INF] Getting API result for city: cph
+2023-07-01 01:06:19.212 +02:00 [INF] Executed DbCommand (56ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 01:08:51.016 +02:00 [INF] Starting web host
+2023-07-01 01:08:51.780 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 01:08:51.944 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 01:08:51.945 +02:00 [INF] Hosting environment: Development
+2023-07-01 01:08:51.945 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 01:08:51.962 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 01:08:52.011 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 01:08:52.041 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 01:08:52.404 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 01:08:52.405 +02:00 [INF] Getting API result for city: cph
+2023-07-01 01:08:53.632 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 01:09:19.478 +02:00 [INF] Starting web host
+2023-07-01 01:09:20.231 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 01:09:20.389 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 01:09:20.389 +02:00 [INF] Hosting environment: Development
+2023-07-01 01:09:20.389 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 01:09:20.404 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 01:09:20.452 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 01:09:20.480 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 01:09:20.841 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 01:09:20.842 +02:00 [INF] Getting API result for city: cph
+2023-07-01 01:09:22.068 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 01:09:29.776 +02:00 [INF] Executed DbCommand (10ms) [Parameters=[@p0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `CityPrayerTimes` (`City`)
+VALUES (@p0);
+SELECT `Id`
+FROM `CityPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-07-01 01:09:29.820 +02:00 [ERR] Failed executing DbCommand (15ms) [Parameters=[@p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = DateTime), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Size = 4000), @p20='?' (Size = 4000), @p21='?' (DbType = Int32), @p22='?' (DbType = DateTime), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (DbType = Int32), @p40='?' (DbType = DateTime), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Size = 4000), @p47='?' (Size = 4000), @p48='?' (DbType = Int32), @p49='?' (DbType = DateTime), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Size = 4000), @p54='?' (Size = 4000), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (DbType = Int32), @p58='?' (DbType = DateTime), @p59='?' (Size = 4000), @p60='?' (Size = 4000), @p61='?' (Size = 4000), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (DbType = Int32), @p67='?' (DbType = DateTime), @p68='?' (Size = 4000), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Size = 4000), @p75='?' (DbType = Int32), @p76='?' (DbType = DateTime), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 4000), @p81='?' (Size = 4000), @p82='?' (Size = 4000), @p83='?' (Size = 4000), @p84='?' (DbType = Int32), @p85='?' (DbType = DateTime), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Size = 4000), @p89='?' (Size = 4000), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (DbType = Int32), @p94='?' (DbType = DateTime), @p95='?' (Size = 4000), @p96='?' (Size = 4000), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (DbType = Int32), @p103='?' (DbType = DateTime), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Size = 4000), @p110='?' (Size = 4000), @p111='?' (DbType = Int32), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Size = 4000), @p117='?' (Size = 4000), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (DbType = Int32), @p121='?' (DbType = DateTime), @p122='?' (Size = 4000), @p123='?' (Size = 4000), @p124='?' (Size = 4000), @p125='?' (Size = 4000), @p126='?' (Size = 4000), @p127='?' (Size = 4000), @p128='?' (Size = 4000), @p129='?' (DbType = Int32), @p130='?' (DbType = DateTime), @p131='?' (Size = 4000), @p132='?' (Size = 4000), @p133='?' (Size = 4000), @p134='?' (Size = 4000), @p135='?' (Size = 4000), @p136='?' (Size = 4000), @p137='?' (Size = 4000), @p138='?' (DbType = Int32), @p139='?' (DbType = DateTime), @p140='?' (Size = 4000), @p141='?' (Size = 4000), @p142='?' (Size = 4000), @p143='?' (Size = 4000), @p144='?' (Size = 4000), @p145='?' (Size = 4000), @p146='?' (Size = 4000), @p147='?' (DbType = Int32), @p148='?' (DbType = DateTime), @p149='?' (Size = 4000), @p150='?' (Size = 4000), @p151='?' (Size = 4000), @p152='?' (Size = 4000), @p153='?' (Size = 4000), @p154='?' (Size = 4000), @p155='?' (Size = 4000), @p156='?' (DbType = Int32), @p157='?' (DbType = DateTime), @p158='?' (Size = 4000), @p159='?' (Size = 4000), @p160='?' (Size = 4000), @p161='?' (Size = 4000), @p162='?' (Size = 4000), @p163='?' (Size = 4000), @p164='?' (Size = 4000), @p165='?' (DbType = Int32), @p166='?' (DbType = DateTime), @p167='?' (Size = 4000), @p168='?' (Size = 4000), @p169='?' (Size = 4000), @p170='?' (Size = 4000), @p171='?' (Size = 4000), @p172='?' (Size = 4000), @p173='?' (Size = 4000), @p174='?' (DbType = Int32), @p175='?' (DbType = DateTime), @p176='?' (Size = 4000), @p177='?' (Size = 4000), @p178='?' (Size = 4000), @p179='?' (Size = 4000), @p180='?' (Size = 4000), @p181='?' (Size = 4000), @p182='?' (Size = 4000), @p183='?' (DbType = Int32), @p184='?' (DbType = DateTime), @p185='?' (Size = 4000), @p186='?' (Size = 4000), @p187='?' (Size = 4000), @p188='?' (Size = 4000), @p189='?' (Size = 4000), @p190='?' (Size = 4000), @p191='?' (Size = 4000), @p192='?' (DbType = Int32), @p193='?' (DbType = DateTime), @p194='?' (Size = 4000), @p195='?' (Size = 4000), @p196='?' (Size = 4000), @p197='?' (Size = 4000), @p198='?' (Size = 4000), @p199='?' (Size = 4000), @p200='?' (Size = 4000), @p201='?' (DbType = Int32), @p202='?' (DbType = DateTime), @p203='?' (Size = 4000), @p204='?' (Size = 4000), @p205='?' (Size = 4000), @p206='?' (Size = 4000), @p207='?' (Size = 4000), @p208='?' (Size = 4000), @p209='?' (Size = 4000), @p210='?' (DbType = Int32), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 4000), @p214='?' (Size = 4000), @p215='?' (Size = 4000), @p216='?' (Size = 4000), @p217='?' (Size = 4000), @p218='?' (Size = 4000), @p219='?' (DbType = Int32), @p220='?' (DbType = DateTime), @p221='?' (Size = 4000), @p222='?' (Size = 4000), @p223='?' (Size = 4000), @p224='?' (Size = 4000), @p225='?' (Size = 4000), @p226='?' (Size = 4000), @p227='?' (Size = 4000), @p228='?' (DbType = Int32), @p229='?' (DbType = DateTime), @p230='?' (Size = 4000), @p231='?' (Size = 4000), @p232='?' (Size = 4000), @p233='?' (Size = 4000), @p234='?' (Size = 4000), @p235='?' (Size = 4000), @p236='?' (Size = 4000), @p237='?' (DbType = Int32), @p238='?' (DbType = DateTime), @p239='?' (Size = 4000), @p240='?' (Size = 4000), @p241='?' (Size = 4000), @p242='?' (Size = 4000), @p243='?' (Size = 4000), @p244='?' (Size = 4000), @p245='?' (Size = 4000), @p246='?' (DbType = Int32), @p247='?' (DbType = DateTime), @p248='?' (Size = 4000), @p249='?' (Size = 4000), @p250='?' (Size = 4000), @p251='?' (Size = 4000), @p252='?' (Size = 4000), @p253='?' (Size = 4000), @p254='?' (Size = 4000), @p255='?' (DbType = Int32), @p256='?' (DbType = DateTime), @p257='?' (Size = 4000), @p258='?' (Size = 4000), @p259='?' (Size = 4000), @p260='?' (Size = 4000), @p261='?' (Size = 4000), @p262='?' (Size = 4000), @p263='?' (Size = 4000), @p264='?' (DbType = Int32), @p265='?' (DbType = DateTime), @p266='?' (Size = 4000), @p267='?' (Size = 4000), @p268='?' (Size = 4000), @p269='?' (Size = 4000), @p270='?' (Size = 4000), @p271='?' (Size = 4000), @p272='?' (Size = 4000), @p273='?' (DbType = Int32), @p274='?' (DbType = DateTime), @p275='?' (Size = 4000), @p276='?' (Size = 4000), @p277='?' (Size = 4000), @p278='?' (Size = 4000), @p279='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p73, @p74, @p75, @p76, @p77, @p78, @p79, @p80, @p81);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p163, @p164, @p165, @p166, @p167, @p168, @p169, @p170, @p171);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, @p180);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197, @p198);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p208, @p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, @p225);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p235, @p236, @p237, @p238, @p239, @p240, @p241, @p242, @p243);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p253, @p254, @p255, @p256, @p257, @p258, @p259, @p260, @p261);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, @p270);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p271, @p272, @p273, @p274, @p275, @p276, @p277, @p278, @p279);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-07-01 01:09:30.190 +02:00 [ERR] An exception occurred in the database while saving changes for context type 'Infrastructure.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2023-07-01 01:09:40.001 +02:00 [INF] Starting web host
+2023-07-01 01:09:40.701 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 01:09:40.861 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 01:09:40.861 +02:00 [INF] Hosting environment: Development
+2023-07-01 01:09:40.861 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 01:09:40.877 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 01:09:40.926 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 01:09:40.954 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 01:09:41.352 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 01:09:41.353 +02:00 [INF] Getting API result for city: cph
+2023-07-01 01:09:42.586 +02:00 [INF] Executed DbCommand (45ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 01:11:32.281 +02:00 [INF] Executed DbCommand (12ms) [Parameters=[@p0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `CityPrayerTimes` (`City`)
+VALUES (@p0);
+SELECT `Id`
+FROM `CityPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-07-01 01:11:32.327 +02:00 [ERR] Failed executing DbCommand (17ms) [Parameters=[@p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (DbType = DateTime), @p5='?' (Size = 4000), @p6='?' (Size = 4000), @p7='?' (Size = 4000), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Int32), @p13='?' (DbType = DateTime), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?' (Size = 4000), @p18='?' (Size = 4000), @p19='?' (Size = 4000), @p20='?' (Size = 4000), @p21='?' (DbType = Int32), @p22='?' (DbType = DateTime), @p23='?' (Size = 4000), @p24='?' (Size = 4000), @p25='?' (Size = 4000), @p26='?' (Size = 4000), @p27='?' (Size = 4000), @p28='?' (Size = 4000), @p29='?' (Size = 4000), @p30='?' (DbType = Int32), @p31='?' (DbType = DateTime), @p32='?' (Size = 4000), @p33='?' (Size = 4000), @p34='?' (Size = 4000), @p35='?' (Size = 4000), @p36='?' (Size = 4000), @p37='?' (Size = 4000), @p38='?' (Size = 4000), @p39='?' (DbType = Int32), @p40='?' (DbType = DateTime), @p41='?' (Size = 4000), @p42='?' (Size = 4000), @p43='?' (Size = 4000), @p44='?' (Size = 4000), @p45='?' (Size = 4000), @p46='?' (Size = 4000), @p47='?' (Size = 4000), @p48='?' (DbType = Int32), @p49='?' (DbType = DateTime), @p50='?' (Size = 4000), @p51='?' (Size = 4000), @p52='?' (Size = 4000), @p53='?' (Size = 4000), @p54='?' (Size = 4000), @p55='?' (Size = 4000), @p56='?' (Size = 4000), @p57='?' (DbType = Int32), @p58='?' (DbType = DateTime), @p59='?' (Size = 4000), @p60='?' (Size = 4000), @p61='?' (Size = 4000), @p62='?' (Size = 4000), @p63='?' (Size = 4000), @p64='?' (Size = 4000), @p65='?' (Size = 4000), @p66='?' (DbType = Int32), @p67='?' (DbType = DateTime), @p68='?' (Size = 4000), @p69='?' (Size = 4000), @p70='?' (Size = 4000), @p71='?' (Size = 4000), @p72='?' (Size = 4000), @p73='?' (Size = 4000), @p74='?' (Size = 4000), @p75='?' (DbType = Int32), @p76='?' (DbType = DateTime), @p77='?' (Size = 4000), @p78='?' (Size = 4000), @p79='?' (Size = 4000), @p80='?' (Size = 4000), @p81='?' (Size = 4000), @p82='?' (Size = 4000), @p83='?' (Size = 4000), @p84='?' (DbType = Int32), @p85='?' (DbType = DateTime), @p86='?' (Size = 4000), @p87='?' (Size = 4000), @p88='?' (Size = 4000), @p89='?' (Size = 4000), @p90='?' (Size = 4000), @p91='?' (Size = 4000), @p92='?' (Size = 4000), @p93='?' (DbType = Int32), @p94='?' (DbType = DateTime), @p95='?' (Size = 4000), @p96='?' (Size = 4000), @p97='?' (Size = 4000), @p98='?' (Size = 4000), @p99='?' (Size = 4000), @p100='?' (Size = 4000), @p101='?' (Size = 4000), @p102='?' (DbType = Int32), @p103='?' (DbType = DateTime), @p104='?' (Size = 4000), @p105='?' (Size = 4000), @p106='?' (Size = 4000), @p107='?' (Size = 4000), @p108='?' (Size = 4000), @p109='?' (Size = 4000), @p110='?' (Size = 4000), @p111='?' (DbType = Int32), @p112='?' (DbType = DateTime), @p113='?' (Size = 4000), @p114='?' (Size = 4000), @p115='?' (Size = 4000), @p116='?' (Size = 4000), @p117='?' (Size = 4000), @p118='?' (Size = 4000), @p119='?' (Size = 4000), @p120='?' (DbType = Int32), @p121='?' (DbType = DateTime), @p122='?' (Size = 4000), @p123='?' (Size = 4000), @p124='?' (Size = 4000), @p125='?' (Size = 4000), @p126='?' (Size = 4000), @p127='?' (Size = 4000), @p128='?' (Size = 4000), @p129='?' (DbType = Int32), @p130='?' (DbType = DateTime), @p131='?' (Size = 4000), @p132='?' (Size = 4000), @p133='?' (Size = 4000), @p134='?' (Size = 4000), @p135='?' (Size = 4000), @p136='?' (Size = 4000), @p137='?' (Size = 4000), @p138='?' (DbType = Int32), @p139='?' (DbType = DateTime), @p140='?' (Size = 4000), @p141='?' (Size = 4000), @p142='?' (Size = 4000), @p143='?' (Size = 4000), @p144='?' (Size = 4000), @p145='?' (Size = 4000), @p146='?' (Size = 4000), @p147='?' (DbType = Int32), @p148='?' (DbType = DateTime), @p149='?' (Size = 4000), @p150='?' (Size = 4000), @p151='?' (Size = 4000), @p152='?' (Size = 4000), @p153='?' (Size = 4000), @p154='?' (Size = 4000), @p155='?' (Size = 4000), @p156='?' (DbType = Int32), @p157='?' (DbType = DateTime), @p158='?' (Size = 4000), @p159='?' (Size = 4000), @p160='?' (Size = 4000), @p161='?' (Size = 4000), @p162='?' (Size = 4000), @p163='?' (Size = 4000), @p164='?' (Size = 4000), @p165='?' (DbType = Int32), @p166='?' (DbType = DateTime), @p167='?' (Size = 4000), @p168='?' (Size = 4000), @p169='?' (Size = 4000), @p170='?' (Size = 4000), @p171='?' (Size = 4000), @p172='?' (Size = 4000), @p173='?' (Size = 4000), @p174='?' (DbType = Int32), @p175='?' (DbType = DateTime), @p176='?' (Size = 4000), @p177='?' (Size = 4000), @p178='?' (Size = 4000), @p179='?' (Size = 4000), @p180='?' (Size = 4000), @p181='?' (Size = 4000), @p182='?' (Size = 4000), @p183='?' (DbType = Int32), @p184='?' (DbType = DateTime), @p185='?' (Size = 4000), @p186='?' (Size = 4000), @p187='?' (Size = 4000), @p188='?' (Size = 4000), @p189='?' (Size = 4000), @p190='?' (Size = 4000), @p191='?' (Size = 4000), @p192='?' (DbType = Int32), @p193='?' (DbType = DateTime), @p194='?' (Size = 4000), @p195='?' (Size = 4000), @p196='?' (Size = 4000), @p197='?' (Size = 4000), @p198='?' (Size = 4000), @p199='?' (Size = 4000), @p200='?' (Size = 4000), @p201='?' (DbType = Int32), @p202='?' (DbType = DateTime), @p203='?' (Size = 4000), @p204='?' (Size = 4000), @p205='?' (Size = 4000), @p206='?' (Size = 4000), @p207='?' (Size = 4000), @p208='?' (Size = 4000), @p209='?' (Size = 4000), @p210='?' (DbType = Int32), @p211='?' (DbType = DateTime), @p212='?' (Size = 4000), @p213='?' (Size = 4000), @p214='?' (Size = 4000), @p215='?' (Size = 4000), @p216='?' (Size = 4000), @p217='?' (Size = 4000), @p218='?' (Size = 4000), @p219='?' (DbType = Int32), @p220='?' (DbType = DateTime), @p221='?' (Size = 4000), @p222='?' (Size = 4000), @p223='?' (Size = 4000), @p224='?' (Size = 4000), @p225='?' (Size = 4000), @p226='?' (Size = 4000), @p227='?' (Size = 4000), @p228='?' (DbType = Int32), @p229='?' (DbType = DateTime), @p230='?' (Size = 4000), @p231='?' (Size = 4000), @p232='?' (Size = 4000), @p233='?' (Size = 4000), @p234='?' (Size = 4000), @p235='?' (Size = 4000), @p236='?' (Size = 4000), @p237='?' (DbType = Int32), @p238='?' (DbType = DateTime), @p239='?' (Size = 4000), @p240='?' (Size = 4000), @p241='?' (Size = 4000), @p242='?' (Size = 4000), @p243='?' (Size = 4000), @p244='?' (Size = 4000), @p245='?' (Size = 4000), @p246='?' (DbType = Int32), @p247='?' (DbType = DateTime), @p248='?' (Size = 4000), @p249='?' (Size = 4000), @p250='?' (Size = 4000), @p251='?' (Size = 4000), @p252='?' (Size = 4000), @p253='?' (Size = 4000), @p254='?' (Size = 4000), @p255='?' (DbType = Int32), @p256='?' (DbType = DateTime), @p257='?' (Size = 4000), @p258='?' (Size = 4000), @p259='?' (Size = 4000), @p260='?' (Size = 4000), @p261='?' (Size = 4000), @p262='?' (Size = 4000), @p263='?' (Size = 4000), @p264='?' (DbType = Int32), @p265='?' (DbType = DateTime), @p266='?' (Size = 4000), @p267='?' (Size = 4000), @p268='?' (Size = 4000), @p269='?' (Size = 4000), @p270='?' (Size = 4000), @p271='?' (Size = 4000), @p272='?' (Size = 4000), @p273='?' (DbType = Int32), @p274='?' (DbType = DateTime), @p275='?' (Size = 4000), @p276='?' (Size = 4000), @p277='?' (Size = 4000), @p278='?' (Size = 4000), @p279='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p19, @p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p46, @p47, @p48, @p49, @p50, @p51, @p52, @p53, @p54);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p55, @p56, @p57, @p58, @p59, @p60, @p61, @p62, @p63);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p64, @p65, @p66, @p67, @p68, @p69, @p70, @p71, @p72);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p73, @p74, @p75, @p76, @p77, @p78, @p79, @p80, @p81);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p91, @p92, @p93, @p94, @p95, @p96, @p97, @p98, @p99);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p136, @p137, @p138, @p139, @p140, @p141, @p142, @p143, @p144);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p145, @p146, @p147, @p148, @p149, @p150, @p151, @p152, @p153);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p154, @p155, @p156, @p157, @p158, @p159, @p160, @p161, @p162);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p163, @p164, @p165, @p166, @p167, @p168, @p169, @p170, @p171);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p172, @p173, @p174, @p175, @p176, @p177, @p178, @p179, @p180);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p181, @p182, @p183, @p184, @p185, @p186, @p187, @p188, @p189);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p190, @p191, @p192, @p193, @p194, @p195, @p196, @p197, @p198);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p199, @p200, @p201, @p202, @p203, @p204, @p205, @p206, @p207);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p208, @p209, @p210, @p211, @p212, @p213, @p214, @p215, @p216);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p217, @p218, @p219, @p220, @p221, @p222, @p223, @p224, @p225);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p226, @p227, @p228, @p229, @p230, @p231, @p232, @p233, @p234);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p235, @p236, @p237, @p238, @p239, @p240, @p241, @p242, @p243);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p244, @p245, @p246, @p247, @p248, @p249, @p250, @p251, @p252);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p253, @p254, @p255, @p256, @p257, @p258, @p259, @p260, @p261);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p262, @p263, @p264, @p265, @p266, @p267, @p268, @p269, @p270);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+
+INSERT INTO `DailyPrayerTimes` (`AsrHanafiTime`, `AsrTime`, `CityPrayerTimesId`, `Date`, `DhuhrTime`, `FajrTime`, `IshaTime`, `MaghribTime`, `SunriseTime`)
+VALUES (@p271, @p272, @p273, @p274, @p275, @p276, @p277, @p278, @p279);
+SELECT `Id`
+FROM `DailyPrayerTimes`
+WHERE ROW_COUNT() = 1 AND `Id` = LAST_INSERT_ID();
+2023-07-01 01:11:32.693 +02:00 [ERR] An exception occurred in the database while saving changes for context type 'Infrastructure.Data.ApplicationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> MySqlConnector.MySqlException (0x80004005): Column 'FajrTime' cannot be null
+   at MySqlConnector.Core.ServerSession.ReceiveReplyAsyncAwaited(ValueTask`1 task) in /_/src/MySqlConnector/Core/ServerSession.cs:line 962
+   at MySqlConnector.Core.ResultSet.ReadResultSetHeaderAsync(IOBehavior ioBehavior) in /_/src/MySqlConnector/Core/ResultSet.cs:line 43
+   at MySqlConnector.MySqlDataReader.ActivateResultSet(CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 130
+   at MySqlConnector.MySqlDataReader.CreateAsync(CommandListPosition commandListPosition, ICommandPayloadCreator payloadCreator, IDictionary`2 cachedProcedures, IMySqlCommand command, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlDataReader.cs:line 468
+   at MySqlConnector.Core.CommandExecutor.ExecuteReaderAsync(IReadOnlyList`1 commands, ICommandPayloadCreator payloadCreator, CommandBehavior behavior, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/CommandExecutor.cs:line 56
+   at MySqlConnector.MySqlCommand.ExecuteReaderAsync(CommandBehavior behavior, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 344
+   at MySqlConnector.MySqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlCommand.cs:line 337
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2023-07-01 01:57:37.495 +02:00 [INF] Starting web host
+2023-07-01 01:57:38.287 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 01:57:38.448 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 01:57:38.449 +02:00 [INF] Hosting environment: Development
+2023-07-01 01:57:38.449 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 01:57:38.464 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 01:57:38.513 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 01:57:38.543 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 01:57:38.901 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 01:57:38.902 +02:00 [INF] Getting API result for city: cph
+2023-07-01 01:57:40.137 +02:00 [INF] Executed DbCommand (49ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 02:03:55.215 +02:00 [ERR] Error occurred while fetching prayer data for city cph
+Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type 'Domain.Models.MuwaqqitResponse'. Path '', line 1, position 3.
+ ---> System.ArgumentException: Could not cast or convert from System.Int64 to Domain.Models.MuwaqqitResponse.
+   at Newtonsoft.Json.Utilities.ConvertUtils.EnsureTypeAssignable(Object value, Type initialType, Type targetType)
+   at Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(Object initialValue, CultureInfo culture, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   --- End of inner exception stack trace ---
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.Deserialize[T](JsonReader reader)
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 100
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 134
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 50
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 49
+2023-07-01 02:03:55.261 +02:00 [INF] Executing ViewResult, running view Index.
+2023-07-01 02:03:56.472 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 377910.9049ms
+2023-07-01 02:03:56.473 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 02:03:56.479 +02:00 [INF] Session started; Key:dc97b255-b648-4e17-aab8-e20637903815, Id:ae692f1e-41da-27c7-6622-53763d9225d9
+2023-07-01 02:03:56.485 +02:00 [ERR] An unhandled exception has occurred while executing the request.
+Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: Cannot convert type 'Domain.Models.MuwaqqitResponse' to 'Domain.Models.CityPrayerTimes'
+   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at AspNetCoreGeneratedDocument.Views_Home_Index.ExecuteAsync() in C:\Users\hadih\source\repos\PrayerTimes\Web\Views\Home\Index.cshtml:line 55
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageCoreAsync(IRazorPage page, ViewContext context)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderPageAsync(IRazorPage page, ViewContext context, Boolean invokeViewStarts)
+   at Microsoft.AspNetCore.Mvc.Razor.RazorView.RenderAsync(ViewContext context)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ViewContext viewContext, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewExecutor.ExecuteAsync(ActionContext actionContext, IView view, ViewDataDictionary viewData, ITempDataDictionary tempData, String contentType, Nullable`1 statusCode)
+   at Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor.ExecuteAsync(ActionContext context, ViewResult result)
+   at Microsoft.AspNetCore.Mvc.ViewResult.ExecuteResultAsync(ActionContext context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResultFilterAsync>g__Awaited|30_0[TFilter,TFilterAsync](ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResultExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2023-07-01 02:03:56.609 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2023-07-01 02:03:56.609 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2023-07-01 02:03:56.620 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 500 - text/html;+charset=utf-8 378140.9385ms
+2023-07-01 02:03:56.624 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 9.1097ms
+2023-07-01 02:03:56.645 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 35.7920ms
+2023-07-01 02:04:03.257 +02:00 [INF] Starting web host
+2023-07-01 02:04:03.944 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 02:04:04.106 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 02:04:04.106 +02:00 [INF] Hosting environment: Development
+2023-07-01 02:04:04.106 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 02:04:04.122 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 02:04:04.172 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 02:04:04.203 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 02:04:04.593 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 02:04:04.594 +02:00 [INF] Getting API result for city: cph
+2023-07-01 02:04:05.838 +02:00 [INF] Executed DbCommand (51ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2023-07-01 02:12:17.466 +02:00 [INF] Starting web host
+2023-07-01 02:12:18.193 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2023-07-01 02:12:18.352 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-01 02:12:18.353 +02:00 [INF] Hosting environment: Development
+2023-07-01 02:12:18.353 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2023-07-01 02:12:18.368 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2023-07-01 02:12:18.419 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2023-07-01 02:12:18.449 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2023-07-01 02:12:18.851 +02:00 [INF] Accessing expired session, Key:dc97b255-b648-4e17-aab8-e20637903815
+2023-07-01 02:12:18.852 +02:00 [INF] Getting API result for city: cph
+2023-07-01 02:12:20.069 +02:00 [INF] Executed DbCommand (47ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
