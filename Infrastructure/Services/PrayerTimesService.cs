@@ -26,6 +26,7 @@ namespace Infrastructure.Services
             if (DateTime.Today.Day == 1)
             {
                 await _cityPrayerTimesRepository.TruncateTablesAsync();
+                await
             }
 
             // Fetch the CityPrayerTimes data from the database
