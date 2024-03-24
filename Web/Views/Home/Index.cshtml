@@ -1,6 +1,8 @@
 ﻿    @using Domain.Models;
+    @using Microsoft.AspNetCore.Http
     @{
         ViewData["Title"] = "Home Page";
+        var activeButton = Context.Session.GetString("ActiveButton");
     }
 
     <style>
@@ -46,6 +48,13 @@
             text-align: right;
             margin-top: 25px;
         }
+
+    .selected-prayer-button {
+        background-color: #FFDC00; /* Yellow background */
+        color: #1a1a1a; /* Dark text */
+        border-color: #1a1a1a; /* Dark border */
+    }
+
     </style>
 
     <div class="text-center">
@@ -58,12 +67,12 @@
 
 
         <form>
-            <div class="prayer-buttons">
-                <button class="prayer-button" name="button_value" value="cph" asp-action="Check">København</button>
-                <button class="prayer-button" name="button_value" value="odense" asp-action="Check">Odense</button>
-                <button class="prayer-button" name="button_value" value="aarhus" asp-action="Check">Århus</button>
-                <button class="prayer-button" name="button_value" value="aalborg" asp-action="Check">Aalborg</button>
-            </div>
+        <div class="prayer-buttons">
+            <button class="prayer-button @(activeButton == "cph" ? "selected-prayer-button" : "")" name="button_value" value="cph" asp-action="Check">København</button>
+            <button class="prayer-button @(activeButton == "odense" ? "selected-prayer-button" : "")" name="button_value" value="odense" asp-action="Check">Odense</button>
+            <button class="prayer-button @(activeButton == "aarhus" ? "selected-prayer-button" : "")" name="button_value" value="aarhus" asp-action="Check">Århus</button>
+            <button class="prayer-button @(activeButton == "aalborg" ? "selected-prayer-button" : "")" name="button_value" value="aalborg" asp-action="Check">Aalborg</button>
+        </div>
         </form>
 
         <table class="prayer-table">

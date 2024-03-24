@@ -60,6 +60,9 @@ namespace Web.Controllers
 
         public IActionResult Check(string button_value)
         {
+
+            HttpContext.Session.SetString("ActiveButton", button_value);
+
             if (!button_value.Equals("cph"))
             {
                 ViewData["Deactive"] = "cph";
