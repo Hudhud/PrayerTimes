@@ -60,22 +60,8 @@ namespace Web.Controllers
 
         public IActionResult Check(string button_value)
         {
-
             HttpContext.Session.SetString("ActiveButton", button_value);
 
-            if (!button_value.Equals("cph"))
-            {
-                ViewData["Deactive"] = "cph";
-                HttpContext.Session.SetString("Deactive", "cph");
-            }
-            else
-            {
-                ViewData["Deactive"] = null;
-                HttpContext.Session.SetString("Deactive", string.Empty);
-            }
-
-            ViewData["Active"] = button_value;
-            HttpContext.Session.SetString("Active", button_value);
             if (!string.IsNullOrEmpty(button_value))
             {
                 selected_City = button_value;
@@ -83,6 +69,7 @@ namespace Web.Controllers
 
             return RedirectToAction("Index");
         }
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
