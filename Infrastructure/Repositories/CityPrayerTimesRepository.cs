@@ -39,8 +39,8 @@ namespace Infrastructure.Repositories
             await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 0;");
 
             // Truncate tables
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DailyPrayerTimes");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CityPrayerTimes");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DailyPrayerTimes;");
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CityPrayerTimes;");
 
             // Re-enable foreign key checks
             await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 1;");
