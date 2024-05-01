@@ -159,7 +159,7 @@ namespace Infrastructure.Services
 
             cityPrayerTimes.DailyPrayerTimesList = dailyPrayerTimesList;
 
-            await _cityPrayerTimesRepository.AddAsync(cityPrayerTimes);
+            await _cityPrayerTimesRepository.AddOrUpdateAsync(cityPrayerTimes);
 
             return cityPrayerTimes;
         }
