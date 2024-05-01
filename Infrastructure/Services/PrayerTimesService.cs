@@ -95,14 +95,10 @@ namespace Infrastructure.Services
 
                 if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    if (response.Headers.TryGetValues("Retry-After", out var values))
-                    {
-                        var retryAfter = values.First();
-                        int retryAfterSeconds = int.Parse(retryAfter);
-                        _logger.LogWarning("Rate limit hit, retrying after {RetryAfterSeconds} seconds", retryAfterSeconds);
-                        await Task.Delay(retryAfterSeconds * 1000);
-                        return await GetApiPrayerData(url);
-                    }
+                    var retryAfter = response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 30;
+                    _logger.LogWarning("Rate limit hit, retrying after {RetryAfterSeconds} seconds", retryAfter);
+                    await Task.Delay((int)retryAfter * 1000);
+                    return await GetApiPrayerData(url);
                 }
 
                 response.EnsureSuccessStatusCode();
@@ -116,13 +112,22 @@ namespace Infrastructure.Services
                 var serializer = new JsonSerializer();
                 return serializer.Deserialize<MuwaqqitResponse>(jsonTextReader);
             }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "JSON parsing error occurred.");
+                throw;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "HTTP request failed.");
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to fetch or process data from the API.");
                 throw;
             }
         }
-
 
         private async Task<CityPrayerTimes> ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, string city)
         {
