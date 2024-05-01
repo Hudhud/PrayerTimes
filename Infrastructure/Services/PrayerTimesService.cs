@@ -21,39 +21,32 @@ namespace Infrastructure.Services
 
         public async Task<CityPrayerTimes> GetPrayerData(string city)
         {
-            _logger.LogInformation("Getting API result for city: {CityName}", city);
+            _logger.LogInformation("Attempting to fetch prayer data for city: {CityName}", city);
 
-            if (DateTime.Today.Day == 1)
+            try
             {
-                await _cityPrayerTimesRepository.TruncateTablesAsync();
-            }
+                if (DateTime.Today.Day == 1)
+                {
+                    _logger.LogInformation("Truncating tables on the first day of the month.");
+                    await _cityPrayerTimesRepository.TruncateTablesAsync();
+                }
 
-            // Fetch the CityPrayerTimes data from the database
-            var cityPrayerTimes = await _cityPrayerTimesRepository.GetByCityAsync(city);
+                var cityPrayerTimes = await _cityPrayerTimesRepository.GetByCityAsync(city);
+                if (cityPrayerTimes == null)
+                {
+                    _logger.LogWarning("No data found for city: {CityName}, fetching from API.", city);
+                    cityPrayerTimes = new CityPrayerTimes { City = city, DailyPrayerTimesList = new List<DailyPrayerTimes>() };
+                    var url = BuildApiUrl(city);
+                    var apiData = await GetApiPrayerData(url);
+                    cityPrayerTimes = await ProcessAndStoreApiData(cityPrayerTimes, apiData, city);
+                }
 
-            cityPrayerTimes ??= new CityPrayerTimes
-            {
-                City = city,
-                DailyPrayerTimesList = new List<DailyPrayerTimes>()
-            };
-
-            // Check if the data for the current month is already available
-            var currentMonthDataAvailable = IsCurrentMonthDataAvailable((List<DailyPrayerTimes>)cityPrayerTimes.DailyPrayerTimesList);
-
-            if (!currentMonthDataAvailable)
-            {
-                // Build the URL based on the city
-                var url = BuildApiUrl(city);
-
-                // Fetch the API data
-                var muwaqqitResponse = await GetApiPrayerData(url);
-
-                // Process and store the API data in the database
-                return await ProcessAndStoreApiData(cityPrayerTimes, muwaqqitResponse, city);
-            }
-            else
-            {
                 return cityPrayerTimes;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to fetch or process prayer data for city: {CityName}", city);
+                throw;
             }
         }
 
