@@ -14,9 +14,21 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(CityPrayerTimes cityPrayerTimes)
+        public async Task AddOrUpdateAsync(CityPrayerTimes cityPrayerTimes)
         {
-            await _context.CityPrayerTimes.AddAsync(cityPrayerTimes);
+            var existingCity = await _context.CityPrayerTimes
+                                             .FirstOrDefaultAsync(c => c.City.Equals(cityPrayerTimes.City, StringComparison.OrdinalIgnoreCase));
+
+            if (existingCity != null)
+            {
+                _context.Entry(existingCity).CurrentValues.SetValues(cityPrayerTimes);
+                existingCity.DailyPrayerTimesList = cityPrayerTimes.DailyPrayerTimesList;
+            }
+            else
+            {
+                await _context.CityPrayerTimes.AddAsync(cityPrayerTimes);
+            }
+
             await _context.SaveChangesAsync();
         }
 
@@ -35,16 +47,25 @@ namespace Infrastructure.Repositories
 
         public async Task TruncateTablesAsync()
         {
-            // Disable foreign key checks
-            await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 0;");
+            try
+            {
+                // Disable foreign key checks
+                await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 0;");
 
-            // Truncate tables
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DailyPrayerTimes;");
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CityPrayerTimes;");
+                // Truncate tables
+                await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DailyPrayerTimes;");
+                await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CityPrayerTimes;");
 
-            // Re-enable foreign key checks
-            await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 1;");
+                // Re-enable foreign key checks
+                await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 1;");
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+
 
 
     }

@@ -28,49 +28,31 @@ namespace Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("SameSession") == string.Empty || HttpContext.Session.GetString("SameSession") == null)
-            {
-                HttpContext.Session.SetString("Active", "cph");
-                selected_City = "cph";
-                HttpContext.Session.SetString("SameSession", "true");
-            }
-
-            if (string.IsNullOrEmpty(selected_City))
-            {
-                selected_City = "cph";
-            }
+            string selectedCity = HttpContext.Session.GetString("SelectedCity") ?? "cph";
+            HttpContext.Session.SetString("SelectedCity", selectedCity);
 
             try
             {
                 var serviceLogger = _loggerFactory.CreateLogger<PrayerTimesService>();
-
                 var service = new PrayerTimesService(_cityPrayerTimesRepository, serviceLogger);
-
-                return View(await service.GetPrayerData(selected_City.ToLower()));
-
+                var prayerData = await service.GetPrayerData(selectedCity.ToLower());
+                return View(prayerData);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error occurred while fetching prayer data for city {City}", selected_City);
+                _logger.LogError(e, "Error occurred while fetching prayer data for city {City}", selectedCity);
+                return View(new MuwaqqitResponse());
             }
-
-            // Return an empty model if there's an exception
-            return View(new MuwaqqitResponse());
         }
 
         public IActionResult Check(string button_value)
         {
-            HttpContext.Session.SetString("ActiveButton", button_value);
-
             if (!string.IsNullOrEmpty(button_value))
             {
-                selected_City = button_value;
+                HttpContext.Session.SetString("SelectedCity", button_value);
             }
-
             return RedirectToAction("Index");
         }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(string errorMessage = "An unexpected error occurred.", string errorCode = "500")
