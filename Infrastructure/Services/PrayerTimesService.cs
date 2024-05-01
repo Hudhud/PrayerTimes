@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Shared;
 using System.Net;
-using System.Text;
 
 namespace Infrastructure.Services
 {
@@ -89,42 +88,29 @@ namespace Infrastructure.Services
             using var httpClient = new HttpClient();
             try
             {
-                _logger.LogInformation("Requesting API data from URL: {Url}", url);
-                using var response = await httpClient.GetAsync(url);
-                _logger.LogInformation("API response status: {StatusCode}", response.StatusCode);
-
+                HttpResponseMessage response = await httpClient.GetAsync(url);
                 if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
+                    // Handle 429 Too Many Requests
                     var retryAfter = response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 30;
                     _logger.LogWarning("Rate limit hit, retrying after {RetryAfterSeconds} seconds", retryAfter);
                     await Task.Delay((int)retryAfter * 1000);
-                    return await GetApiPrayerData(url);
+                    return await GetApiPrayerData(url); // Recursive retry
                 }
 
                 response.EnsureSuccessStatusCode();
 
                 var responseContent = await response.Content.ReadAsStringAsync();
-                _logger.LogInformation("API response content: {Content}", responseContent);
-
-                using var stream = new MemoryStream(Encoding.UTF8.GetBytes(responseContent));
-                using var streamReader = new StreamReader(stream);
-                using var jsonTextReader = new JsonTextReader(streamReader);
-                var serializer = new JsonSerializer();
-                return serializer.Deserialize<MuwaqqitResponse>(jsonTextReader);
+                return JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "JSON parsing error occurred.");
+                _logger.LogError(ex, "JSON parsing error occurred while processing data from the API.");
                 throw;
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "HTTP request failed.");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to fetch or process data from the API.");
+                _logger.LogError(ex, "HTTP request failed to {Url}", url);
                 throw;
             }
         }

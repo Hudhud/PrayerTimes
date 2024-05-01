@@ -1,5 +1,4 @@
-﻿using Domain.Models;
-using Domain.Repositories;
+﻿using Domain.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +14,6 @@ namespace Web.Controllers
     {
         private readonly ILogger _logger;
         private readonly ICityPrayerTimesRepository _cityPrayerTimesRepository;
-        static string selected_City;
         private readonly ILoggerFactory _loggerFactory;
 
 
@@ -36,14 +34,27 @@ namespace Web.Controllers
                 var serviceLogger = _loggerFactory.CreateLogger<PrayerTimesService>();
                 var service = new PrayerTimesService(_cityPrayerTimesRepository, serviceLogger);
                 var prayerData = await service.GetPrayerData(selectedCity.ToLower());
+
+                if (prayerData == null)
+                {
+                    _logger.LogWarning("No prayer data available for {City}", selectedCity);
+                    return View("Error", new CustomErrorViewModel { ErrorMessage = "No prayer data available." });
+                }
+
                 return View(prayerData);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error occurred while fetching prayer data for city {City}", selectedCity);
-                return View(new MuwaqqitResponse());
+                return View("Error", new CustomErrorViewModel
+                {
+                    ErrorMessage = "An error occurred while processing your request.",
+                    Details = e.Message,
+                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+                });
             }
         }
+
 
         public IActionResult Check(string button_value)
         {
