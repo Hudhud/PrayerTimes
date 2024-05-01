@@ -4,6 +4,8 @@ using Domain.Services;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Shared;
+using System.Net;
+using System.Text;
 
 namespace Infrastructure.Services
 {
@@ -85,17 +87,42 @@ namespace Infrastructure.Services
         private async Task<MuwaqqitResponse> GetApiPrayerData(string url)
         {
             using var httpClient = new HttpClient();
-            using var response = await httpClient.GetAsync(url);
-            using var stream = await response.Content.ReadAsStreamAsync();
+            try
+            {
+                _logger.LogInformation("Requesting API data from URL: {Url}", url);
+                using var response = await httpClient.GetAsync(url);
+                _logger.LogInformation("API response status: {StatusCode}", response.StatusCode);
 
-            using var streamReader = new StreamReader(stream);
-            using var jsonTextReader = new JsonTextReader(streamReader);
+                if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    if (response.Headers.TryGetValues("Retry-After", out var values))
+                    {
+                        var retryAfter = values.First();
+                        int retryAfterSeconds = int.Parse(retryAfter);
+                        _logger.LogWarning("Rate limit hit, retrying after {RetryAfterSeconds} seconds", retryAfterSeconds);
+                        await Task.Delay(retryAfterSeconds * 1000);
+                        return await GetApiPrayerData(url);
+                    }
+                }
 
-            var serializer = new JsonSerializer();
-            var deserializedResponse = serializer.Deserialize<MuwaqqitResponse>(jsonTextReader);
+                response.EnsureSuccessStatusCode();
 
-            return deserializedResponse;
+                var responseContent = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("API response content: {Content}", responseContent);
+
+                using var stream = new MemoryStream(Encoding.UTF8.GetBytes(responseContent));
+                using var streamReader = new StreamReader(stream);
+                using var jsonTextReader = new JsonTextReader(streamReader);
+                var serializer = new JsonSerializer();
+                return serializer.Deserialize<MuwaqqitResponse>(jsonTextReader);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to fetch or process data from the API.");
+                throw;
+            }
         }
+
 
         private async Task<CityPrayerTimes> ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, string city)
         {
