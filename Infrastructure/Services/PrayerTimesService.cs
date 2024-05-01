@@ -89,18 +89,25 @@ namespace Infrastructure.Services
             try
             {
                 HttpResponseMessage response = await httpClient.GetAsync(url);
+
+                _logger.LogInformation("Received HTTP status {StatusCode} for URL {Url}", response.StatusCode, url);
+
                 if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    // Handle 429 Too Many Requests
                     var retryAfter = response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 30;
                     _logger.LogWarning("Rate limit hit, retrying after {RetryAfterSeconds} seconds", retryAfter);
                     await Task.Delay((int)retryAfter * 1000);
-                    return await GetApiPrayerData(url); // Recursive retry
+                    return await GetApiPrayerData(url);
                 }
 
                 response.EnsureSuccessStatusCode();
 
                 var responseContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(responseContent) || responseContent.Trim().StartsWith("429"))
+                {
+                    throw new InvalidOperationException("Invalid response content received from the API: " + responseContent);
+                }
+
                 return JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
             }
             catch (JsonException ex)
@@ -111,6 +118,11 @@ namespace Infrastructure.Services
             catch (HttpRequestException ex)
             {
                 _logger.LogError(ex, "HTTP request failed to {Url}", url);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred during the API request to {Url}", url);
                 throw;
             }
         }
