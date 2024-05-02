@@ -1137,3 +1137,170 @@ Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type '
 2024-05-02 02:02:57.011 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
 2024-05-02 02:02:57.012 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.8864ms
 2024-05-02 02:02:57.018 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 9.2717ms
+2024-05-02 02:15:04.953 +02:00 [INF] Starting web host
+2024-05-02 02:15:05.766 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 02:15:05.940 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 02:15:05.940 +02:00 [INF] Hosting environment: Development
+2024-05-02 02:15:05.940 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 02:15:05.956 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:15:06.076 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:15:06.107 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:15:06.453 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 02:15:24.525 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 02:15:26.818 +02:00 [INF] Executed DbCommand (48ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:15:26.941 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 02:15:27.066 +02:00 [INF] Executed ViewResult - view Index executed in 125.8077ms.
+2024-05-02 02:15:27.069 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 20961.3756ms
+2024-05-02 02:15:27.069 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:15:27.075 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:eeceed6a-8cf2-dfc7-d3ce-a4fbfb7aa844
+2024-05-02 02:15:27.084 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 02:15:27.085 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 02:15:27.092 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.9295ms
+2024-05-02 02:15:27.107 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 21154.4023ms
+2024-05-02 02:15:27.140 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 54.7236ms
+2024-05-02 02:15:28.608 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 02:15:28.613 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 02:15:28.622 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:15:28.648 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 02:15:28.648 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 26.7142ms
+2024-05-02 02:15:28.649 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 02:15:28.649 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 40.9930ms
+2024-05-02 02:15:28.655 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:15:28.657 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:15:28.657 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:15:35.615 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 02:15:39.148 +02:00 [INF] Executed DbCommand (10ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:15:39.148 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 02:15:40.102 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:17:42.093 +02:00 [INF] Starting web host
+2024-05-02 02:17:42.991 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 02:17:43.169 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 02:17:43.170 +02:00 [INF] Hosting environment: Development
+2024-05-02 02:17:43.170 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 02:17:43.186 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:17:43.308 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:17:43.338 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:17:43.681 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 02:17:46.556 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 02:17:48.642 +02:00 [INF] Executed DbCommand (47ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:17:48.769 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 02:17:48.889 +02:00 [INF] Executed ViewResult - view Index executed in 120.7396ms.
+2024-05-02 02:17:48.892 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 5553.8017ms
+2024-05-02 02:17:48.893 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:17:48.899 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:259d6838-4cc7-3e0d-bf6e-672ebc1d8db9
+2024-05-02 02:17:48.939 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 02:17:48.939 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 02:17:48.947 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.7118ms
+2024-05-02 02:17:48.958 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 5774.9390ms
+2024-05-02 02:17:48.993 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 53.2351ms
+2024-05-02 02:17:51.103 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 02:17:51.108 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 02:17:51.115 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:17:51.140 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 02:17:51.140 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 24.9886ms
+2024-05-02 02:17:51.140 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 02:17:51.141 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 38.2280ms
+2024-05-02 02:17:51.146 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:17:51.147 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:17:51.148 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:17:52.645 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 02:17:53.490 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:17:53.490 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 02:17:54.373 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:19:13.597 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:19:46.643 +02:00 [ERR] An unexpected error occurred during the API request to aalborg
+System.InvalidOperationException: The LINQ expression 'DbSet<CityPrayerTimes>()
+    .Where(c => c.City.Equals(
+        value: __cityPrayerTimes_City_0, 
+        comparisonType: OrdinalIgnoreCase))' could not be translated. Additional information: Translation of the 'String.Equals' overload with a 'StringComparison' parameter is not supported by default. To opt-in to translations of methods with a 'StringComparison' parameter, call `EnableStringComparisonTranslations` on your MySQL specific 'DbContext' options. For general EF Core information about this error, see https://go.microsoft.com/fwlink/?linkid=2129535 for more information. Either rewrite the query in a form that can be translated, or switch to client evaluation explicitly by inserting a call to 'AsEnumerable', 'AsAsyncEnumerable', 'ToList', or 'ToListAsync'. See https://go.microsoft.com/fwlink/?linkid=2101038 for more information.
+   at Microsoft.EntityFrameworkCore.Query.QueryableMethodTranslatingExpressionVisitor.<VisitMethodCall>g__CheckTranslated|15_0(ShapedQueryExpression translated, <>c__DisplayClass15_0& )
+   at Microsoft.EntityFrameworkCore.Query.QueryableMethodTranslatingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at Microsoft.EntityFrameworkCore.Query.RelationalQueryableMethodTranslatingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at System.Linq.Expressions.MethodCallExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.QueryableMethodTranslatingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at Microsoft.EntityFrameworkCore.Query.RelationalQueryableMethodTranslatingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at System.Linq.Expressions.MethodCallExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.QueryCompilationContext.CreateQueryExecutor[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.<>c__DisplayClass12_0`1.<ExecuteAsync>b__0()
+   at Microsoft.EntityFrameworkCore.Query.Internal.CompiledQueryCache.GetOrAddQuery[TResult](Object cacheKey, Func`1 compiler)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at Infrastructure.Repositories.CityPrayerTimesRepository.AddOrUpdateAsync(CityPrayerTimes cityPrayerTimes) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Repositories\CityPrayerTimesRepository.cs:line 19
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 133
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 02:19:46.724 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: The LINQ expression 'DbSet<CityPrayerTimes>()
+    .Where(c => c.City.Equals(
+        value: __cityPrayerTimes_City_0, 
+        comparisonType: OrdinalIgnoreCase))' could not be translated. Additional information: Translation of the 'String.Equals' overload with a 'StringComparison' parameter is not supported by default. To opt-in to translations of methods with a 'StringComparison' parameter, call `EnableStringComparisonTranslations` on your MySQL specific 'DbContext' options. For general EF Core information about this error, see https://go.microsoft.com/fwlink/?linkid=2129535 for more information. Either rewrite the query in a form that can be translated, or switch to client evaluation explicitly by inserting a call to 'AsEnumerable', 'AsAsyncEnumerable', 'ToList', or 'ToListAsync'. See https://go.microsoft.com/fwlink/?linkid=2101038 for more information.
+   at Microsoft.EntityFrameworkCore.Query.QueryableMethodTranslatingExpressionVisitor.<VisitMethodCall>g__CheckTranslated|15_0(ShapedQueryExpression translated, <>c__DisplayClass15_0& )
+   at Microsoft.EntityFrameworkCore.Query.QueryableMethodTranslatingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at Microsoft.EntityFrameworkCore.Query.RelationalQueryableMethodTranslatingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at System.Linq.Expressions.MethodCallExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.QueryableMethodTranslatingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at Microsoft.EntityFrameworkCore.Query.RelationalQueryableMethodTranslatingExpressionVisitor.VisitMethodCall(MethodCallExpression methodCallExpression)
+   at System.Linq.Expressions.MethodCallExpression.Accept(ExpressionVisitor visitor)
+   at System.Linq.Expressions.ExpressionVisitor.Visit(Expression node)
+   at Microsoft.EntityFrameworkCore.Query.QueryCompilationContext.CreateQueryExecutor[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.<>c__DisplayClass12_0`1.<ExecuteAsync>b__0()
+   at Microsoft.EntityFrameworkCore.Query.Internal.CompiledQueryCache.GetOrAddQuery[TResult](Object cacheKey, Func`1 compiler)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.ExecuteAsync[TResult](Expression query, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.ExecuteAsync[TResult](Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, Expression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ExecuteAsync[TSource,TResult](MethodInfo operatorMethodInfo, IQueryable`1 source, LambdaExpression expression, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at Infrastructure.Repositories.CityPrayerTimesRepository.AddOrUpdateAsync(CityPrayerTimes cityPrayerTimes) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Repositories\CityPrayerTimesRepository.cs:line 19
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 133
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 02:19:46.730 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 02:19:46.734 +02:00 [INF] Executed ViewResult - view Error executed in 4.2162ms.
+2024-05-02 02:19:46.734 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 115586.718ms
+2024-05-02 02:19:46.734 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:19:46.734 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 115588.1998ms
+2024-05-02 02:19:46.749 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 02:19:46.750 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.4827ms
+2024-05-02 02:19:46.753 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 02:19:46.768 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 14.6240ms
