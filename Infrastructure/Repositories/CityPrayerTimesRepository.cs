@@ -17,7 +17,8 @@ namespace Infrastructure.Repositories
         public async Task AddOrUpdateAsync(CityPrayerTimes cityPrayerTimes)
         {
             var existingCity = await _context.CityPrayerTimes
-                                             .FirstOrDefaultAsync(c => c.City.Equals(cityPrayerTimes.City, StringComparison.OrdinalIgnoreCase));
+                                .FirstOrDefaultAsync(c => c.City.ToLower() == cityPrayerTimes.City.ToLower());
+
 
             if (existingCity != null)
             {
