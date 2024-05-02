@@ -1,0 +1,1139 @@
+2024-05-02 00:42:12.682 +02:00 [INF] Starting web host
+2024-05-02 00:42:15.575 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 00:42:15.674 +02:00 [INF] Creating key {974fe6a9-34d4-44a3-8785-346968051a9d} with creation date 2024-05-01 22:42:15Z, activation date 2024-05-01 22:42:15Z, and expiration date 2024-07-30 22:42:15Z.
+2024-05-02 00:42:15.680 +02:00 [INF] Writing data to file 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys\key-974fe6a9-34d4-44a3-8785-346968051a9d.xml'.
+2024-05-02 00:42:16.104 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 00:42:16.104 +02:00 [INF] Hosting environment: Development
+2024-05-02 00:42:16.104 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 00:42:16.176 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 00:42:16.438 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:42:16.477 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:44:40.157 +02:00 [INF] Starting web host
+2024-05-02 00:44:40.909 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 00:44:41.123 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 00:44:41.123 +02:00 [INF] Hosting environment: Development
+2024-05-02 00:44:41.123 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 00:44:41.140 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 00:44:41.270 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:44:41.300 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:44:41.762 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 00:44:43.065 +02:00 [ERR] An error occurred using the connection to database 'salahtim' on server 'mysql106.unoeuro.com'.
+2024-05-02 00:44:43.208 +02:00 [ERR] An exception occurred while iterating over the results of a query for context type 'Infrastructure.Data.ApplicationDbContext'.
+MySqlConnector.MySqlException (0x80004005): Access denied for user 'salahtimes_dk'@'%' to database 'salahtim'
+   at MySqlConnector.Core.ServerSession.ConnectAsync(ConnectionSettings cs, MySqlConnection connection, Int32 startTickCount, ILoadBalancer loadBalancer, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 568
+   at MySqlConnector.Core.ConnectionPool.ConnectSessionAsync(MySqlConnection connection, String logMessage, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 403
+   at MySqlConnector.Core.ConnectionPool.ConnectSessionAsync(MySqlConnection connection, String logMessage, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 408
+   at MySqlConnector.Core.ConnectionPool.GetSessionAsync(MySqlConnection connection, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 98
+   at MySqlConnector.Core.ConnectionPool.GetSessionAsync(MySqlConnection connection, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 128
+   at MySqlConnector.MySqlConnection.CreateSessionAsync(ConnectionPool pool, Int32 startTickCount, Activity activity, Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 929
+   at MySqlConnector.MySqlConnection.OpenAsync(Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 423
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlRelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+MySqlConnector.MySqlException (0x80004005): Access denied for user 'salahtimes_dk'@'%' to database 'salahtim'
+   at MySqlConnector.Core.ServerSession.ConnectAsync(ConnectionSettings cs, MySqlConnection connection, Int32 startTickCount, ILoadBalancer loadBalancer, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 568
+   at MySqlConnector.Core.ConnectionPool.ConnectSessionAsync(MySqlConnection connection, String logMessage, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 403
+   at MySqlConnector.Core.ConnectionPool.ConnectSessionAsync(MySqlConnection connection, String logMessage, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 408
+   at MySqlConnector.Core.ConnectionPool.GetSessionAsync(MySqlConnection connection, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 98
+   at MySqlConnector.Core.ConnectionPool.GetSessionAsync(MySqlConnection connection, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 128
+   at MySqlConnector.MySqlConnection.CreateSessionAsync(ConnectionPool pool, Int32 startTickCount, Activity activity, Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 929
+   at MySqlConnector.MySqlConnection.OpenAsync(Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 423
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlRelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+2024-05-02 00:44:43.372 +02:00 [ERR] Failed to fetch or process prayer data for city: cph
+MySqlConnector.MySqlException (0x80004005): Access denied for user 'salahtimes_dk'@'%' to database 'salahtim'
+   at MySqlConnector.Core.ServerSession.ConnectAsync(ConnectionSettings cs, MySqlConnection connection, Int32 startTickCount, ILoadBalancer loadBalancer, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 568
+   at MySqlConnector.Core.ConnectionPool.ConnectSessionAsync(MySqlConnection connection, String logMessage, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 403
+   at MySqlConnector.Core.ConnectionPool.ConnectSessionAsync(MySqlConnection connection, String logMessage, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 408
+   at MySqlConnector.Core.ConnectionPool.GetSessionAsync(MySqlConnection connection, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 98
+   at MySqlConnector.Core.ConnectionPool.GetSessionAsync(MySqlConnection connection, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 128
+   at MySqlConnector.MySqlConnection.CreateSessionAsync(ConnectionPool pool, Int32 startTickCount, Activity activity, Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 929
+   at MySqlConnector.MySqlConnection.OpenAsync(Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 423
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlRelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Infrastructure.Repositories.CityPrayerTimesRepository.GetByCityAsync(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Repositories\CityPrayerTimesRepository.cs:line 42
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 35
+2024-05-02 00:44:43.503 +02:00 [ERR] Error occurred while fetching prayer data for city cph
+MySqlConnector.MySqlException (0x80004005): Access denied for user 'salahtimes_dk'@'%' to database 'salahtim'
+   at MySqlConnector.Core.ServerSession.ConnectAsync(ConnectionSettings cs, MySqlConnection connection, Int32 startTickCount, ILoadBalancer loadBalancer, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ServerSession.cs:line 568
+   at MySqlConnector.Core.ConnectionPool.ConnectSessionAsync(MySqlConnection connection, String logMessage, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 403
+   at MySqlConnector.Core.ConnectionPool.ConnectSessionAsync(MySqlConnection connection, String logMessage, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 408
+   at MySqlConnector.Core.ConnectionPool.GetSessionAsync(MySqlConnection connection, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 98
+   at MySqlConnector.Core.ConnectionPool.GetSessionAsync(MySqlConnection connection, Int32 startTickCount, Activity activity, IOBehavior ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/Core/ConnectionPool.cs:line 128
+   at MySqlConnector.MySqlConnection.CreateSessionAsync(ConnectionPool pool, Int32 startTickCount, Activity activity, Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 929
+   at MySqlConnector.MySqlConnection.OpenAsync(Nullable`1 ioBehavior, CancellationToken cancellationToken) in /_/src/MySqlConnector/MySqlConnection.cs:line 423
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlRelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Pomelo.EntityFrameworkCore.MySql.Storage.Internal.MySqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Infrastructure.Repositories.CityPrayerTimesRepository.GetByCityAsync(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Repositories\CityPrayerTimesRepository.cs:line 42
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 35
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 00:44:43.525 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 00:44:43.653 +02:00 [INF] Executed ViewResult - view Error executed in 131.0943ms.
+2024-05-02 00:44:43.657 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 2357.0392ms
+2024-05-02 00:44:43.658 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:44:43.668 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/css/site.css - -
+2024-05-02 00:44:43.668 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/css/bootstrap.min.css - -
+2024-05-02 00:44:43.669 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/jquery/dist/jquery.min.js - -
+2024-05-02 00:44:43.673 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/js/site.js?v=4q1jwFhaPaZgr8WAUSrux6hAuh0XDg9kPS3xIVq36I0 - -
+2024-05-02 00:44:43.679 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/js/bootstrap.bundle.min.js - -
+2024-05-02 00:44:43.683 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:b48158ed-e86a-cde0-c4da-202b3f1871db
+2024-05-02 00:44:43.689 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 00:44:43.692 +02:00 [INF] Sending file. Request path: '/js/site.js'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\js\site.js'
+2024-05-02 00:44:43.694 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/js/site.js?v=4q1jwFhaPaZgr8WAUSrux6hAuh0XDg9kPS3xIVq36I0 - - - 200 230 application/javascript 19.6664ms
+2024-05-02 00:44:43.703 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 9.8624ms
+2024-05-02 00:44:43.718 +02:00 [INF] Sending file. Request path: '/css/site.css'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\css\site.css'
+2024-05-02 00:44:43.718 +02:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.min.css'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css'
+2024-05-02 00:44:43.718 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/css/site.css - - - 200 1417 text/css 50.0873ms
+2024-05-02 00:44:43.720 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/css/bootstrap.min.css - - - 200 155764 text/css 51.7961ms
+2024-05-02 00:44:43.733 +02:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.min.js'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js'
+2024-05-02 00:44:43.733 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 00:44:43.735 +02:00 [INF] Sending file. Request path: '/lib/jquery/dist/jquery.min.js'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\lib\jquery\dist\jquery.min.js'
+2024-05-02 00:44:43.735 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/js/bootstrap.bundle.min.js - - - 200 78641 application/javascript 56.0119ms
+2024-05-02 00:44:43.736 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2599.5098ms
+2024-05-02 00:44:43.736 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/jquery/dist/jquery.min.js - - - 200 89478 application/javascript 68.4229ms
+2024-05-02 00:44:43.806 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 73.0988ms
+2024-05-02 00:44:43.850 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/favicon.ico - -
+2024-05-02 00:44:43.856 +02:00 [INF] Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\favicon.ico'
+2024-05-02 00:44:43.856 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/favicon.ico - - - 200 32038 image/x-icon 6.1123ms
+2024-05-02 00:44:58.336 +02:00 [INF] Starting web host
+2024-05-02 00:44:59.040 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 00:44:59.214 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 00:44:59.215 +02:00 [INF] Hosting environment: Development
+2024-05-02 00:44:59.215 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 00:44:59.231 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 00:44:59.362 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:44:59.393 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:44:59.737 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 00:44:59.739 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 00:45:00.980 +02:00 [INF] Executed DbCommand (50ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 00:45:01.124 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 00:45:01.305 +02:00 [INF] Executed ViewResult - view Index executed in 182.379ms.
+2024-05-02 00:45:01.308 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 1914.2061ms
+2024-05-02 00:45:01.309 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:01.314 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:d4756817-ed45-b43e-f69a-697ca0ef30b6
+2024-05-02 00:45:01.358 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 00:45:01.358 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 00:45:01.363 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.7930ms
+2024-05-02 00:45:01.379 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2151.2669ms
+2024-05-02 00:45:01.410 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 51.6685ms
+2024-05-02 00:45:03.999 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - -
+2024-05-02 00:45:04.005 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 00:45:04.013 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:04.041 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 00:45:04.041 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 28.2827ms
+2024-05-02 00:45:04.041 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 00:45:04.042 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=odense - - - 302 - - 43.2386ms
+2024-05-02 00:45:04.047 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 00:45:04.048 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:04.048 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:04.055 +02:00 [INF] Attempting to fetch prayer data for city: odense
+2024-05-02 00:45:04.087 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 00:45:04.088 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 00:45:04.090 +02:00 [INF] Executed ViewResult - view Index executed in 1.5821ms.
+2024-05-02 00:45:04.090 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 41.4055ms
+2024-05-02 00:45:04.090 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:04.090 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 43.0049ms
+2024-05-02 00:45:04.101 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 00:45:04.104 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 00:45:04.104 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.8905ms
+2024-05-02 00:45:04.118 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 14.5264ms
+2024-05-02 00:45:04.979 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=cph - -
+2024-05-02 00:45:04.981 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 00:45:04.981 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:04.987 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 00:45:04.987 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 5.7214ms
+2024-05-02 00:45:04.987 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 00:45:04.987 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=cph - - - 302 - - 8.0216ms
+2024-05-02 00:45:04.990 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 00:45:04.994 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:04.994 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:05.000 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 00:45:05.047 +02:00 [INF] Executed DbCommand (6ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 00:45:05.048 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 00:45:05.048 +02:00 [INF] Executed ViewResult - view Index executed in 0.6288ms.
+2024-05-02 00:45:05.048 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 53.9419ms
+2024-05-02 00:45:05.048 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:05.048 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 58.6732ms
+2024-05-02 00:45:05.059 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 00:45:05.059 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 00:45:05.060 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.7990ms
+2024-05-02 00:45:05.070 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 10.7629ms
+2024-05-02 00:45:05.710 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - -
+2024-05-02 00:45:05.711 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 00:45:05.711 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:05.716 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 00:45:05.716 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 5.1249ms
+2024-05-02 00:45:05.716 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 00:45:05.717 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aarhus - - - 302 - - 6.8534ms
+2024-05-02 00:45:05.722 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 00:45:05.723 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:05.723 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:05.728 +02:00 [INF] Attempting to fetch prayer data for city: aarhus
+2024-05-02 00:45:05.739 +02:00 [INF] Executed DbCommand (5ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 00:45:05.740 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 00:45:05.740 +02:00 [INF] Executed ViewResult - view Index executed in 0.5279ms.
+2024-05-02 00:45:05.740 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 17.3513ms
+2024-05-02 00:45:05.740 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:05.741 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 18.7404ms
+2024-05-02 00:45:05.751 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 00:45:05.751 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 00:45:05.752 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5607ms
+2024-05-02 00:45:05.755 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 4.3591ms
+2024-05-02 00:45:06.441 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 00:45:06.442 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 00:45:06.442 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:06.448 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 00:45:06.448 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 5.6776ms
+2024-05-02 00:45:06.448 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 00:45:06.448 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 7.4003ms
+2024-05-02 00:45:06.450 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 00:45:06.452 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:06.452 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:06.457 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 00:45:06.472 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 00:45:06.472 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 00:45:07.433 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 00:45:07.785 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 00:45:07.841 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 108
+2024-05-02 00:45:07.952 +02:00 [ERR] Failed to fetch or process prayer data for city: aalborg
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 108
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 144
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 00:45:08.030 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 108
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 144
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 00:45:08.033 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 00:45:08.035 +02:00 [INF] Executed ViewResult - view Error executed in 2.3297ms.
+2024-05-02 00:45:08.035 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 1583.0866ms
+2024-05-02 00:45:08.035 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:08.035 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 1584.6017ms
+2024-05-02 00:45:08.049 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 00:45:08.051 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 00:45:08.051 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 3.2958ms
+2024-05-02 00:45:08.055 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 4.0995ms
+2024-05-02 00:45:22.885 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 00:45:22.887 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 00:45:22.887 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 00:45:31.906 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 00:46:07.824 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 00:46:58.288 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 00:48:00.947 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 00:48:00.973 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 108
+2024-05-02 01:00:31.506 +02:00 [INF] Starting web host
+2024-05-02 01:00:32.414 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 01:00:32.587 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 01:00:32.587 +02:00 [INF] Hosting environment: Development
+2024-05-02 01:00:32.587 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 01:00:32.605 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:00:32.736 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:00:32.767 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:00:33.142 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 01:01:08.727 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 01:01:11.490 +02:00 [INF] Executed DbCommand (49ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:01:11.612 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 01:01:11.738 +02:00 [INF] Executed ViewResult - view Index executed in 126.2286ms.
+2024-05-02 01:01:11.740 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 38972.4552ms
+2024-05-02 01:01:11.741 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:01:11.747 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:b66bf43c-4de1-7bcb-4d1c-295ecbec2d06
+2024-05-02 01:01:11.754 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:01:11.755 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:01:11.759 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.5990ms
+2024-05-02 01:01:11.778 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 39176.5790ms
+2024-05-02 01:01:11.814 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 58.6826ms
+2024-05-02 01:01:12.943 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 01:01:12.948 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:01:12.956 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:01:12.981 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 01:01:12.982 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 25.3947ms
+2024-05-02 01:01:12.982 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:01:12.982 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 38.9021ms
+2024-05-02 01:01:12.985 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:01:12.990 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:01:12.990 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:01:15.402 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:01:16.783 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:01:16.783 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:01:17.740 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:01:18.011 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:01:18.049 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+2024-05-02 01:01:18.163 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 154
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 01:01:18.239 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 154
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 01:01:18.245 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 01:01:18.248 +02:00 [INF] Executed ViewResult - view Error executed in 3.1562ms.
+2024-05-02 01:01:18.248 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 5257.7559ms
+2024-05-02 01:01:18.248 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:01:18.248 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 5262.9511ms
+2024-05-02 01:01:18.263 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:01:18.264 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.4596ms
+2024-05-02 01:01:18.271 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:01:18.281 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 10.6529ms
+2024-05-02 01:01:23.903 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:01:23.904 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:01:23.904 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:02:18.148 +02:00 [INF] Starting web host
+2024-05-02 01:02:18.865 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 01:02:19.033 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 01:02:19.033 +02:00 [INF] Hosting environment: Development
+2024-05-02 01:02:19.033 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 01:02:19.049 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:02:19.182 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:02:19.227 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:02:19.620 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 01:02:28.847 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 01:02:31.470 +02:00 [INF] Executed DbCommand (49ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:02:31.590 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 01:02:31.714 +02:00 [INF] Executed ViewResult - view Index executed in 124.8151ms.
+2024-05-02 01:02:31.716 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 12489.0025ms
+2024-05-02 01:02:31.717 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:02:31.723 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:301a7fa1-91e3-b086-cff1-a14015278b2e
+2024-05-02 01:02:31.733 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:02:31.733 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:02:31.740 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.6760ms
+2024-05-02 01:02:31.754 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 12708.2378ms
+2024-05-02 01:02:31.788 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 54.7596ms
+2024-05-02 01:02:32.850 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 01:02:32.855 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:02:32.862 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:02:32.887 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 01:02:32.887 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 25.5762ms
+2024-05-02 01:02:32.887 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:02:32.888 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 38.5023ms
+2024-05-02 01:02:32.893 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:02:32.894 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:02:32.895 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:02:48.788 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:02:52.669 +02:00 [INF] Executed DbCommand (11ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:02:57.499 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:03:16.072 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:03:33.001 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:03:45.429 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 175
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 01:03:45.511 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 175
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 01:03:45.518 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 01:03:45.521 +02:00 [INF] Executed ViewResult - view Error executed in 3.4467ms.
+2024-05-02 01:03:45.521 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 72626.5138ms
+2024-05-02 01:03:45.521 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:03:45.521 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 72628.1518ms
+2024-05-02 01:03:45.538 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:03:45.538 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.6072ms
+2024-05-02 01:03:45.543 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:03:45.555 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 11.7324ms
+2024-05-02 01:03:58.197 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:03:58.200 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:03:58.200 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:04:01.637 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:04:02.597 +02:00 [INF] Executed DbCommand (8ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:04:02.597 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:04:03.363 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:05:31.980 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:05:58.341 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 175
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 01:05:58.405 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 175
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 01:05:58.405 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 01:05:58.406 +02:00 [INF] Executed ViewResult - view Error executed in 0.6045ms.
+2024-05-02 01:05:58.406 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 120206.255ms
+2024-05-02 01:05:58.406 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:05:58.406 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 120208.7634ms
+2024-05-02 01:05:58.422 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:05:58.423 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.9066ms
+2024-05-02 01:05:58.431 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:05:58.489 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 57.8282ms
+2024-05-02 01:06:27.351 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:06:27.357 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:06:27.357 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:06:33.551 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:06:34.639 +02:00 [INF] Executed DbCommand (7ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:06:34.639 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:06:35.598 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:06:40.639 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:06:40.666 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+2024-05-02 01:06:40.757 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 154
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 01:06:40.826 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 154
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 01:06:40.826 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 01:06:40.827 +02:00 [INF] Executed ViewResult - view Error executed in 0.8425ms.
+2024-05-02 01:06:40.827 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 13469.9002ms
+2024-05-02 01:06:40.827 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:06:40.827 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 13476.3258ms
+2024-05-02 01:06:40.845 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:06:40.845 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.4883ms
+2024-05-02 01:06:40.848 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:06:40.855 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 6.9594ms
+2024-05-02 01:07:26.171 +02:00 [INF] Starting web host
+2024-05-02 01:07:26.911 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 01:07:27.079 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 01:07:27.079 +02:00 [INF] Hosting environment: Development
+2024-05-02 01:07:27.079 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 01:07:27.095 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:07:27.221 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:07:27.250 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:07:27.599 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 01:07:34.587 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 01:07:36.881 +02:00 [INF] Executed DbCommand (48ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:07:37.002 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 01:07:37.127 +02:00 [INF] Executed ViewResult - view Index executed in 125.2474ms.
+2024-05-02 01:07:37.131 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 9880.4495ms
+2024-05-02 01:07:37.131 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:07:37.137 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:923574c8-3df5-c1d4-0479-91246e9840d8
+2024-05-02 01:07:37.146 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:07:37.148 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:07:37.154 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 4.2167ms
+2024-05-02 01:07:37.169 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 10076.2477ms
+2024-05-02 01:07:37.201 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 53.3847ms
+2024-05-02 01:07:39.067 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 01:07:39.073 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:07:39.080 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:07:39.105 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 01:07:39.105 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 24.7704ms
+2024-05-02 01:07:39.105 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:07:39.106 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 39.3891ms
+2024-05-02 01:07:39.111 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:07:39.113 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:07:39.113 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:07:41.112 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:07:42.246 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:07:42.246 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:07:43.130 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:08:07.881 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:08:43.106 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 175
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 01:08:43.192 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 175
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 01:08:43.196 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 01:08:43.198 +02:00 [INF] Executed ViewResult - view Error executed in 3.4702ms.
+2024-05-02 01:08:43.198 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 64085.4458ms
+2024-05-02 01:08:43.198 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:08:43.199 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 64087.1000ms
+2024-05-02 01:08:43.214 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:08:43.215 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5809ms
+2024-05-02 01:08:43.219 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:08:43.234 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 15.3428ms
+2024-05-02 01:09:02.136 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:09:02.141 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:09:02.141 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:09:04.739 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:09:06.220 +02:00 [INF] Executed DbCommand (8ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:09:06.220 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:09:07.068 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:09:14.633 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:09:14.660 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+2024-05-02 01:09:14.749 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 154
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 01:09:14.821 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 154
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 01:09:14.822 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 01:09:14.822 +02:00 [INF] Executed ViewResult - view Error executed in 0.6604ms.
+2024-05-02 01:09:14.822 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 12680.8388ms
+2024-05-02 01:09:14.822 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:09:14.822 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 12686.8240ms
+2024-05-02 01:09:14.837 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:09:14.838 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.4688ms
+2024-05-02 01:09:14.843 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:09:14.849 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 4.7779ms
+2024-05-02 01:09:33.869 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:09:33.871 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:09:33.871 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:09:36.009 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:09:36.911 +02:00 [INF] Executed DbCommand (6ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:09:36.911 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:09:37.751 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:10:07.907 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-31&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:39:28.676 +02:00 [INF] Starting web host
+2024-05-02 01:39:29.569 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 01:39:29.742 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 01:39:29.742 +02:00 [INF] Hosting environment: Development
+2024-05-02 01:39:29.742 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 01:39:29.758 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:39:29.885 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:39:29.916 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:39:30.275 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 01:39:34.172 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 01:39:36.850 +02:00 [INF] Executed DbCommand (47ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:39:36.970 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 01:39:37.091 +02:00 [INF] Executed ViewResult - view Index executed in 122.0043ms.
+2024-05-02 01:39:37.093 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 7177.1076ms
+2024-05-02 01:39:37.094 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:39:37.100 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:4d83b44c-dae9-cfeb-ee70-b7f37d33498b
+2024-05-02 01:39:37.108 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:39:37.109 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:39:37.116 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.7341ms
+2024-05-02 01:39:37.131 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 7376.1983ms
+2024-05-02 01:39:37.166 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 56.7931ms
+2024-05-02 01:39:39.000 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 01:39:39.005 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:39:39.013 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:39:39.040 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 01:39:39.041 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 27.8639ms
+2024-05-02 01:39:39.041 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:39:39.041 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 41.4823ms
+2024-05-02 01:39:39.048 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:39:39.049 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:39:39.049 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:39:41.286 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:39:42.715 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:39:42.715 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:39:43.644 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:39:48.500 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:39:48.528 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+2024-05-02 01:39:48.680 +02:00 [ERR] An unexpected error occurred during the API request to https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+   at Infrastructure.Services.PrayerTimesService.FetchPreviousMonthData(String city, DateTime date) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 199
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 175
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 01:39:48.758 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+System.InvalidOperationException: Invalid response content received from the API: 429 TOO MANY REQUESTS
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 118
+   at Infrastructure.Services.PrayerTimesService.FetchPreviousMonthData(String city, DateTime date) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 199
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 175
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 01:39:48.766 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 01:39:48.770 +02:00 [INF] Executed ViewResult - view Error executed in 4.1873ms.
+2024-05-02 01:39:48.770 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 9720.7233ms
+2024-05-02 01:39:48.770 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:39:48.770 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 9722.3695ms
+2024-05-02 01:39:48.783 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:39:48.783 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:39:48.785 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 1.0041ms
+2024-05-02 01:39:48.798 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 14.4640ms
+2024-05-02 01:40:28.505 +02:00 [INF] Starting web host
+2024-05-02 01:40:29.437 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 01:40:29.609 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 01:40:29.609 +02:00 [INF] Hosting environment: Development
+2024-05-02 01:40:29.609 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 01:40:29.625 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:40:29.751 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:40:29.782 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:40:30.139 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 01:42:10.960 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 01:42:12.920 +02:00 [INF] Executed DbCommand (47ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:42:13.041 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 01:42:13.167 +02:00 [INF] Executed ViewResult - view Index executed in 126.3131ms.
+2024-05-02 01:42:13.171 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 103388.4692ms
+2024-05-02 01:42:13.172 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:42:13.178 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:8b8e2289-2bf3-7fdc-049a-2be66b84c8c4
+2024-05-02 01:42:13.190 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:42:13.190 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:42:13.194 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 4.6106ms
+2024-05-02 01:42:13.210 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 103587.3261ms
+2024-05-02 01:42:13.246 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 55.6269ms
+2024-05-02 01:42:14.252 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 01:42:14.264 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:42:14.274 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:42:14.300 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 01:42:14.300 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 25.6759ms
+2024-05-02 01:42:14.300 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:42:14.301 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 49.0788ms
+2024-05-02 01:42:14.304 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:42:14.305 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:42:14.305 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:42:16.805 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:42:17.974 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:42:17.974 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:42:18.736 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:42:59.974 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:58:25.224 +02:00 [INF] Starting web host
+2024-05-02 01:58:26.114 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 01:58:26.279 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 01:58:26.280 +02:00 [INF] Hosting environment: Development
+2024-05-02 01:58:26.280 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 01:58:26.296 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:58:26.420 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:58:26.450 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:58:26.811 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 01:58:30.699 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 01:58:32.591 +02:00 [INF] Executed DbCommand (48ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:58:32.716 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 01:58:32.841 +02:00 [INF] Executed ViewResult - view Index executed in 125.3328ms.
+2024-05-02 01:58:32.843 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 6392.59ms
+2024-05-02 01:58:32.844 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:58:32.850 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:ed230969-a59f-a1e8-1818-0589582177c6
+2024-05-02 01:58:32.857 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:58:32.859 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:58:32.865 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 3.3933ms
+2024-05-02 01:58:32.883 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 6589.9227ms
+2024-05-02 01:58:32.911 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 52.3431ms
+2024-05-02 01:58:35.189 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 01:58:35.194 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:58:35.202 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:58:35.227 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 01:58:35.228 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 25.9979ms
+2024-05-02 01:58:35.228 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 01:58:35.228 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 39.7934ms
+2024-05-02 01:58:35.231 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:58:35.233 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:58:35.233 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:58:36.967 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:58:39.374 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:58:39.374 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:58:40.233 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:58:40.505 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 01:58:40.660 +02:00 [ERR] An unexpected error occurred during the API request to aalborg
+Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type 'Domain.Models.MuwaqqitResponse'. Path '', line 1, position 3.
+ ---> System.ArgumentException: Could not cast or convert from System.Int64 to Domain.Models.MuwaqqitResponse.
+   at Newtonsoft.Json.Utilities.ConvertUtils.EnsureTypeAssignable(Object value, Type initialType, Type targetType)
+   at Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(Object initialValue, CultureInfo culture, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   --- End of inner exception stack trace ---
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 85
+   at Infrastructure.Services.PrayerTimesService.FetchPreviousMonthData(String city, DateTime date) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 140
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 117
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 01:58:40.757 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type 'Domain.Models.MuwaqqitResponse'. Path '', line 1, position 3.
+ ---> System.ArgumentException: Could not cast or convert from System.Int64 to Domain.Models.MuwaqqitResponse.
+   at Newtonsoft.Json.Utilities.ConvertUtils.EnsureTypeAssignable(Object value, Type initialType, Type targetType)
+   at Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(Object initialValue, CultureInfo culture, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   --- End of inner exception stack trace ---
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 85
+   at Infrastructure.Services.PrayerTimesService.FetchPreviousMonthData(String city, DateTime date) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 140
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 117
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 01:58:40.763 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 01:58:40.766 +02:00 [INF] Executed ViewResult - view Error executed in 2.9822ms.
+2024-05-02 01:58:40.766 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 5533.1514ms
+2024-05-02 01:58:40.766 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:58:40.766 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 5534.9784ms
+2024-05-02 01:58:40.779 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 01:58:40.779 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 01:58:40.780 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 1.5009ms
+2024-05-02 01:58:40.795 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 16.0972ms
+2024-05-02 01:59:31.536 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 01:59:31.538 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 01:59:31.539 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 01:59:33.208 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 01:59:34.482 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 01:59:34.482 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 01:59:35.211 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:00:14.080 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:00:46.599 +02:00 [INF] Starting web host
+2024-05-02 02:00:47.503 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 02:00:47.670 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 02:00:47.670 +02:00 [INF] Hosting environment: Development
+2024-05-02 02:00:47.671 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 02:00:47.687 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:00:47.810 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:00:47.840 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:00:48.180 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 02:00:50.007 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 02:00:52.356 +02:00 [INF] Executed DbCommand (49ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:00:52.477 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 02:00:52.599 +02:00 [INF] Executed ViewResult - view Index executed in 121.8526ms.
+2024-05-02 02:00:52.601 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 4760.599ms
+2024-05-02 02:00:52.602 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:00:52.607 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:f35f04d2-f844-4992-75b3-bda205f539cb
+2024-05-02 02:00:52.648 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 02:00:52.648 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 02:00:52.653 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.8159ms
+2024-05-02 02:00:52.663 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 4979.8196ms
+2024-05-02 02:00:52.694 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 45.1588ms
+2024-05-02 02:00:53.466 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 02:00:53.471 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 02:00:53.479 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:00:53.503 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 02:00:53.503 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 24.8528ms
+2024-05-02 02:00:53.503 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 02:00:53.504 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 38.0345ms
+2024-05-02 02:00:53.509 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:00:53.510 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:00:53.510 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:00:55.337 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 02:01:02.923 +02:00 [INF] Executed DbCommand (9ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:01:02.923 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 02:01:03.649 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:01:30.229 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:02:13.120 +02:00 [INF] Starting web host
+2024-05-02 02:02:13.942 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-05-02 02:02:14.112 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-05-02 02:02:14.112 +02:00 [INF] Hosting environment: Development
+2024-05-02 02:02:14.112 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-05-02 02:02:14.130 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:02:14.325 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:02:14.355 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:02:14.695 +02:00 [INF] Accessing expired session, Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589
+2024-05-02 02:02:19.325 +02:00 [INF] Attempting to fetch prayer data for city: cph
+2024-05-02 02:02:21.275 +02:00 [INF] Executed DbCommand (47ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:02:21.398 +02:00 [INF] Executing ViewResult, running view Index.
+2024-05-02 02:02:21.524 +02:00 [INF] Executed ViewResult - view Index executed in 126.8852ms.
+2024-05-02 02:02:21.526 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 7170.6724ms
+2024-05-02 02:02:21.527 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:02:21.533 +02:00 [INF] Session started; Key:3f5cc1fb-397e-0f41-2c42-53dc05ef0589, Id:53c25b92-6ac9-f2cc-8e68-35c01933f9a9
+2024-05-02 02:02:21.542 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 02:02:21.543 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 02:02:21.549 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.7837ms
+2024-05-02 02:02:21.563 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 7436.7076ms
+2024-05-02 02:02:21.597 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 53.8937ms
+2024-05-02 02:02:23.215 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - -
+2024-05-02 02:02:23.220 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 02:02:23.227 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:02:23.253 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-05-02 02:02:23.254 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 26.4078ms
+2024-05-02 02:02:23.254 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-05-02 02:02:23.254 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/Home/Check?button_value=aalborg - - - 302 - - 39.6071ms
+2024-05-02 02:02:23.257 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:02:23.258 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:02:23.258 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:02:25.877 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 02:02:27.021 +02:00 [INF] Executed DbCommand (8ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:02:27.021 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 02:02:28.871 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:02:35.850 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:02:36.000 +02:00 [ERR] An unexpected error occurred during the API request to aalborg
+Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type 'Domain.Models.MuwaqqitResponse'. Path '', line 1, position 3.
+ ---> System.ArgumentException: Could not cast or convert from System.Int64 to Domain.Models.MuwaqqitResponse.
+   at Newtonsoft.Json.Utilities.ConvertUtils.EnsureTypeAssignable(Object value, Type initialType, Type targetType)
+   at Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(Object initialValue, CultureInfo culture, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   --- End of inner exception stack trace ---
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 85
+   at Infrastructure.Services.PrayerTimesService.FetchPreviousMonthData(String city, DateTime date) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 140
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 117
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 02:02:36.100 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type 'Domain.Models.MuwaqqitResponse'. Path '', line 1, position 3.
+ ---> System.ArgumentException: Could not cast or convert from System.Int64 to Domain.Models.MuwaqqitResponse.
+   at Newtonsoft.Json.Utilities.ConvertUtils.EnsureTypeAssignable(Object value, Type initialType, Type targetType)
+   at Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(Object initialValue, CultureInfo culture, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   --- End of inner exception stack trace ---
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 85
+   at Infrastructure.Services.PrayerTimesService.FetchPreviousMonthData(String city, DateTime date) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 140
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 117
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 02:02:36.103 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 02:02:36.107 +02:00 [INF] Executed ViewResult - view Error executed in 4.1818ms.
+2024-05-02 02:02:36.107 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 12848.6387ms
+2024-05-02 02:02:36.107 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:02:36.107 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 12850.3381ms
+2024-05-02 02:02:36.120 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 02:02:36.120 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 02:02:36.121 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.9060ms
+2024-05-02 02:02:36.134 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 13.8716ms
+2024-05-02 02:02:46.953 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-05-02 02:02:46.955 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:02:46.955 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-05-02 02:02:48.550 +02:00 [INF] Attempting to fetch prayer data for city: aalborg
+2024-05-02 02:02:49.219 +02:00 [INF] Executed DbCommand (5ms) [Parameters=[@__ToLower_0='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 2
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-05-02 02:02:49.219 +02:00 [WRN] No data found for city: aalborg, fetching from API.
+2024-05-02 02:02:50.005 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-05-02&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:02:56.784 +02:00 [INF] Received HTTP status "OK" for URL https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=2024-04-30&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0
+2024-05-02 02:02:56.918 +02:00 [ERR] An unexpected error occurred during the API request to aalborg
+Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type 'Domain.Models.MuwaqqitResponse'. Path '', line 1, position 3.
+ ---> System.ArgumentException: Could not cast or convert from System.Int64 to Domain.Models.MuwaqqitResponse.
+   at Newtonsoft.Json.Utilities.ConvertUtils.EnsureTypeAssignable(Object value, Type initialType, Type targetType)
+   at Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(Object initialValue, CultureInfo culture, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   --- End of inner exception stack trace ---
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 85
+   at Infrastructure.Services.PrayerTimesService.FetchPreviousMonthData(String city, DateTime date) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 140
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 117
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+2024-05-02 02:02:56.992 +02:00 [ERR] Error occurred while fetching prayer data for city aalborg
+Newtonsoft.Json.JsonSerializationException: Error converting value 429 to type 'Domain.Models.MuwaqqitResponse'. Path '', line 1, position 3.
+ ---> System.ArgumentException: Could not cast or convert from System.Int64 to Domain.Models.MuwaqqitResponse.
+   at Newtonsoft.Json.Utilities.ConvertUtils.EnsureTypeAssignable(Object value, Type initialType, Type targetType)
+   at Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(Object initialValue, CultureInfo culture, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   --- End of inner exception stack trace ---
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType(JsonReader reader, Object value, CultureInfo culture, JsonContract contract, Type targetType)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   at Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   at Infrastructure.Services.PrayerTimesService.GetApiPrayerData(String url) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 85
+   at Infrastructure.Services.PrayerTimesService.FetchPreviousMonthData(String city, DateTime date) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 140
+   at Infrastructure.Services.PrayerTimesService.ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 117
+   at Infrastructure.Services.PrayerTimesService.GetPrayerData(String city) in C:\Users\hadih\source\repos\PrayerTimes\Infrastructure\Services\PrayerTimesService.cs:line 42
+   at Web.Controllers.HomeController.Index() in C:\Users\hadih\source\repos\PrayerTimes\Web\Controllers\HomeController.cs:line 36
+2024-05-02 02:02:56.993 +02:00 [INF] Executing ViewResult, running view Error.
+2024-05-02 02:02:56.993 +02:00 [INF] Executed ViewResult - view Error executed in 0.5483ms.
+2024-05-02 02:02:56.993 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 10038.1253ms
+2024-05-02 02:02:56.993 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-05-02 02:02:56.993 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 10040.1800ms
+2024-05-02 02:02:57.009 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-05-02 02:02:57.011 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-05-02 02:02:57.012 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.8864ms
+2024-05-02 02:02:57.018 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 9.2717ms
