@@ -50,6 +50,7 @@ namespace Web.Controllers
                 {
                     ErrorMessage = "An error occurred while processing your request.",
                     Details = e.Message,
+                    ErrorCode = "500",
                     RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
                 });
             }
