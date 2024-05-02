@@ -15,6 +15,8 @@ namespace Infrastructure.Services
         private readonly ILogger _logger;
         private const string URL_SUFFIX = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
         private MuwaqqitResponse _previousMonthResponseForAntiTransit;
+        private DateTime _lastFetchedDate = DateTime.MinValue;
+        private bool _hasFetchedPreviousMonth = false;
 
         public PrayerTimesService(ICityPrayerTimesRepository cityPrayerTimesRepository, ILogger<PrayerTimesService> logger)
         {
@@ -112,11 +114,13 @@ namespace Infrastructure.Services
                 }
                 else
                 {
-                    if (_previousMonthResponseForAntiTransit == null)
+                    if (!_hasFetchedPreviousMonth || DateTime.Now.Month != _lastFetchedDate.Month)
                     {
-                        Thread.Sleep(60000);
+                        _hasFetchedPreviousMonth = true;
+                        _lastFetchedDate = DateTime.Now;
                         _previousMonthResponseForAntiTransit = await FetchPreviousMonthData(city, new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1));
                     }
+
                     var validPreviousFajrTime = _previousMonthResponseForAntiTransit.PrayerTimesDataList
                         .Where(pt => !pt.FajrAngle.Equals("anti-transit"))
                         .OrderByDescending(pt => DateTime.Parse(pt.FajrDate))
@@ -134,7 +138,6 @@ namespace Infrastructure.Services
 
             return cityPrayerTimes;
         }
-
         private async Task<MuwaqqitResponse> FetchPreviousMonthData(string city, DateTime date)
         {
             var url = BuildApiUrl(city, date);
