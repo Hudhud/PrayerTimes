@@ -114,7 +114,7 @@ namespace Infrastructure.Services
                 {
                     if (_previousMonthResponseForAntiTransit == null)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(60000);
                         _previousMonthResponseForAntiTransit = await FetchPreviousMonthData(city, new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1));
                     }
                     var validPreviousFajrTime = _previousMonthResponseForAntiTransit.PrayerTimesDataList
