@@ -1,53 +1,31 @@
-﻿    @using Domain.Models;
-    @using Microsoft.AspNetCore.Http
-    @{
-        ViewData["Title"] = "Home Page";
-        var activeButton = Context.Session.GetString("ActiveButton");
+﻿@using Domain.Models;
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Home Page";
+    var activeButton = Context.Session.GetString("SelectedCity") ?? "cph"; // Default to "cph" if not set
+}
+
+<style>
+    body {
+        background-color: #1a1a1a;
+        color: #FFFFFF;
     }
 
-    <style>
-        body {
-            background-color: #1a1a1a;
-            color: #FFFFFF;
-        }
+    .prayer-buttons {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 25px;
+    }
 
-        .prayer-buttons {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 25px;
-        }
-
-        .prayer-button {
-            background-color: transparent;
-            color: #FFDC00;
-            font-size: 16px;
-            border: 1px solid #FFDC00;
-            padding: 6px 12px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .prayer-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-            .prayer-table th,
-            .prayer-table td {
-                border: 1px solid #FFDC00;
-                padding: 8px;
-                text-align: center;
-            }
-
-            .prayer-table th {
-                background-color: #333333;
-            }
-
-        .hanafi-asr {
-            color: #FFDC00;
-            text-align: right;
-            margin-top: 25px;
-        }
+    .prayer-button {
+        background-color: transparent;
+        color: #FFDC00;
+        font-size: 16px;
+        border: 1px solid #FFDC00;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
 
     .selected-prayer-button {
         background-color: #FFDC00;
@@ -55,46 +33,66 @@
         border-color: #1a1a1a;
     }
 
-    </style>
+    .prayer-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-    <div class="text-center">
-        @{
-            DateTime dt = DateTime.Today;
-            string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
-            var model = (CityPrayerTimes)Model;
-            var prayer = model.DailyPrayerTimesList.First(x => x.Date.ToString("yyyy-MM-dd") == dateFormatted);
+        .prayer-table th,
+        .prayer-table td {
+            border: 1px solid #FFDC00;
+            padding: 8px;
+            text-align: center;
         }
 
+        .prayer-table th {
+            background-color: #333333;
+        }
 
-        <form>
+    .hanafi-asr {
+        color: #FFDC00;
+        text-align: right;
+        margin-top: 25px;
+    }
+</style>
+
+<div class="text-center">
+    @{
+        DateTime dt = DateTime.Today;
+        string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
+        var model = (CityPrayerTimes)Model;
+        var prayer = model.DailyPrayerTimesList.First(x => x.Date.ToString("yyyy-MM-dd") == dateFormatted);
+    }
+
+    <form method="post" asp-controller="Home" asp-action="Check">
         <div class="prayer-buttons">
-            <button class="prayer-button @(activeButton == "cph" ? "selected-prayer-button" : "")" name="button_value" value="cph" asp-action="Check">København</button>
-            <button class="prayer-button @(activeButton == "odense" ? "selected-prayer-button" : "")" name="button_value" value="odense" asp-action="Check">Odense</button>
-            <button class="prayer-button @(activeButton == "aarhus" ? "selected-prayer-button" : "")" name="button_value" value="aarhus" asp-action="Check">Århus</button>
-            <button class="prayer-button @(activeButton == "aalborg" ? "selected-prayer-button" : "")" name="button_value" value="aalborg" asp-action="Check">Aalborg</button>
+            <button class="prayer-button @(activeButton == "cph" ? "selected-prayer-button" : "")" name="button_value" value="cph">København</button>
+            <button class="prayer-button @(activeButton == "odense" ? "selected-prayer-button" : "")" name="button_value" value="odense">Odense</button>
+            <button class="prayer-button @(activeButton == "aarhus" ? "selected-prayer-button" : "")" name="button_value" value="aarhus">Århus</button>
+            <button class="prayer-button @(activeButton == "aalborg" ? "selected-prayer-button" : "")" name="button_value" value="aalborg">Aalborg</button>
         </div>
-        </form>
+    </form>
 
-        <table class="prayer-table">
-            <tr>
-                <th>Fajr</th>
-                <th>Shuruk</th>
-                <th>Dhuhr</th>
-                <th>Asr</th>
-                <th>Maghreb</th>
-                <th>Isha</th>
-            </tr>
-            <tr>
-                <td>@prayer.FajrTime</td>
-                <td>@prayer.SunriseTime</td>
-                <td>@prayer.DhuhrTime</td>
-                <td>@prayer.AsrTime</td>
-                <td>@prayer.MaghribTime</td>
-                <td>@prayer.IshaTime</td>
-            </tr>
-        </table>
+    <table class="prayer-table">
+        <tr>
+            <th>Fajr</th>
+            <th>Shuruk</th>
+            <th>Dhuhr</th>
+            <th>Asr</th>
+            <th>Maghreb</th>
+            <th>Isha</th>
+        </tr>
+        <tr>
+            <td>@prayer.FajrTime</td>
+            <td>@prayer.SunriseTime</td>
+            <td>@prayer.DhuhrTime</td>
+            <td>@prayer.AsrTime</td>
+            <td>@prayer.MaghribTime</td>
+            <td>@prayer.IshaTime</td>
+        </tr>
+    </table>
 
-        <div class="hanafi-asr">
-            Hanafi asr: @prayer.AsrHanafiTime
-        </div>
+    <div class="hanafi-asr">
+        Hanafi asr: @prayer.AsrHanafiTime
     </div>
+</div>

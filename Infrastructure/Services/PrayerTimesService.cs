@@ -14,9 +14,13 @@ namespace Infrastructure.Services
         private readonly ICityPrayerTimesRepository _cityPrayerTimesRepository;
         private readonly ILogger _logger;
         private const string URL_SUFFIX = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
-        private MuwaqqitResponse _previousMonthResponseForAntiTransit;
-        private DateTime _lastFetchedDate = DateTime.MinValue;
-        private bool _hasFetchedPreviousMonth = false;
+        private readonly Dictionary<string, (string Fajr, string Isha)> _predefinedTimes = new()
+        {
+            { "cph", ("01:09:00", "00:42:00") },
+            { "odense", ("01:44:00", "00:50:00") },
+            { "aarhus", ("01:33:00", "00:47:00") },
+            { "aalborg", ("01:35:00", "00:50:00") }
+        };
 
         public PrayerTimesService(ICityPrayerTimesRepository cityPrayerTimesRepository, ILogger<PrayerTimesService> logger)
         {
@@ -105,29 +109,26 @@ namespace Infrastructure.Services
                     AsrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.AsrTime, 3),
                     AsrHanafiTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.MithlainTime, 3),
                     MaghribTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.SunsetTime, 3),
-                    IshaTime = prayerTimeData.EshaTime != null ? PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.EshaTime, 3) : "N/A"
                 };
 
-                if (!prayerTimeData.FajrAngle.Equals("anti-transit"))
+                if (prayerTimeData.FajrAngle.Equals("anti-transit"))
                 {
-                    dailyPrayerTimes.FajrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.FajrTime, 3);
+                    dailyPrayerTimes.FajrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(
+                        _predefinedTimes.TryGetValue(city, out var predefinedTimes) ? predefinedTimes.Fajr : "N/A", 3);
                 }
                 else
                 {
-                    if (!_hasFetchedPreviousMonth || DateTime.Now.Month != _lastFetchedDate.Month)
-                    {
-                        _hasFetchedPreviousMonth = true;
-                        _lastFetchedDate = DateTime.Now;
-                        _previousMonthResponseForAntiTransit = await FetchPreviousMonthData(city, new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1));
-                    }
+                    dailyPrayerTimes.FajrTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.FajrTime, 3);
+                }
 
-                    var validPreviousFajrTime = _previousMonthResponseForAntiTransit.PrayerTimesDataList
-                        .Where(pt => !pt.FajrAngle.Equals("anti-transit"))
-                        .OrderByDescending(pt => DateTime.Parse(pt.FajrDate))
-                        .FirstOrDefault();
-
-                    dailyPrayerTimes.FajrTime = validPreviousFajrTime != null ?
-                        PrayerTimesHelper.AddMinutesAndConvertToDateTime(validPreviousFajrTime.FajrTime, 3) : "N/A";
+                if (prayerTimeData.EshaTime == null)
+                {
+                    dailyPrayerTimes.IshaTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(
+                        _predefinedTimes.TryGetValue(city, out var predefinedTimes) ? predefinedTimes.Isha : "N/A", 3);
+                }
+                else
+                {
+                    dailyPrayerTimes.IshaTime = PrayerTimesHelper.AddMinutesAndConvertToDateTime(prayerTimeData.EshaTime, 3);
                 }
 
                 dailyPrayerTimesList.Add(dailyPrayerTimes);
@@ -137,11 +138,6 @@ namespace Infrastructure.Services
             await _cityPrayerTimesRepository.AddOrUpdateAsync(cityPrayerTimes);
 
             return cityPrayerTimes;
-        }
-        private async Task<MuwaqqitResponse> FetchPreviousMonthData(string city, DateTime date)
-        {
-            var url = BuildApiUrl(city, date);
-            return await GetApiPrayerData(url);
         }
     }
 }
