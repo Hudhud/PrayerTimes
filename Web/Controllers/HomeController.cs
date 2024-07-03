@@ -12,10 +12,9 @@ namespace Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<HomeController> _logger;
         private readonly ICityPrayerTimesRepository _cityPrayerTimesRepository;
         private readonly ILoggerFactory _loggerFactory;
-
 
         public HomeController(ILogger<HomeController> logger, ICityPrayerTimesRepository cityPrayerTimesRepository, ILoggerFactory loggerFactory)
         {
@@ -56,7 +55,7 @@ namespace Web.Controllers
             }
         }
 
-
+        [HttpPost]
         public IActionResult Check(string button_value)
         {
             if (!string.IsNullOrEmpty(button_value))
