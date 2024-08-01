@@ -36,7 +36,7 @@ namespace Infrastructure.Services
                 if (DateTime.Today.Day == 1)
                 {
                     _logger.LogInformation("Truncating tables on the first day of the month.");
-                    await _cityPrayerTimesRepository.TruncateTablesAsync();
+                    // await _cityPrayerTimesRepository.TruncateTablesAsync();
                 }
 
                 var cityPrayerTimes = await _cityPrayerTimesRepository.GetByCityAsync(city);
