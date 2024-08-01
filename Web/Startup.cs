@@ -38,9 +38,10 @@ namespace Web
             services.AddScoped<ICityPrayerTimesRepository, CityPrayerTimesRepository>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
-     options.UseMySql(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"),
-         ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"))));
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"),
+                    ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"))));
 
+            services.AddHttpClient<IPrayerTimesService, PrayerTimesService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
