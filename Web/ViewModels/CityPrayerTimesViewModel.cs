@@ -1,38 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Domain.Models
+namespace Web.ViewModels
 {
-    public class DailyPrayerTimes
+    public class CityPrayerTimesViewModel
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public DateTime Date { get; set; }
-
-        [Required]
-        public string FajrTime { get; set; } = null!;
-
-        [Required]
-        public string SunriseTime { get; set; } = null!;
-
-        [Required]
-        public string DhuhrTime { get; set; } = null!;
-
-        [Required]
-        public string AsrTime { get; set; } = null!;
-
-        [Required]
-        public string AsrHanafiTime { get; set; } = null!;
-
-        [Required]
-        public string MaghribTime { get; set; } = null!;
-
-        [Required]
-        public string IshaTime { get; set; } = null!;
-
-        public int CityPrayerTimesId { get; set; }
-
-        public CityPrayerTimes CityPrayerTimes { get; set; } = null!;
+        public string City { get; set; }
+        public List<DailyPrayerTimesViewModel> PrayerTimes { get; set; }
     }
+
+    public class DailyPrayerTimesViewModel
+    {
+        public DateTime Date { get; set; }
+        public string FajrTime { get; set; } = null!;
+        public string SunriseTime { get; set; } = null!;
+        public string DhuhrTime { get; set; } = null!;
+        public string AsrTime { get; set; } = null!;
+        public string AsrHanafiTime { get; set; } = null!;
+        public string MaghribTime { get; set; } = null!;
+        public string IshaTime { get; set; } = null!;
+    }
+
 }

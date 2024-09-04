@@ -27,9 +27,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("City")
+                        .IsUnique();
 
                     b.ToTable("CityPrayerTimes");
                 });
@@ -84,7 +87,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Models.DailyPrayerTimes", b =>
                 {
                     b.HasOne("Domain.Models.CityPrayerTimes", "CityPrayerTimes")
-                        .WithMany("DailyPrayerTimesList")
+                        .WithMany("PrayerTimes")
                         .HasForeignKey("CityPrayerTimesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -94,7 +97,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.CityPrayerTimes", b =>
                 {
-                    b.Navigation("DailyPrayerTimesList");
+                    b.Navigation("PrayerTimes");
                 });
 #pragma warning restore 612, 618
         }

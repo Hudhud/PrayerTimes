@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Domain.Models
+namespace Infrastructure.DTO
 {
     public class PrayerTimesData
     {

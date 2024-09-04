@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230517204317_Daily_Prayer_Times_Type_Change")]
-    partial class Daily_Prayer_Times_Type_Change
+    [Migration("20240904003604_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,9 +30,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("City")
+                        .IsUnique();
 
                     b.ToTable("CityPrayerTimes");
                 });
@@ -51,7 +54,7 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("CityPrayerTimesId")
+                    b.Property<int>("CityPrayerTimesId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -86,14 +89,18 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.DailyPrayerTimes", b =>
                 {
-                    b.HasOne("Domain.Models.CityPrayerTimes", null)
-                        .WithMany("DailyPrayerTimesList")
-                        .HasForeignKey("CityPrayerTimesId");
+                    b.HasOne("Domain.Models.CityPrayerTimes", "CityPrayerTimes")
+                        .WithMany("PrayerTimes")
+                        .HasForeignKey("CityPrayerTimesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CityPrayerTimes");
                 });
 
             modelBuilder.Entity("Domain.Models.CityPrayerTimes", b =>
                 {
-                    b.Navigation("DailyPrayerTimesList");
+                    b.Navigation("PrayerTimes");
                 });
 #pragma warning restore 612, 618
         }

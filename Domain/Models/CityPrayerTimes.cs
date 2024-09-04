@@ -7,8 +7,9 @@ namespace Domain.Models
         [Key]
         public int Id { get; set; }
 
+        [Required]
         public string City { get; set; } = null!;
 
-        public ICollection<DailyPrayerTimes> DailyPrayerTimesList { get; set; } = new List<DailyPrayerTimes>();
+        public ICollection<DailyPrayerTimes> PrayerTimes { get; set; } = new List<DailyPrayerTimes>();
     }
 }

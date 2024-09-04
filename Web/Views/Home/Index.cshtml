@@ -1,8 +1,10 @@
-﻿@using Domain.Models;
+﻿@model Web.ViewModels.CityPrayerTimesViewModel
+
 @using Microsoft.AspNetCore.Http
+@using Web.ViewModels
 @{
     ViewData["Title"] = "Home Page";
-    var activeButton = Context.Session.GetString("SelectedCity") ?? "cph"; // Default to "cph" if not set
+    var activeButton = Context.Session.GetString("SelectedCity") ?? "cph";
 }
 
 <style>
@@ -60,8 +62,8 @@
     @{
         DateTime dt = DateTime.Today;
         string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
-        var model = (CityPrayerTimes)Model;
-        var prayer = model.DailyPrayerTimesList.First(x => x.Date.ToString("yyyy-MM-dd") == dateFormatted);
+        var model = (CityPrayerTimesViewModel)Model;
+        var prayer = model.PrayerTimes.First(x => x.Date.ToString("yyyy-MM-dd") == dateFormatted);
     }
 
     <form method="post" asp-controller="Home" asp-action="Check">
