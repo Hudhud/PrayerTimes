@@ -17,6 +17,15 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<CityPrayerTimes>()
+                .HasIndex(c => c.City)
+                .IsUnique();
+
+            modelBuilder.Entity<CityPrayerTimes>()
+                .HasMany(c => c.PrayerTimes)
+                .WithOne(d => d.CityPrayerTimes)
+                .HasForeignKey(d => d.CityPrayerTimesId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

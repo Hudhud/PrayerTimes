@@ -1,5 +1,6 @@
+using Application.Interfaces;
+using Application.Mapping;
 using Domain.Repositories;
-using Domain.Services;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Web.Mapping;
 
 namespace Web
 {
@@ -22,7 +24,6 @@ namespace Web
 
         public IConfiguration Configuration { get; }
 
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSession(options =>
@@ -31,17 +32,21 @@ namespace Web
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+
             services.AddControllersWithViews();
             services.AddDistributedMemoryCache();
             services.AddMvc();
-            services.AddScoped<IPrayerTimesService, PrayerTimesService>();
+            services.AddScoped<IPrayerTimeService, PrayerTimesService>();
             services.AddScoped<ICityPrayerTimesRepository, CityPrayerTimesRepository>();
+            services.AddLogging();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"),
                     ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"))));
 
-            services.AddHttpClient<IPrayerTimesService, PrayerTimesService>();
+            services.AddHttpClient<IPrayerTimeService, PrayerTimesService>();
+            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(typeof(DTOToviewModelMappingProfile));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -58,10 +63,8 @@ namespace Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseSession();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

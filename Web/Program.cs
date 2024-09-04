@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Serilog.Events;
 using Serilog;
+using Serilog.Events;
 using System;
 
 namespace Web
@@ -11,11 +11,11 @@ namespace Web
         public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .Enrich.FromLogContext()
-            .WriteTo.File("Logs/mylog-.txt", rollingInterval: RollingInterval.Day)
-            .CreateLogger();
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.File("Logs/mylog-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
             try
             {
@@ -30,13 +30,11 @@ namespace Web
             {
                 Log.CloseAndFlush();
             }
-
-            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .UseSerilog()
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

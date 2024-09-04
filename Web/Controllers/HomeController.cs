@@ -1,5 +1,5 @@
-﻿using Domain.Repositories;
-using Infrastructure.Services;
+﻿using Application.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,14 +13,15 @@ namespace Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ICityPrayerTimesRepository _cityPrayerTimesRepository;
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly IPrayerTimeService _prayerTimeService;
+        private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, ICityPrayerTimesRepository cityPrayerTimesRepository, ILoggerFactory loggerFactory)
+
+        public HomeController(ILogger<HomeController> logger, IPrayerTimeService prayerTimeService, IMapper mapper)
         {
             _logger = logger;
-            _cityPrayerTimesRepository = cityPrayerTimesRepository;
-            _loggerFactory = loggerFactory;
+            _prayerTimeService = prayerTimeService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -30,17 +31,16 @@ namespace Web.Controllers
 
             try
             {
-                var serviceLogger = _loggerFactory.CreateLogger<PrayerTimesService>();
-                var service = new PrayerTimesService(_cityPrayerTimesRepository, serviceLogger);
-                var prayerData = await service.GetPrayerData(selectedCity.ToLower());
+                var prayerDataDTO = await _prayerTimeService.GetPrayerTimesAsync(selectedCity.ToLower());
 
-                if (prayerData == null)
+                if (prayerDataDTO == null)
                 {
                     _logger.LogWarning("No prayer data available for {City}", selectedCity);
                     return View("Error", new CustomErrorViewModel { ErrorMessage = "No prayer data available." });
                 }
 
-                return View(prayerData);
+                var prayerDataViewModel = _mapper.Map<CityPrayerTimesViewModel>(prayerDataDTO);
+                return View(prayerDataViewModel);
             }
             catch (Exception e)
             {
