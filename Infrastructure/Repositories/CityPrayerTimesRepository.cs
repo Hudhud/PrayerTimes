@@ -75,5 +75,23 @@ namespace Infrastructure.Repositories
                 throw;
             }
         }
+
+        public async Task TruncateTablesAsync()
+        {
+            try
+            {
+                await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 0;");
+
+                await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DailyPrayerTimes;");
+                await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CityPrayerTimes;");
+
+                await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 1;");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while truncating the CityPrayerTimes and DailyPrayerTimes tables.");
+                throw;
+            }
+        }
     }
 }

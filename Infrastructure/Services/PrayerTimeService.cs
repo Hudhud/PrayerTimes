@@ -8,10 +8,10 @@ using Newtonsoft.Json;
 
 namespace Infrastructure.Services
 {
-    public class PrayerTimesService : IPrayerTimeService
+    public class PrayerTimeService : IPrayerTimeService
     {
         private readonly ICityPrayerTimesRepository _cityPrayerTimesRepository;
-        private readonly ILogger<PrayerTimesService> _logger;
+        private readonly ILogger<PrayerTimeService> _logger;
         private readonly HttpClient _httpClient;
         private const string URL_SUFFIX = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
         private readonly Dictionary<string, (string Fajr, string Isha)> _predefinedTimes = new()
@@ -22,9 +22,9 @@ namespace Infrastructure.Services
             { "aalborg", ("01:35:00", "00:50:00") }
         };
 
-        public PrayerTimesService(
+        public PrayerTimeService(
             ICityPrayerTimesRepository cityPrayerTimesRepository,
-            ILogger<PrayerTimesService> logger,
+            ILogger<PrayerTimeService> logger,
             HttpClient httpClient)
         {
             _cityPrayerTimesRepository = cityPrayerTimesRepository;
@@ -32,7 +32,7 @@ namespace Infrastructure.Services
             _httpClient = httpClient;
         }
 
-        public async Task<CityPrayerTimesDTO> GetPrayerTimesAsync(string city)
+        public async Task<CityPrayerTimesDTO> FetchAndCachePrayerTimesAsync(string city)
         {
             var cityPrayerTimes = await _cityPrayerTimesRepository.GetByCityAsync(city);
 

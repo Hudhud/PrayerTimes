@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using Web.Mapping;
 
@@ -36,17 +37,21 @@ namespace Web
             services.AddControllersWithViews();
             services.AddDistributedMemoryCache();
             services.AddMvc();
-            services.AddScoped<IPrayerTimeService, PrayerTimesService>();
+            services.AddScoped<IPrayerTimeService, PrayerTimeService>();
             services.AddScoped<ICityPrayerTimesRepository, CityPrayerTimesRepository>();
-            services.AddLogging();
-
+            services.AddLogging(config =>
+            {
+                config.AddConsole();
+                config.AddDebug();
+            });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"),
                     ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"))));
 
-            services.AddHttpClient<IPrayerTimeService, PrayerTimesService>();
+            services.AddHttpClient<IPrayerTimeService, PrayerTimeService>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddAutoMapper(typeof(DTOToviewModelMappingProfile));
+            services.AddHostedService<PrayerTimeUpdateService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
