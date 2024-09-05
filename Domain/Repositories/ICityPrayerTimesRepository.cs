@@ -7,5 +7,6 @@ namespace Domain.Repositories
         Task<IEnumerable<CityPrayerTimes>> GetAllAsync();
         Task<CityPrayerTimes?> GetByCityAsync(string city);
         Task AddOrUpdateAsync(CityPrayerTimes cityPrayerTimes);
+        Task TruncateTablesAsync();
     }
 }

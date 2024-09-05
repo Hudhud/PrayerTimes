@@ -17,7 +17,7 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<CityPrayerTimesDTO> GetPrayerTimesAsync(string city)
+        public async Task<CityPrayerTimesDTO> FetchAndCachePrayerTimesAsync(string city)
         {
             var cityPrayerTimes = await _repository.GetByCityAsync(city);
             return _mapper.Map<CityPrayerTimesDTO>(cityPrayerTimes);

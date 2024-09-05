@@ -1,0 +1,362 @@
+2024-09-05 19:31:30.994 +02:00 [INF] Starting web host
+2024-09-05 19:31:34.197 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-09-05 19:31:34.395 +02:00 [FTL] Host terminated unexpectedly
+System.InvalidOperationException: Cannot resolve scoped service 'Domain.Repositories.ICityPrayerTimesRepository' from root provider.
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteValidator.ValidateResolution(Type serviceType, IServiceScope scope, IServiceScope rootScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method1(Closure , IServiceProvider , Object[] )
+   at Microsoft.Extensions.Http.DefaultTypedHttpClientFactory`1.CreateClient(HttpClient httpClient)
+   at Microsoft.Extensions.DependencyInjection.HttpClientBuilderExtensions.AddTransientHelper[TClient,TImplementation](IServiceProvider s, IHttpClientBuilder builder)
+   at Microsoft.Extensions.DependencyInjection.HttpClientBuilderExtensions.<>c__DisplayClass13_0`2.<AddTypedClientCore>b__0(IServiceProvider s)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.CreateServiceAccessor(Type serviceType)
+   at System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(TKey key, Func`2 valueFactory)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetService[T](IServiceProvider provider)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Web.Program.Main(String[] args) in C:\Users\hadih\source\repos\PrayerTimes\Web\Program.cs:line 23
+2024-09-05 19:38:24.894 +02:00 [INF] Starting web host
+2024-09-05 19:38:26.045 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-09-05 19:38:26.134 +02:00 [FTL] Host terminated unexpectedly
+System.InvalidOperationException: Cannot resolve scoped service 'Domain.Repositories.ICityPrayerTimesRepository' from root provider.
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteValidator.ValidateResolution(Type serviceType, IServiceScope scope, IServiceScope rootScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ActivatorUtilities.GetService(IServiceProvider sp, Type type, Type requiredBy, Boolean isDefaultParameterRequired)
+   at lambda_method1(Closure , IServiceProvider , Object[] )
+   at Microsoft.Extensions.Http.DefaultTypedHttpClientFactory`1.CreateClient(HttpClient httpClient)
+   at Microsoft.Extensions.DependencyInjection.HttpClientBuilderExtensions.AddTransientHelper[TClient,TImplementation](IServiceProvider s, IHttpClientBuilder builder)
+   at Microsoft.Extensions.DependencyInjection.HttpClientBuilderExtensions.<>c__DisplayClass13_0`2.<AddTypedClientCore>b__0(IServiceProvider s)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitDisposeCache(ServiceCallSite transientCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitConstructor(ConstructorCallSite constructorCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.VisitRootCache(ServiceCallSite callSite, RuntimeResolverContext context)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteVisitor`2.VisitCallSite(ServiceCallSite callSite, TArgument argument)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteRuntimeResolver.Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.CreateServiceAccessor(Type serviceType)
+   at System.Collections.Concurrent.ConcurrentDictionary`2.GetOrAdd(TKey key, Func`2 valueFactory)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.GetService(Type serviceType, ServiceProviderEngineScope serviceProviderEngineScope)
+   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetService[T](IServiceProvider provider)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Web.Program.Main(String[] args) in C:\Users\hadih\source\repos\PrayerTimes\Web\Program.cs:line 23
+2024-09-05 19:41:19.797 +02:00 [INF] Starting web host
+2024-09-05 19:41:20.619 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-09-05 19:41:21.057 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-09-05 19:41:21.057 +02:00 [INF] Hosting environment: Development
+2024-09-05 19:41:21.057 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-09-05 19:41:21.109 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 19:41:21.330 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:21.360 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:23.788 +02:00 [INF] Executed DbCommand (54ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 19:41:23.887 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 19:41:23.995 +02:00 [INF] Executed ViewResult - view Index executed in 108.8827ms.
+2024-09-05 19:41:23.998 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 2637.6479ms
+2024-09-05 19:41:23.998 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:24.002 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/css/bootstrap.min.css - -
+2024-09-05 19:41:24.004 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/css/site.css - -
+2024-09-05 19:41:24.009 +02:00 [INF] Session started; Key:a844b617-5379-ccdf-dec7-ec39d234814a, Id:40afd04a-e38d-9522-01ed-e2053c001c94
+2024-09-05 19:41:24.013 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/js/site.js?v=4q1jwFhaPaZgr8WAUSrux6hAuh0XDg9kPS3xIVq36I0 - -
+2024-09-05 19:41:24.053 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/jquery/dist/jquery.min.js - -
+2024-09-05 19:41:24.057 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/js/bootstrap.bundle.min.js - -
+2024-09-05 19:41:24.064 +02:00 [INF] The file /lib/bootstrap/dist/css/bootstrap.min.css was not modified
+2024-09-05 19:41:24.064 +02:00 [INF] The file /lib/jquery/dist/jquery.min.js was not modified
+2024-09-05 19:41:24.064 +02:00 [INF] The file /lib/bootstrap/dist/js/bootstrap.bundle.min.js was not modified
+2024-09-05 19:41:24.064 +02:00 [INF] The file /js/site.js was not modified
+2024-09-05 19:41:24.064 +02:00 [INF] The file /css/site.css was not modified
+2024-09-05 19:41:24.066 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 19:41:24.070 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/js/bootstrap.bundle.min.js - - - 304 - application/javascript 9.8420ms
+2024-09-05 19:41:24.071 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/css/bootstrap.min.css - - - 304 - text/css 64.9644ms
+2024-09-05 19:41:24.071 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/css/site.css - - - 304 - text/css 62.7292ms
+2024-09-05 19:41:24.072 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/jquery/dist/jquery.min.js - - - 304 - application/javascript 13.6724ms
+2024-09-05 19:41:24.071 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/js/site.js?v=4q1jwFhaPaZgr8WAUSrux6hAuh0XDg9kPS3xIVq36I0 - - - 304 - application/javascript 53.0168ms
+2024-09-05 19:41:24.074 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 19:41:24.074 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 7.3919ms
+2024-09-05 19:41:24.084 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2978.9149ms
+2024-09-05 19:41:24.152 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 77.4042ms
+2024-09-05 19:41:26.600 +02:00 [INF] Request starting HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202
+2024-09-05 19:41:26.604 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:26.611 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:26.672 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-09-05 19:41:26.672 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 60.3954ms
+2024-09-05 19:41:26.672 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:26.672 +02:00 [INF] Request finished HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202 - 302 - - 72.3524ms
+2024-09-05 19:41:26.678 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 19:41:26.680 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:26.680 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:26.729 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 19:41:26.729 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 19:41:26.731 +02:00 [INF] Executed ViewResult - view Index executed in 1.9286ms.
+2024-09-05 19:41:26.731 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 51.6996ms
+2024-09-05 19:41:26.731 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:26.732 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 53.4245ms
+2024-09-05 19:41:26.746 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 19:41:26.746 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 19:41:26.747 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.7010ms
+2024-09-05 19:41:26.751 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 5.2380ms
+2024-09-05 19:41:27.673 +02:00 [INF] Request starting HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 199
+2024-09-05 19:41:27.675 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:27.675 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:27.690 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-09-05 19:41:27.690 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 15.0865ms
+2024-09-05 19:41:27.690 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:27.690 +02:00 [INF] Request finished HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 199 - 302 - - 17.3738ms
+2024-09-05 19:41:27.697 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 19:41:27.698 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:27.698 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:27.803 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 19:41:27.803 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 19:41:27.804 +02:00 [INF] Executed ViewResult - view Index executed in 0.8768ms.
+2024-09-05 19:41:27.804 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 106.5435ms
+2024-09-05 19:41:27.804 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:27.804 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 107.8083ms
+2024-09-05 19:41:27.819 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 19:41:27.821 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 19:41:27.824 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.3619ms
+2024-09-05 19:41:27.826 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 7.3376ms
+2024-09-05 19:41:28.393 +02:00 [INF] Request starting HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202
+2024-09-05 19:41:28.395 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:28.395 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:28.409 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-09-05 19:41:28.409 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 14.6809ms
+2024-09-05 19:41:28.409 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:28.410 +02:00 [INF] Request finished HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202 - 302 - - 16.4656ms
+2024-09-05 19:41:28.412 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 19:41:28.414 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:28.414 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:28.458 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 19:41:28.459 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 19:41:28.459 +02:00 [INF] Executed ViewResult - view Index executed in 0.5553ms.
+2024-09-05 19:41:28.459 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 45.6993ms
+2024-09-05 19:41:28.459 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:28.459 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 47.3882ms
+2024-09-05 19:41:28.473 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 19:41:28.473 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 19:41:28.474 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.9408ms
+2024-09-05 19:41:28.477 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 4.1793ms
+2024-09-05 19:41:29.119 +02:00 [INF] Request starting HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202
+2024-09-05 19:41:29.120 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:29.120 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:29.136 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-09-05 19:41:29.136 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 15.5065ms
+2024-09-05 19:41:29.136 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:29.136 +02:00 [INF] Request finished HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202 - 302 - - 17.2634ms
+2024-09-05 19:41:29.139 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 19:41:29.140 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:29.140 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:29.185 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 19:41:29.185 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 19:41:29.186 +02:00 [INF] Executed ViewResult - view Index executed in 0.6177ms.
+2024-09-05 19:41:29.186 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 46.096ms
+2024-09-05 19:41:29.186 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:29.186 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 47.5435ms
+2024-09-05 19:41:29.200 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 19:41:29.200 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 19:41:29.201 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.9626ms
+2024-09-05 19:41:29.204 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 4.4874ms
+2024-09-05 19:41:29.882 +02:00 [INF] Request starting HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 203
+2024-09-05 19:41:29.884 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:29.884 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:29.899 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-09-05 19:41:29.899 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 15.5577ms
+2024-09-05 19:41:29.899 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 19:41:29.900 +02:00 [INF] Request finished HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 203 - 302 - - 17.7202ms
+2024-09-05 19:41:29.902 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 19:41:29.903 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:29.903 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 19:41:29.949 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 19:41:29.949 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 19:41:29.949 +02:00 [INF] Executed ViewResult - view Index executed in 0.5454ms.
+2024-09-05 19:41:29.949 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 46.0038ms
+2024-09-05 19:41:29.950 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 19:41:29.950 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 47.8624ms
+2024-09-05 19:41:29.963 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 19:41:29.964 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 19:41:29.964 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5985ms
+2024-09-05 19:41:29.967 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 4.6949ms
+2024-09-05 20:19:37.589 +02:00 [INF] Starting web host
+2024-09-05 20:19:38.440 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-09-05 20:19:38.607 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-09-05 20:19:38.607 +02:00 [INF] Hosting environment: Development
+2024-09-05 20:19:38.607 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-09-05 20:19:38.623 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 20:19:38.752 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 20:19:38.783 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 20:19:39.313 +02:00 [INF] Accessing expired session, Key:a844b617-5379-ccdf-dec7-ec39d234814a
+2024-09-05 20:19:40.622 +02:00 [INF] Executed DbCommand (53ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 20:19:40.693 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 20:19:40.777 +02:00 [INF] Executed ViewResult - view Index executed in 84.9666ms.
+2024-09-05 20:19:40.780 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 1996.7655ms
+2024-09-05 20:19:40.781 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 20:19:40.786 +02:00 [INF] Session started; Key:a844b617-5379-ccdf-dec7-ec39d234814a, Id:d471ecef-d482-d31a-a1b8-b727e111c5a6
+2024-09-05 20:19:40.796 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 20:19:40.796 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 20:19:40.800 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.7314ms
+2024-09-05 20:19:40.813 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2193.4296ms
+2024-09-05 20:19:40.843 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 46.7038ms
+2024-09-05 20:19:43.417 +02:00 [INF] Request starting HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202
+2024-09-05 20:19:43.422 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 20:19:43.430 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-09-05 20:19:43.480 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-09-05 20:19:43.480 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 50.5519ms
+2024-09-05 20:19:43.480 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 20:19:43.481 +02:00 [INF] Request finished HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202 - 302 - - 64.2781ms
+2024-09-05 20:19:43.485 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 20:19:43.486 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 20:19:43.486 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 20:19:43.541 +02:00 [INF] Executed DbCommand (16ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 20:19:43.543 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 20:19:43.552 +02:00 [INF] Executed ViewResult - view Index executed in 9.4561ms.
+2024-09-05 20:19:43.552 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 66.252ms
+2024-09-05 20:19:43.553 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 20:19:43.553 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 68.4448ms
+2024-09-05 20:19:43.575 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 20:19:43.581 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 20:19:43.582 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.4166ms
+2024-09-05 20:19:43.591 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 15.2227ms
+2024-09-05 20:19:44.818 +02:00 [INF] Request starting HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202
+2024-09-05 20:19:44.820 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 20:19:44.820 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-09-05 20:19:44.835 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-09-05 20:19:44.835 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 15.1112ms
+2024-09-05 20:19:44.835 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 20:19:44.836 +02:00 [INF] Request finished HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 202 - 302 - - 17.3088ms
+2024-09-05 20:19:44.841 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 20:19:44.842 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 20:19:44.842 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 20:19:44.922 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 20:19:44.922 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 20:19:44.923 +02:00 [INF] Executed ViewResult - view Index executed in 0.9282ms.
+2024-09-05 20:19:44.923 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 80.8941ms
+2024-09-05 20:19:44.923 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 20:19:44.923 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 82.3642ms
+2024-09-05 20:19:44.938 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 20:19:44.942 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 20:19:44.943 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.8043ms
+2024-09-05 20:19:44.945 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 6.6705ms
+2024-09-05 20:19:45.447 +02:00 [INF] Request starting HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 203
+2024-09-05 20:19:45.448 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 20:19:45.448 +02:00 [INF] Route matched with {action = "Check", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Check(System.String) on controller Web.Controllers.HomeController (Web).
+2024-09-05 20:19:45.463 +02:00 [INF] Executing RedirectResult, redirecting to /.
+2024-09-05 20:19:45.463 +02:00 [INF] Executed action Web.Controllers.HomeController.Check (Web) in 14.8677ms
+2024-09-05 20:19:45.463 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Check (Web)'
+2024-09-05 20:19:45.463 +02:00 [INF] Request finished HTTP/2 POST https://localhost:44359/Home/Check application/x-www-form-urlencoded 203 - 302 - - 16.4688ms
+2024-09-05 20:19:45.465 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-05 20:19:45.467 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 20:19:45.467 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-05 20:19:45.511 +02:00 [INF] Executed DbCommand (15ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-05 20:19:45.512 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-05 20:19:45.512 +02:00 [INF] Executed ViewResult - view Index executed in 0.5677ms.
+2024-09-05 20:19:45.512 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 45.464ms
+2024-09-05 20:19:45.512 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-05 20:19:45.512 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 46.9815ms
+2024-09-05 20:19:45.524 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-05 20:19:45.524 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-05 20:19:45.525 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 0.5259ms
+2024-09-05 20:19:45.536 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 11.4691ms

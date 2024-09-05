@@ -31,7 +31,7 @@ namespace Web.Controllers
 
             try
             {
-                var prayerDataDTO = await _prayerTimeService.GetPrayerTimesAsync(selectedCity.ToLower());
+                var prayerDataDTO = await _prayerTimeService.FetchAndCachePrayerTimesAsync(selectedCity.ToLower());
 
                 if (prayerDataDTO == null)
                 {
