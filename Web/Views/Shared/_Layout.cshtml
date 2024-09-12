@@ -12,54 +12,80 @@
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
         gtag('config', 'G-03RLGPN608');
     </script>
+    <style>
+        body {
+            background-color: #85144B;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #FFFFFF;
+        }
 
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #FFDC00;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.85); /* Transparent effect */
+        }
+
+            .navbar a {
+                color: #FFDC00;
+            }
+
+        .navbar-toggler {
+            border-color: #FFDC00;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath stroke="rgba(255, 220, 0, 1)" stroke-width="2" linecap="round" linejoin="round" d="M4 7h22M4 15h22M4 23h22"/%3E%3C/svg%3E');
+        }
+
+        footer {
+            color: #FFDC00;
+            padding: 15px 0;
+            text-align: center;
+        }
+    </style>
 </head>
-<body style="background-color:#85144B">
-<!--<body style="background-image: url(https://rb.gy/kishhn);
-        background-size: 100vw 100vh;
-        background-repeat: no-repeat">-->
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3">
-        <div class="container" style="color:yellow">
-            <h1>Salah Times</h1>
-            <a>
-                @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("da-DK")) @DateTime.Today.Date.ToString("d-MMM-yyyy", new System.Globalization.CultureInfo("da-DK"))
-            </a>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+            <div class="container">
+                <h1>Salah Times <img src="~/icons/crescent.svg" alt="Crescent" style="width:30px; vertical-align:middle;" /></h1>
+                <a>
+                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("da-DK"))
+                    @DateTime.Today.Date.ToString("d-MMM-yyyy", new System.Globalization.CultureInfo("da-DK"))
+                </a>
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!--   <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
-            </div>-->
-        </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
-
-<footer class="border-top footer text-muted" style="background-color: #343a40">
-    <div class="container" style="color:#FFDC00">
-        @DateTime.Now.Year - Salah Times<a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
-</footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@RenderSection("Scripts", required: false)
+
+    <footer class="border-top footer text-muted" style="background-color: #343a40">
+        <div class="container">
+            &copy; @DateTime.Now.Year - Salah Times
+            <a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
