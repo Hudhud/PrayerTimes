@@ -1338,3 +1338,69 @@ ORDER BY `t`.`Id`
 2024-09-13 01:42:28.285 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 8.4348ms
 2024-09-13 01:42:28.288 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2133.3529ms
 2024-09-13 01:42:28.325 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 46.4104ms
+2024-09-13 21:27:44.585 +02:00 [INF] Starting web host
+2024-09-13 21:27:47.045 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-09-13 21:27:47.420 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-09-13 21:27:47.420 +02:00 [INF] Hosting environment: Development
+2024-09-13 21:27:47.420 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-09-13 21:27:47.491 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-13 21:27:47.690 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-13 21:27:47.730 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-13 21:27:49.868 +02:00 [INF] Executed DbCommand (53ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-13 21:27:49.941 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-13 21:27:50.050 +02:00 [INF] Executed ViewResult - view Index executed in 109.2582ms.
+2024-09-13 21:27:50.052 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 2321.3256ms
+2024-09-13 21:27:50.053 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-13 21:27:50.058 +02:00 [INF] Session started; Key:4442917e-ba45-3d56-41c1-cea543a54c03, Id:d1fb1452-1d67-e210-9ea3-6e3fbb58703b
+2024-09-13 21:27:50.067 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/icons/crescent.svg - -
+2024-09-13 21:27:50.070 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-13 21:27:50.072 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-13 21:27:50.077 +02:00 [INF] The file /icons/crescent.svg was not modified
+2024-09-13 21:27:50.080 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 6.0337ms
+2024-09-13 21:27:50.081 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/icons/crescent.svg - - - 304 - image/svg+xml 13.8751ms
+2024-09-13 21:27:50.089 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2601.3498ms
+2024-09-13 21:27:50.158 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 86.2428ms
+2024-09-13 21:46:51.242 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map - -
+2024-09-13 21:46:51.244 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/css/bootstrap.min.css.map - -
+2024-09-13 21:46:51.281 +02:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map'
+2024-09-13 21:46:51.281 +02:00 [INF] Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.min.css.map'. Physical path: 'C:\Users\hadih\source\repos\PrayerTimes\Web\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map'
+2024-09-13 21:46:51.285 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map - - - 200 311949 text/plain 42.7931ms
+2024-09-13 21:46:51.288 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/lib/bootstrap/dist/css/bootstrap.min.css.map - - - 200 625953 text/plain 43.9019ms
+2024-09-13 22:20:33.984 +02:00 [INF] Starting web host
+2024-09-13 22:20:34.671 +02:00 [INF] User profile is available. Using 'C:\Users\hadih\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-09-13 22:20:34.847 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-09-13 22:20:34.847 +02:00 [INF] Hosting environment: Development
+2024-09-13 22:20:34.847 +02:00 [INF] Content root path: C:\Users\hadih\source\repos\PrayerTimes\Web
+2024-09-13 22:20:34.868 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/ - -
+2024-09-13 22:20:35.019 +02:00 [INF] Executing endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-13 22:20:35.048 +02:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller Web.Controllers.HomeController (Web).
+2024-09-13 22:20:35.581 +02:00 [INF] Accessing expired session, Key:4442917e-ba45-3d56-41c1-cea543a54c03
+2024-09-13 22:20:36.920 +02:00 [INF] Executed DbCommand (54ms) [Parameters=[@__ToLower_0='?' (Size = 255)], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`Id`, `t`.`City`, `d`.`Id`, `d`.`AsrHanafiTime`, `d`.`AsrTime`, `d`.`CityPrayerTimesId`, `d`.`Date`, `d`.`DhuhrTime`, `d`.`FajrTime`, `d`.`IshaTime`, `d`.`MaghribTime`, `d`.`SunriseTime`
+FROM (
+    SELECT `c`.`Id`, `c`.`City`
+    FROM `CityPrayerTimes` AS `c`
+    WHERE LOWER(`c`.`City`) = @__ToLower_0
+    LIMIT 1
+) AS `t`
+LEFT JOIN `DailyPrayerTimes` AS `d` ON `t`.`Id` = `d`.`CityPrayerTimesId`
+ORDER BY `t`.`Id`
+2024-09-13 22:20:36.992 +02:00 [INF] Executing ViewResult, running view Index.
+2024-09-13 22:20:37.078 +02:00 [INF] Executed ViewResult - view Index executed in 87.191ms.
+2024-09-13 22:20:37.081 +02:00 [INF] Executed action Web.Controllers.HomeController.Index (Web) in 2032.0064ms
+2024-09-13 22:20:37.081 +02:00 [INF] Executed endpoint 'Web.Controllers.HomeController.Index (Web)'
+2024-09-13 22:20:37.087 +02:00 [INF] Session started; Key:4442917e-ba45-3d56-41c1-cea543a54c03, Id:7581f594-fed2-48a1-c379-21bbd444c8d8
+2024-09-13 22:20:37.098 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - -
+2024-09-13 22:20:37.098 +02:00 [INF] Request starting HTTP/2 GET https://localhost:44359/_vs/browserLink - -
+2024-09-13 22:20:37.104 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_framework/aspnetcore-browser-refresh.js - - - 200 11976 application/javascript;+charset=utf-8 2.6889ms
+2024-09-13 22:20:37.121 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/ - - - 200 - text/html;+charset=utf-8 2255.9447ms
+2024-09-13 22:20:37.156 +02:00 [INF] Request finished HTTP/2 GET https://localhost:44359/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 57.3863ms
