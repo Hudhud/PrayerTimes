@@ -21,6 +21,7 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
             color: #FFFFFF;
+            padding: 0 15px; /* Added for mobile padding */
         }
 
         h1 {
@@ -35,9 +36,9 @@
             background-color: rgba(0, 0, 0, 0.85); /* Transparent effect */
         }
 
-            .navbar a {
-                color: #FFDC00;
-            }
+        .navbar a {
+            color: #FFDC00;
+        }
 
         .navbar-toggler {
             border-color: #FFDC00;
@@ -49,8 +50,19 @@
 
         footer {
             color: #FFDC00;
-            padding: 15px 0;
+            padding: 20px 0;
             text-align: center;
+            font-size: 14px;
+        }
+
+        @@media (max-width: 600px) {
+            h1 {
+                font-size: 24px; /* Reduce font size for mobile */
+            }
+
+            body {
+                padding: 0 15px; /* Maintain padding on mobile */
+            }
         }
     </style>
 </head>
@@ -58,7 +70,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container">
-                <h1>Salah Times <img src="~/icons/crescent.svg" alt="Crescent" style="width:30px; vertical-align:middle;" /></h1>
+                <h1>Salah Times <img src="~/icons/crescent.svg" alt="Crescent" style="width:30px; vertical-align:middle; margin-left:5px;" /></h1>
                 <a>
                     @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("da-DK"))
                     @DateTime.Today.Date.ToString("d-MMM-yyyy", new System.Globalization.CultureInfo("da-DK"))
