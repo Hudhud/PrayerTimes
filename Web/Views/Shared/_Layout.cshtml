@@ -6,14 +6,6 @@
     <title>Salah Times</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-03RLGPN608"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-03RLGPN608');
-    </script>
     <style>
         html, body {
             height: 100%;
@@ -21,7 +13,7 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            background-color: #85144B;
+            background-color: #1a1a1a;
             color: #FFFFFF;
         }
 
@@ -31,54 +23,65 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #FFDC00;
-        }
-
-        .navbar {
-            background-color: rgba(0, 0, 0, 0.85);
-            width: 100%;
-            padding: 10px 0;
-        }
-
-        .navbar h1 {
             text-align: center;
             margin: 0;
         }
 
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 10px 0;
+        }
+
         .navbar a {
             color: #FFDC00;
-            float: right;
-            margin-right: 20px;
+            text-align: right;
         }
 
         .container {
             flex: 1;
             padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         footer {
             background-color: #343a40;
-            width: 100%;
-            text-align: center; 
+            color: #FFDC00;
             padding: 20px 0;
-            position: relative;
-            bottom: 0;
-            left: 0;
+            text-align: center;
             font-size: 14px;
         }
 
-        .footer-content {
-            color: #6c757d; 
-            text-align: center;
-            margin: 0 auto;
+        @@media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .navbar a {
+                font-size: 14px;
+            }
+
+            footer {
+                font-size: 12px;
+            }
         }
 
-        @@media (max-width: 600px) {
+        @@media (max-width: 480px) {
             h1 {
                 font-size: 24px;
             }
 
-            body {
-                padding: 0 15px; 
+            .container {
+                padding: 10px;
+            }
+
+            footer {
+                padding: 10px 0;
+                font-size: 12px;
             }
         }
     </style>
@@ -88,9 +91,8 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <h1>Salah Times <img src="~/icons/crescent.svg" alt="Crescent" style="width:30px; vertical-align:middle; margin-left:5px;" /></h1>
-                <a>
-                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("da-DK"))
-                    @DateTime.Today.Date.ToString("d-MMM-yyyy", new System.Globalization.CultureInfo("da-DK"))
+                <a style="font-size: 18px; color: #FFDC00; letter-spacing: 1px;">
+                    @DateTime.Now.ToString("dddd 'd.' dd'/'MM'-'yy", new System.Globalization.CultureInfo("da-DK"))
                 </a>
             </div>
         </nav>
@@ -103,14 +105,10 @@
     </div>
 
     <footer>
-        <div class="footer-content">
-            &copy; @DateTime.Now.Year - Salah Times
-        </div>
+        &copy; @DateTime.Now.Year - Salah Times
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
 </body>
 </html>
