@@ -51,7 +51,6 @@ namespace Web
             services.AddHttpClient<IPrayerTimeService, PrayerTimeService>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddAutoMapper(typeof(DTOToviewModelMappingProfile));
-            services.AddHostedService<PrayerTimeUpdateService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
