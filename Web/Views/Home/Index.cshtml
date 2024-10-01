@@ -1,10 +1,10 @@
 ﻿@model Web.ViewModels.CityPrayerTimesViewModel
-
 @using Microsoft.AspNetCore.Http
 @using Web.ViewModels
 @{
     ViewData["Title"] = "Home Page";
     var activeButton = Context.Session.GetString("SelectedCity") ?? "cph";
+    DateTime currentDate = DateTime.Today;
 }
 
 <style>
@@ -34,11 +34,11 @@
         transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
     }
 
-    .prayer-button:hover {
-        background-color: #FFDC00;
-        color: #1a1a1a;
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
-    }
+        .prayer-button:hover {
+            background-color: #FFDC00;
+            color: #1a1a1a;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+        }
 
     .selected-prayer-button {
         background-color: #FFDC00;
@@ -58,47 +58,48 @@
         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
     }
 
-    .prayer-table th, .prayer-table td {
-        border: 1px solid #FFDC00;
-        padding: 10px 15px;
-        text-align: center;
-        font-size: 16px;
-    }
+        .prayer-table th, .prayer-table td {
+            border: 1px solid #FFDC00;
+            padding: 10px 15px;
+            text-align: center;
+            font-size: 16px;
+        }
 
-    .prayer-table th {
-        background-color: #333333;
-        color: #FFDC00;
-    }
+        .prayer-table th {
+            background-color: #333333;
+            color: #FFDC00;
+        }
 
-    .prayer-table td {
-        background-color: #1a1a1a;
-        color: #FFFFFF;
-    }
+        .prayer-table td {
+            background-color: #1a1a1a;
+            color: #FFFFFF;
+        }
 
-    .hanafi-asr {
-        color: #FFDC00;
-        text-align: center;
-        margin-top: 25px;
-        font-size: 16px;
-        font-style: italic;
+    .highlight {
+        background-color: #FFDC00 !important;
+        color: #1a1a1a !important;
     }
 
     @@media only screen and (max-width: 600px) {
+        .prayer-table {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+            .prayer-table th, .prayer-table td {
+                font-size: 12px;
+                padding: 5px;
+            }
+
         .prayer-buttons {
             flex-direction: column;
             align-items: center;
         }
 
         .prayer-button {
-            width: 90%;
-            margin-bottom: 15px;
-            font-size: 14px;
-            padding: 8px;
-        }
-
-        .prayer-table th, .prayer-table td {
-            font-size: 14px;
-            padding: 8px;
+            width: 100%;
+            margin-bottom: 10px;
         }
     }
 </style>
@@ -106,11 +107,6 @@
 <div class="text-center">
     @if (Model.PrayerTimes != null)
     {
-        DateTime dt = DateTime.Today;
-        string dateFormatted = dt.Date.ToString("yyyy-MM-dd");
-        var model = (CityPrayerTimesViewModel)Model;
-        var prayer = model.PrayerTimes.First(x => x.Date.ToString("yyyy-MM-dd") == dateFormatted);
-
         <form method="post" asp-controller="Home" asp-action="Check">
             <div class="prayer-buttons">
                 <button class="prayer-button @(activeButton == "cph" ? "selected-prayer-button" : "")" name="button_value" value="cph">København</button>
@@ -122,25 +118,28 @@
 
         <table class="prayer-table">
             <tr>
+                <th>Date</th>
                 <th>Fajr</th>
                 <th>Shuruk</th>
                 <th>Dhuhr</th>
                 <th>Asr</th>
+                <th>Asr (Hanafi)</th>
                 <th>Maghrib</th>
                 <th>Isha</th>
             </tr>
-            <tr>
-                <td>@prayer.FajrTime</td>
-                <td>@prayer.SunriseTime</td>
-                <td>@prayer.DhuhrTime</td>
-                <td>@prayer.AsrTime</td>
-                <td>@prayer.MaghribTime</td>
-                <td>@prayer.IshaTime</td>
-            </tr>
+            @foreach (var prayer in Model.PrayerTimes)
+            {
+                <tr>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.Date.ToString("dd-MM-yyyy")</td>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.FajrTime</td>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.SunriseTime</td>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.DhuhrTime</td>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.AsrTime</td>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.AsrHanafiTime</td>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.MaghribTime</td>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.IshaTime</td>
+                </tr>
+            }
         </table>
-
-        <div class="hanafi-asr">
-            Hanafi Asr: @prayer.AsrHanafiTime
-        </div>
     }
 </div>
