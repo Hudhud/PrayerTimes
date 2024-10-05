@@ -123,7 +123,6 @@
                 <th>Shuruk</th>
                 <th>Dhuhr</th>
                 <th>Asr</th>
-                <th>Asr (Hanafi)</th>
                 <th>Maghrib</th>
                 <th>Isha</th>
             </tr>
@@ -135,7 +134,6 @@
                     <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.SunriseTime</td>
                     <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.DhuhrTime</td>
                     <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.AsrTime</td>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.AsrHanafiTime</td>
                     <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.MaghribTime</td>
                     <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.IshaTime</td>
                 </tr>
