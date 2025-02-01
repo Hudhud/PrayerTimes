@@ -32,3 +32,4 @@ msbuild.wrn
 .vs/
 /Web/Properties/PublishProfiles
 /Web/appsettings.json
+/Web/appsettings.Development.json
