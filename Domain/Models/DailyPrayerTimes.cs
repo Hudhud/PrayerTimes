@@ -23,9 +23,6 @@ namespace Domain.Models
         public string AsrTime { get; set; } = null!;
 
         [Required]
-        public string AsrHanafiTime { get; set; } = null!;
-
-        [Required]
         public string MaghribTime { get; set; } = null!;
 
         [Required]
