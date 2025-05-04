@@ -16,10 +16,10 @@ namespace Infrastructure.Services
         private const string URL_SUFFIX = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
         private readonly Dictionary<string, (string Fajr, string Isha)> _predefinedTimes = new()
         {
-            { "cph", ("01:09:00", "00:42:00") },
-            { "odense", ("01:44:00", "00:50:00") },
-            { "aarhus", ("01:33:00", "00:47:00") },
-            { "aalborg", ("01:35:00", "00:50:00") }
+            { "cph", ("01:21:00", "00:38:00") },
+            { "odense", ("01:28:00", "00:46:00") },
+            { "aarhus", ("01:38:00", "01:06:00") },
+            { "aalborg", ("01:41:00", "00:46:00") }
         };
 
         public PrayerTimeService(
@@ -129,18 +129,18 @@ namespace Infrastructure.Services
             {
                 var dailyPrayerTimes = new DailyPrayerTimes
                 {
-                    Date = DateTime.Parse(prayerTimeData.FajrDate).Date, // Removing time part
+                    Date = DateTime.Parse(prayerTimeData.FajrDate).Date,
                     SunriseTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.SunriseTime, 3),
                     DhuhrTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.ZohrTime, 3),
                     AsrTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.AsrTime, 3),
                     AsrHanafiTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.MithlainTime, 3),
                     MaghribTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.SunsetTime, 3),
-                    FajrTime = string.IsNullOrWhiteSpace(prayerTimeData.FajrTime)
-                                ? PrayerTimesHelper.AddMinutesAndConvertToString(_predefinedTimes[city.ToLower()].Fajr, 3)
-                                : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.FajrTime, 3),
+                    FajrTime = prayerTimeData.FajrAngle is string s && s == "anti-transit"
+                    ? PrayerTimesHelper.AddMinutesAndConvertToString(_predefinedTimes[city.ToLower()].Fajr, 3)
+                    : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.FajrTime, 3),
                     IshaTime = string.IsNullOrWhiteSpace(prayerTimeData.EshaTime)
-                                ? PrayerTimesHelper.AddMinutesAndConvertToString(_predefinedTimes[city.ToLower()].Isha, 3)
-                                : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.EshaTime, 3)
+                            ? PrayerTimesHelper.AddMinutesAndConvertToString(_predefinedTimes[city.ToLower()].Isha, 3)
+                            : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.EshaTime, 3)
                 };
 
                 dailyPrayerTimesList.Add(dailyPrayerTimes);
