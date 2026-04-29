@@ -49,7 +49,16 @@ namespace Web
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"),
                     ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"))));
 
-            services.AddHttpClient<IPrayerTimeService, PrayerTimeService>();
+            services.AddHttpClient<IPrayerTimeService, PrayerTimeService>()
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13
+                })
+                .ConfigureHttpClient(client =>
+                {
+                    client.DefaultRequestVersion = HttpVersion.Version11;
+                    client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
+                });
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddAutoMapper(typeof(DTOToviewModelMappingProfile));
             services.AddHostedService<MonthlyPrayerTimesRefreshService>();
