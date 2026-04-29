@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using System.Runtime.InteropServices;
 using System;
 
 namespace Web
@@ -20,6 +21,11 @@ namespace Web
             try
             {
                 Log.Information("Starting web host");
+                Log.Information("Runtime diagnostics: Framework={Framework}, EnvironmentVersion={EnvironmentVersion}, OS={OS}, Architecture={Architecture}",
+                    RuntimeInformation.FrameworkDescription,
+                    Environment.Version,
+                    RuntimeInformation.OSDescription,
+                    RuntimeInformation.OSArchitecture);
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
