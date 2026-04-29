@@ -62,8 +62,9 @@ namespace Web
                     client.DefaultRequestVersion = HttpVersion.Version11;
                     client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
                 });
-            services.AddAutoMapper(typeof(MappingProfile));
-            services.AddAutoMapper(typeof(DTOToviewModelMappingProfile));
+            services.AddAutoMapper(cfg => { },
+                typeof(MappingProfile).Assembly,
+                typeof(DTOToviewModelMappingProfile).Assembly);
             services.AddHostedService<MonthlyPrayerTimesRefreshService>();
         }
 
