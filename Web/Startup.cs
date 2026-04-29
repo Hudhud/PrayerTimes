@@ -14,6 +14,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using Web.Mapping;
 using Web.Services;
+using System.Net.Http;
+using System.Security.Authentication;
 
 namespace Web
 {
