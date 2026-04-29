@@ -80,12 +80,12 @@ namespace Infrastructure.Repositories
         {
             try
             {
-                await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 0;");
+                await using var transaction = await _context.Database.BeginTransactionAsync();
 
                 await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DailyPrayerTimes;");
                 await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CityPrayerTimes;");
 
-                await _context.Database.ExecuteSqlRawAsync("SET FOREIGN_KEY_CHECKS = 1;");
+                await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
