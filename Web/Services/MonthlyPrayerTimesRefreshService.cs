@@ -13,6 +13,7 @@ namespace Web.Services
 {
     public class MonthlyPrayerTimesRefreshService : BackgroundService
     {
+
         private static readonly string[] SupportedCities = new[] { "cph", "odense", "aarhus", "aalborg" };
 
         private readonly IServiceScopeFactory _scopeFactory;
