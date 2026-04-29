@@ -109,7 +109,26 @@ namespace Infrastructure.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
+
+                    if (int.TryParse(responseContent.Trim(), out var numericResponse) && numericResponse == 429)
+                    {
+                        if (attempt == MaxApiRetries)
+                        {
+                            break;
+                        }
+
+                        _logger.LogWarning("Muwaqqit returned body-only rate limit marker (429). Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", DefaultRetryDelay.TotalSeconds, attempt, MaxApiRetries);
+                        await Task.Delay(DefaultRetryDelay);
+                        continue;
+                    }
+
+                    var deserialized = JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
+                    if (deserialized == null)
+                    {
+                        throw new HttpRequestException("Muwaqqit API returned an empty or invalid JSON payload.");
+                    }
+
+                    return deserialized;
                 }
 
                 if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)

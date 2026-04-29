@@ -13,7 +13,6 @@ namespace Web.Services
 {
     public class MonthlyPrayerTimesRefreshService : BackgroundService
     {
-
         private static readonly string[] SupportedCities = new[] { "cph", "odense", "aarhus", "aalborg" };
 
         private readonly IServiceScopeFactory _scopeFactory;
@@ -31,14 +30,14 @@ namespace Web.Services
         {
             var denmarkTimeZone = GetDenmarkTimeZone();
 
-            await RefreshIfNeededAsync(denmarkTimeZone, stoppingToken);
+            await TryRunRefreshCycleAsync(denmarkTimeZone, stoppingToken);
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 var delay = GetDelayUntilNextMidnight(denmarkTimeZone);
                 _logger.LogInformation("Monthly refresh worker sleeping for {Delay} until next Denmark midnight.", delay);
                 await Task.Delay(delay, stoppingToken);
-                await RefreshIfNeededAsync(denmarkTimeZone, stoppingToken);
+                await TryRunRefreshCycleAsync(denmarkTimeZone, stoppingToken);
             }
         }
 
@@ -52,26 +51,61 @@ namespace Web.Services
             var prayerTimeService = scope.ServiceProvider.GetRequiredService<IPrayerTimeService>();
 
             var allRows = await repository.GetAllAsync();
-            var hasCurrentMonthData = allRows
-                .SelectMany(c => c.PrayerTimes)
-                .Any(p => p.Date.Year == firstOfMonth.Year && p.Date.Month == firstOfMonth.Month);
+            var coveredCities = allRows
+                .Where(c => SupportedCities.Contains(c.City, StringComparer.OrdinalIgnoreCase))
+                .Where(c => c.PrayerTimes.Any(p => p.Date.Year == firstOfMonth.Year && p.Date.Month == firstOfMonth.Month))
+                .Select(c => c.City.ToLowerInvariant())
+                .Distinct()
+                .ToHashSet();
 
-            if (hasCurrentMonthData)
+            var missingCities = SupportedCities
+                .Where(city => !coveredCities.Contains(city))
+                .ToList();
+
+            if (!missingCities.Any())
             {
-                _logger.LogInformation("Monthly refresh skipped. Data for {Month}/{Year} already exists.", firstOfMonth.Month, firstOfMonth.Year);
+                _logger.LogInformation("Monthly refresh skipped. Data for all supported cities already exists for {Month}/{Year}.", firstOfMonth.Month, firstOfMonth.Year);
                 return;
             }
 
-            _logger.LogInformation("Refreshing prayer calendar data for {Month}/{Year}.", firstOfMonth.Month, firstOfMonth.Year);
-            await repository.TruncateTablesAsync();
+            _logger.LogInformation("Refreshing prayer calendar data for {Month}/{Year}. Missing cities: {MissingCities}", firstOfMonth.Month, firstOfMonth.Year, string.Join(",", missingCities));
 
-            foreach (var city in SupportedCities)
+            if (missingCities.Count == SupportedCities.Length)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                await prayerTimeService.FetchAndCachePrayerTimesAsync(city);
+                await repository.TruncateTablesAsync();
             }
 
-            _logger.LogInformation("Monthly prayer calendar refresh complete for {Month}/{Year}.", firstOfMonth.Month, firstOfMonth.Year);
+            foreach (var city in missingCities)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                try
+                {
+                    await prayerTimeService.FetchAndCachePrayerTimesAsync(city);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Monthly refresh failed for city {City} in {Month}/{Year}.", city, firstOfMonth.Month, firstOfMonth.Year);
+                }
+            }
+
+            _logger.LogInformation("Monthly prayer calendar refresh cycle completed for {Month}/{Year}.", firstOfMonth.Month, firstOfMonth.Year);
+        }
+
+        private async Task TryRunRefreshCycleAsync(TimeZoneInfo denmarkTimeZone, CancellationToken stoppingToken)
+        {
+            try
+            {
+                await RefreshIfNeededAsync(denmarkTimeZone, stoppingToken);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Monthly refresh cycle failed unexpectedly.");
+            }
         }
 
         private static TimeSpan GetDelayUntilNextMidnight(TimeZoneInfo denmarkTimeZone)
