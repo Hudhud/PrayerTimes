@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using Web.Mapping;
+using Web.Services;
 
 namespace Web
 {
@@ -51,6 +52,7 @@ namespace Web
             services.AddHttpClient<IPrayerTimeService, PrayerTimeService>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddAutoMapper(typeof(DTOToviewModelMappingProfile));
+            services.AddHostedService<MonthlyPrayerTimesRefreshService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
