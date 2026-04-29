@@ -82,8 +82,8 @@ namespace Infrastructure.Repositories
             {
                 await using var transaction = await _context.Database.BeginTransactionAsync();
 
-                await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE DailyPrayerTimes;");
-                await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE CityPrayerTimes;");
+                await _context.Database.ExecuteSqlRawAsync("DELETE FROM DailyPrayerTimes;");
+                await _context.Database.ExecuteSqlRawAsync("DELETE FROM CityPrayerTimes;");
 
                 await transaction.CommitAsync();
             }
