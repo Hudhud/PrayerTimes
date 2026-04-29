@@ -41,7 +41,7 @@ namespace Infrastructure.Services
             if (cityPrayerTimes == null)
             {
                 _logger.LogWarning("No data found for city: {CityName}, fetching from API.", city);
-                var apiData = await GetApiPrayerData(BuildApiUrl(city));
+                var apiData = await GetApiPrayerDataWithHttpFallback(BuildApiUrl(city));
                 cityPrayerTimes = await ProcessAndStoreApiData(new CityPrayerTimes { City = city }, apiData, city);
             }
 
