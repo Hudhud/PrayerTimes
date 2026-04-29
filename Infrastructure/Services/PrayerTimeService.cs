@@ -14,6 +14,8 @@ namespace Infrastructure.Services
         private readonly ILogger<PrayerTimeService> _logger;
         private readonly HttpClient _httpClient;
         private const string URL_SUFFIX = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+        private const int MaxApiRetries = 5;
+        private static readonly TimeSpan DefaultRetryDelay = TimeSpan.FromSeconds(30);
         private readonly Dictionary<string, (string Fajr, string Isha)> _predefinedTimes = new()
         {
             { "cph", ("01:21:00", "00:38:00") },
@@ -98,21 +100,63 @@ namespace Infrastructure.Services
 
         private async Task<MuwaqqitResponse> GetApiPrayerData(string url)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(url);
-
-            _logger.LogInformation("Received HTTP status {StatusCode} for URL {Url}", response.StatusCode, url);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            for (var attempt = 1; attempt <= MaxApiRetries; attempt++)
             {
-                var retryAfter = response.Headers.RetryAfter?.Delta?.TotalSeconds ?? 30;
-                _logger.LogWarning("Rate limit hit, retrying after {RetryAfterSeconds} seconds", retryAfter);
-                await Task.Delay((int)retryAfter * 1000);
-                return await GetApiPrayerData(url);
+                HttpResponseMessage response = await _httpClient.GetAsync(url);
+
+                _logger.LogInformation("Received HTTP status {StatusCode} for URL {Url} on attempt {Attempt}/{MaxAttempts}", response.StatusCode, url, attempt, MaxApiRetries);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+
+                    if (int.TryParse(responseContent.Trim(), out var numericResponse) && numericResponse == 429)
+                    {
+                        if (attempt == MaxApiRetries)
+                        {
+                            break;
+                        }
+
+                        _logger.LogWarning("Muwaqqit returned body-only rate limit marker (429). Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", DefaultRetryDelay.TotalSeconds, attempt, MaxApiRetries);
+                        await Task.Delay(DefaultRetryDelay);
+                        continue;
+                    }
+
+                    var deserialized = JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
+                    if (deserialized == null)
+                    {
+                        throw new HttpRequestException("Muwaqqit API returned an empty or invalid JSON payload.");
+                    }
+
+                    return deserialized;
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    var retryDelay = response.Headers.RetryAfter?.Delta ?? DefaultRetryDelay;
+
+                    if (attempt == MaxApiRetries)
+                    {
+                        break;
+                    }
+
+                    _logger.LogWarning("Rate limit hit. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", retryDelay.TotalSeconds, attempt, MaxApiRetries);
+                    await Task.Delay(retryDelay);
+                    continue;
+                }
+
+                if ((int)response.StatusCode >= 500 && attempt < MaxApiRetries)
+                {
+                    var retryDelay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
+                    _logger.LogWarning("Transient server error {StatusCode}. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", response.StatusCode, retryDelay.TotalSeconds, attempt, MaxApiRetries);
+                    await Task.Delay(retryDelay);
+                    continue;
+                }
+
+                response.EnsureSuccessStatusCode();
             }
 
-            response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
+            throw new HttpRequestException($"Failed to fetch prayer data from API after {MaxApiRetries} attempts.");
         }
 
         private async Task<CityPrayerTimes> ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, string city)
