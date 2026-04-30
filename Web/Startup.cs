@@ -41,7 +41,6 @@ namespace Web
             services.AddControllersWithViews();
             services.AddDistributedMemoryCache();
             services.AddMvc();
-            services.AddScoped<IPrayerTimeService, PrayerTimeService>();
             services.AddScoped<ICityPrayerTimesRepository, CityPrayerTimesRepository>();
             services.AddLogging(config =>
             {
