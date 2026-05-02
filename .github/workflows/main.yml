@@ -1,53 +1,45 @@
-name: Build and Deploy
+name: Build, publish and deploy project to FTP server
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
 
 jobs:
-  build-and-deploy:
+  build_and_deploy:
     runs-on: windows-latest
-
-    env:
-      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-      AdminErrorDetailsSecret: ${{ secrets.ADMIN_ERROR_DETAILS_SECRET }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup .NET 8
+      - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
 
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/global.json') }}-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Restore dependencies
+      - name: Install dependencies
         run: dotnet restore
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal
+      - name: Publish
+        run: >
+          dotnet publish ./Web/Web.csproj
+          --configuration Release
+          --framework net8.0
+          --output ./publish
+          --runtime win-x86
+          --self-contained true
+          -p:PublishTrimmed=false
+          -p:PublishSingleFile=false
 
-      - name: Publish Web
-        run: dotnet publish ./Web/Web.csproj --configuration Release --no-build --output ./publish
+      - name: Test with .NET
+        run: dotnet test
 
-      - name: Deploy to IIS
-        uses: ChristopheLav/iis-deploy@v1.1.1
+      - name: Deploy to FTP server
+        uses: rasmusbuchholdt/simply-web-deploy@2.2.0
         with:
-          website-name: 'salahtimes.dk'
-          msdeploy-service-url: 'http://salahtimes.dk.nt38.unoeuro-server.com:8172'
-          msdeploy-username: 'salahtimes.dk'
-          msdeploy-password: ${{ secrets.DATABASE_PASSWORD }}
+          website-name:  'salahtimes.dk'
+          server-computer-name: 'http://salahtimes.dk.nt38.unoeuro-server.com:8172'
+          server-username: 'salahtimes.dk'
+          server-password: ${{ secrets.DATABASE_PASSWORD }}
           source-path: './publish'
-          skip-extra-files: false
