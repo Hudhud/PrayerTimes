@@ -16,9 +16,10 @@ jobs:
         with:
           dotnet-version: '8.0.x'
           cache: true
+          cache-dependency-path: '**/packages.lock.json'
 
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore --use-lock-file
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
