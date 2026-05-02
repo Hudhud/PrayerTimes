@@ -37,10 +37,14 @@ namespace Infrastructure.Services
         public async Task<CityPrayerTimesDTO> FetchAndCachePrayerTimesAsync(string city)
         {
             var cityPrayerTimes = await _cityPrayerTimesRepository.GetByCityAsync(city);
+            var currentMonth = DateTime.UtcNow;
 
-            if (cityPrayerTimes == null)
+            var hasCurrentMonthData = cityPrayerTimes?.PrayerTimes
+                .Any(pt => pt.Date.Year == currentMonth.Year && pt.Date.Month == currentMonth.Month) == true;
+
+            if (cityPrayerTimes == null || !hasCurrentMonthData)
             {
-                _logger.LogWarning("No data found for city: {CityName}, fetching from API.", city);
+                _logger.LogWarning("No current-month data found for city: {CityName}, fetching from API.", city);
                 var apiData = await GetApiPrayerData(BuildApiUrl(city));
                 cityPrayerTimes = await ProcessAndStoreApiData(new CityPrayerTimes { City = city }, apiData, city);
             }
@@ -48,7 +52,7 @@ namespace Infrastructure.Services
             return new CityPrayerTimesDTO
             {
                 City = cityPrayerTimes.City,
-                PrayerTimes = cityPrayerTimes.PrayerTimes.Select(pt => new DailyPrayerTimesDTO
+                PrayerTimes = [.. cityPrayerTimes.PrayerTimes.Select(pt => new DailyPrayerTimesDTO
                 {
                     Date = pt.Date,
                     FajrTime = pt.FajrTime,
@@ -58,7 +62,7 @@ namespace Infrastructure.Services
                     AsrHanafiTime = pt.AsrHanafiTime,
                     MaghribTime = pt.MaghribTime,
                     IshaTime = pt.IshaTime
-                }).ToList()
+                })]
             };
         }
 
