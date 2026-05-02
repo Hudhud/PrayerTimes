@@ -8,6 +8,9 @@ on:
 jobs:
   build_and_deploy:
     runs-on: windows-latest
+    env:
+      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +46,6 @@ jobs:
         with:
           server: nt38.unoeuro.com
           username: salahtimes.dk
-          password: ${{ secrets.DATABASE_PASSWORD  }}
+          password: ${{ secrets.DATABASE_PASSWORD }}
           local-dir: ./publish/
           server-dir: /public_html/
