@@ -22,6 +22,14 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/global.json') }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -35,10 +43,11 @@ jobs:
         run: dotnet publish ./Web/Web.csproj --configuration Release --no-build --output ./publish
 
       - name: Deploy to IIS
-        uses: ChristopheLav/iis-deploy@v1.0.0
+        uses: ChristopheLav/iis-deploy@v1.1.1
         with:
-          website-name: 'http://salahtimes.dk'
+          website-name: 'salahtimes.dk'
           msdeploy-service-url: 'http://salahtimes.dk.nt38.unoeuro-server.com:8172'
           msdeploy-username: 'salahtimes.dk'
-          msdeploy-password: '${{ secrets.DATABASE_PASSWORD }}'
+          msdeploy-password: ${{ secrets.DATABASE_PASSWORD }}
           source-path: './publish'
+          skip-extra-files: false
