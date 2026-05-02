@@ -167,54 +167,54 @@ namespace Infrastructure.Services
 
                     _logger.LogInformation("Received HTTP status {StatusCode} for URL {Url} on attempt {Attempt}/{MaxAttempts}", response.StatusCode, candidateUrl, attempt, MaxApiRetries);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-
-                    if (int.TryParse(responseContent.Trim(), out var numericResponse) && numericResponse == 429)
+                    if (response.IsSuccessStatusCode)
                     {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+
+                        if (int.TryParse(responseContent.Trim(), out var numericResponse) && numericResponse == 429)
+                        {
+                            if (attempt == MaxApiRetries)
+                            {
+                                break;
+                            }
+
+                            _logger.LogWarning("Muwaqqit returned body-only rate limit marker (429). Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", DefaultRetryDelay.TotalSeconds, attempt, MaxApiRetries);
+                            await Task.Delay(DefaultRetryDelay);
+                            continue;
+                        }
+
+                        var deserialized = JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
+                        if (deserialized == null)
+                        {
+                            throw new HttpRequestException("Muwaqqit API returned an empty or invalid JSON payload.");
+                        }
+
+                        return deserialized;
+                    }
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                    {
+                        var retryDelay = response.Headers.RetryAfter?.Delta ?? DefaultRetryDelay;
+
                         if (attempt == MaxApiRetries)
                         {
                             break;
                         }
 
-                        _logger.LogWarning("Muwaqqit returned body-only rate limit marker (429). Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", DefaultRetryDelay.TotalSeconds, attempt, MaxApiRetries);
-                        await Task.Delay(DefaultRetryDelay);
+                        _logger.LogWarning("Rate limit hit. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", retryDelay.TotalSeconds, attempt, MaxApiRetries);
+                        await Task.Delay(retryDelay);
                         continue;
                     }
 
-                    var deserialized = JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
-                    if (deserialized == null)
+                    if ((int)response.StatusCode >= 500 && attempt < MaxApiRetries)
                     {
-                        throw new HttpRequestException("Muwaqqit API returned an empty or invalid JSON payload.");
+                        var retryDelay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
+                        _logger.LogWarning("Transient server error {StatusCode}. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", response.StatusCode, retryDelay.TotalSeconds, attempt, MaxApiRetries);
+                        await Task.Delay(retryDelay);
+                        continue;
                     }
 
-                    return deserialized;
-                }
-
-                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-                {
-                    var retryDelay = response.Headers.RetryAfter?.Delta ?? DefaultRetryDelay;
-
-                    if (attempt == MaxApiRetries)
-                    {
-                        break;
-                    }
-
-                    _logger.LogWarning("Rate limit hit. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", retryDelay.TotalSeconds, attempt, MaxApiRetries);
-                    await Task.Delay(retryDelay);
-                    continue;
-                }
-
-                if ((int)response.StatusCode >= 500 && attempt < MaxApiRetries)
-                {
-                    var retryDelay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
-                    _logger.LogWarning("Transient server error {StatusCode}. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", response.StatusCode, retryDelay.TotalSeconds, attempt, MaxApiRetries);
-                    await Task.Delay(retryDelay);
-                    continue;
-                }
-
-                response.EnsureSuccessStatusCode();
+                    response.EnsureSuccessStatusCode();
                 }
             }
 
@@ -223,16 +223,12 @@ namespace Infrastructure.Services
 
         private static List<string> GetCandidateApiUrls(string url)
         {
-            var candidates = new List<string> { url };
+            var normalizedUrl = url.Replace("www.muwaqqit.com", "api.muwaqqit.com", StringComparison.OrdinalIgnoreCase);
+            var candidates = new List<string> { normalizedUrl };
 
-            if (url.Contains("www.muwaqqit.com", StringComparison.OrdinalIgnoreCase))
+            if (!normalizedUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
-                candidates.Add(url.Replace("www.muwaqqit.com", "api.muwaqqit.com", StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-            {
-                candidates.Add($"http://{url["https://".Length..]}");
+                candidates.Add($"https://{normalizedUrl[(normalizedUrl.IndexOf("://", StringComparison.Ordinal) + 3)..]}");
             }
 
             return candidates.Distinct(StringComparer.OrdinalIgnoreCase).ToList();

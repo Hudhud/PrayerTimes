@@ -49,7 +49,7 @@ namespace Web
             services.AddHttpClient<IPrayerTimeService, PrayerTimeService>()
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
                 {
-                    SslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13
+                    SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13
                 })
                 .ConfigureHttpClient(client =>
                 {
