@@ -42,10 +42,12 @@ jobs:
         run: dotnet test
 
       - name: Deploy to FTP server
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        uses: rasmusbuchholdt/simply-web-deploy@2.2.0
         with:
-          server: nt38.unoeuro.com
-          username: salahtimes.dk
-          password: ${{ secrets.DATABASE_PASSWORD }}
-          local-dir: ./publish/
-          server-dir: /public_html/
+          website-name: salahtimes.dk
+          server-computer-name: https://nt8.unoeuro.com:21
+          server-username: salahtimes.dk
+          server-password: ${{ secrets.DATABASE_PASSWORD }}
+          source-path: './publish'
+          target-path: '/public_html'
+
