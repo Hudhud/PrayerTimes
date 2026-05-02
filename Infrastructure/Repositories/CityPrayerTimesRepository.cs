@@ -27,8 +27,15 @@ namespace Infrastructure.Repositories
 
                 if (existingCity != null)
                 {
-                    _context.Entry(existingCity).CurrentValues.SetValues(cityPrayerTimes);
+                    existingCity.City = cityPrayerTimes.City;
+
+                    if (existingCity.PrayerTimes.Any())
+                    {
+                        _context.DailyPrayerTimes.RemoveRange(existingCity.PrayerTimes);
+                    }
+
                     existingCity.PrayerTimes = cityPrayerTimes.PrayerTimes;
+                    _context.CityPrayerTimes.Update(existingCity);
                 }
                 else
                 {
@@ -82,8 +89,9 @@ namespace Infrastructure.Repositories
             {
                 await using var transaction = await _context.Database.BeginTransactionAsync();
 
-                await _context.Database.ExecuteSqlRawAsync("DELETE FROM DailyPrayerTimes;");
-                await _context.Database.ExecuteSqlRawAsync("DELETE FROM CityPrayerTimes;");
+                _context.DailyPrayerTimes.RemoveRange(_context.DailyPrayerTimes);
+                _context.CityPrayerTimes.RemoveRange(_context.CityPrayerTimes);
+                await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
             }

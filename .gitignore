@@ -28,8 +28,8 @@ msbuild.log
 msbuild.err
 msbuild.wrn
 
-# Visual Studio 2015
 .vs/
 /Web/Properties/PublishProfiles
 /Web/appsettings.json
 /Web/appsettings.Development.json
+/Web/Logs/

@@ -5,6 +5,7 @@ using Domain.Repositories;
 using Infrastructure.DTO;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Runtime.InteropServices;
 
 namespace Infrastructure.Services
 {
@@ -13,6 +14,7 @@ namespace Infrastructure.Services
         private readonly ICityPrayerTimesRepository _cityPrayerTimesRepository;
         private readonly ILogger<PrayerTimeService> _logger;
         private readonly HttpClient _httpClient;
+        private readonly IDateTimeProvider _dateTimeProvider;
         private const string URL_SUFFIX = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
         private const int MaxApiRetries = 5;
         private static readonly TimeSpan DefaultRetryDelay = TimeSpan.FromSeconds(30);
@@ -27,17 +29,20 @@ namespace Infrastructure.Services
         public PrayerTimeService(
             ICityPrayerTimesRepository cityPrayerTimesRepository,
             ILogger<PrayerTimeService> logger,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            IDateTimeProvider dateTimeProvider)
         {
             _cityPrayerTimesRepository = cityPrayerTimesRepository;
             _logger = logger;
             _httpClient = httpClient;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<CityPrayerTimesDTO> FetchAndCachePrayerTimesAsync(string city)
         {
             var cityPrayerTimes = await _cityPrayerTimesRepository.GetByCityAsync(city);
-            var currentMonth = DateTime.UtcNow;
+            var denmarkTimeZone = GetDenmarkTimeZone();
+            var currentMonth = TimeZoneInfo.ConvertTimeFromUtc(_dateTimeProvider.UtcNow, denmarkTimeZone);
 
             var hasCurrentMonthData = cityPrayerTimes?.PrayerTimes
                 .Any(pt => pt.Date.Year == currentMonth.Year && pt.Date.Month == currentMonth.Month) == true;
@@ -98,8 +103,23 @@ namespace Infrastructure.Services
                 _ => throw new ArgumentException($"Invalid city: {city}")
             };
 
-            var targetDate = date ?? DateTime.Now;
+            var targetDate = date ?? GetCurrentDenmarkDate();
             return $"{baseUrl}{targetDate:yyyy-MM-dd}{URL_SUFFIX}";
+        }
+
+        private DateTime GetCurrentDenmarkDate()
+        {
+            var denmarkTimeZone = GetDenmarkTimeZone();
+            return TimeZoneInfo.ConvertTimeFromUtc(_dateTimeProvider.UtcNow, denmarkTimeZone).Date;
+        }
+
+        private static TimeZoneInfo GetDenmarkTimeZone()
+        {
+            var timeZoneId = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? "Romance Standard Time"
+                : "Europe/Copenhagen";
+
+            return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
         }
 
         private async Task<MuwaqqitResponse> GetApiPrayerData(string url)

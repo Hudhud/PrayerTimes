@@ -42,11 +42,6 @@ namespace Web
             services.AddDistributedMemoryCache();
             services.AddMvc();
             services.AddScoped<ICityPrayerTimesRepository, CityPrayerTimesRepository>();
-            services.AddLogging(config =>
-            {
-                config.AddConsole();
-                config.AddDebug();
-            });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"),
                     ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"))));
@@ -61,6 +56,9 @@ namespace Web
                     client.DefaultRequestVersion = HttpVersion.Version11;
                     client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
                 });
+
+            services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
+
             services.AddAutoMapper(cfg => { },
                 typeof(MappingProfile).Assembly,
                 typeof(DTOToviewModelMappingProfile).Assembly);
