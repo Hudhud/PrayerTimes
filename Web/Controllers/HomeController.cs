@@ -53,10 +53,12 @@ namespace Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error occurred while fetching prayer data for city {City}", selectedCity);
+                Console.Error.WriteLine($"[HomeController] Error occurred while fetching prayer data for city {selectedCity}: {e}");
 
                 var adminSecret = _configuration["AdminErrorDetailsSecret"];
                 var providedSecret = HttpContext.Request.Query["adminSecret"].ToString();
-                var showAdminDetails = !string.IsNullOrWhiteSpace(adminSecret)
+                var secretConfigured = !string.IsNullOrWhiteSpace(adminSecret);
+                var showAdminDetails = secretConfigured
                     && !string.IsNullOrWhiteSpace(providedSecret)
                     && string.Equals(adminSecret, providedSecret, StringComparison.Ordinal);
 
@@ -64,6 +66,12 @@ namespace Web.Controllers
                 if (_environment.IsDevelopment() || showAdminDetails)
                 {
                     details = e.ToString();
+                }
+                else if (!string.IsNullOrWhiteSpace(providedSecret))
+                {
+                    details = secretConfigured
+                        ? "Provided admin secret did not match the configured secret."
+                        : "Admin error-secret is not configured in the deployed app.";
                 }
 
                 return View("Error", new CustomErrorViewModel
@@ -94,13 +102,25 @@ namespace Web.Controllers
 
             var adminSecret = _configuration["AdminErrorDetailsSecret"];
             var providedSecret = HttpContext.Request.Query["adminSecret"].ToString();
-            var showAdminDetails = !string.IsNullOrWhiteSpace(adminSecret)
+            var secretConfigured = !string.IsNullOrWhiteSpace(adminSecret);
+            var showAdminDetails = secretConfigured
                 && !string.IsNullOrWhiteSpace(providedSecret)
                 && string.Equals(adminSecret, providedSecret, StringComparison.Ordinal);
 
             if ((_environment.IsDevelopment() || showAdminDetails) && exceptionFeature?.Error != null)
             {
                 details = exceptionFeature.Error.ToString();
+            }
+            else if (!string.IsNullOrWhiteSpace(providedSecret))
+            {
+                details = secretConfigured
+                    ? "Provided admin secret did not match the configured secret."
+                    : "Admin error-secret is not configured in the deployed app.";
+            }
+
+            if (exceptionFeature?.Error != null)
+            {
+                Console.Error.WriteLine($"[HomeController] Unhandled error in Error action: {exceptionFeature.Error}");
             }
 
             return View(new CustomErrorViewModel
