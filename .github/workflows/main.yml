@@ -38,12 +38,11 @@ jobs:
       - name: Test with .NET
         run: dotnet test
 
-      - name: Deploy to IIS
-        uses: ChristopheLav/iis-deploy@v1.1.1
+      - name: Deploy to FTP server
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
-          website-name: 'salahtimes.dk'
-          msdeploy-service-url: 'http://salahtimes.dk.nt38.unoeuro-server.com:8172'
-          msdeploy-username: 'salahtimes.dk'
-          msdeploy-password: ${{ secrets.DATABASE_PASSWORD }}
-          source-path: './publish'
-          skip-extra-files: false
+          server: 'http://salahtimes.dk.nt38.unoeuro-server.com:8172'
+          username: 'salahtimes.dk'
+          password: ${{ secrets.DATABASE_PASSWORD }}
+          local-dir: ./publish/
+          server-dir: /public_html/
