@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Security.Authentication;
 using System.Threading;
 
 namespace Infrastructure.Services
@@ -138,11 +139,33 @@ namespace Infrastructure.Services
 
         private async Task<MuwaqqitResponse> GetApiPrayerData(string url)
         {
-            for (var attempt = 1; attempt <= MaxApiRetries; attempt++)
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(url);
+            var candidateUrls = GetCandidateApiUrls(url);
 
-                _logger.LogInformation("Received HTTP status {StatusCode} for URL {Url} on attempt {Attempt}/{MaxAttempts}", response.StatusCode, url, attempt, MaxApiRetries);
+            foreach (var candidateUrl in candidateUrls)
+            {
+                for (var attempt = 1; attempt <= MaxApiRetries; attempt++)
+                {
+                    HttpResponseMessage response;
+
+                    try
+                    {
+                        response = await _httpClient.GetAsync(candidateUrl);
+                    }
+                    catch (HttpRequestException ex) when (IsTlsHandshakeFailure(ex))
+                    {
+                        _logger.LogWarning(ex, "TLS handshake failure while requesting {Url} (attempt {Attempt}/{MaxAttempts}).", candidateUrl, attempt, MaxApiRetries);
+
+                        if (attempt == MaxApiRetries)
+                        {
+                            break;
+                        }
+
+                        var retryDelay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
+                        await Task.Delay(retryDelay);
+                        continue;
+                    }
+
+                    _logger.LogInformation("Received HTTP status {StatusCode} for URL {Url} on attempt {Attempt}/{MaxAttempts}", response.StatusCode, candidateUrl, attempt, MaxApiRetries);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -192,9 +215,33 @@ namespace Infrastructure.Services
                 }
 
                 response.EnsureSuccessStatusCode();
+                }
             }
 
-            throw new HttpRequestException($"Failed to fetch prayer data from API after {MaxApiRetries} attempts.");
+            throw new HttpRequestException($"Failed to fetch prayer data from API after trying {candidateUrls.Count} URL variant(s) with {MaxApiRetries} attempts each.");
+        }
+
+        private static List<string> GetCandidateApiUrls(string url)
+        {
+            var candidates = new List<string> { url };
+
+            if (url.Contains("www.muwaqqit.com", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add(url.Replace("www.muwaqqit.com", "api.muwaqqit.com", StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            {
+                candidates.Add($"http://{url["https://".Length..]}");
+            }
+
+            return candidates.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        }
+
+        private static bool IsTlsHandshakeFailure(HttpRequestException ex)
+        {
+            return ex.InnerException is AuthenticationException
+                || ex.InnerException?.InnerException is AuthenticationException;
         }
 
         private async Task<CityPrayerTimes> ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, string city)
