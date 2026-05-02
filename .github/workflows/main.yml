@@ -41,7 +41,7 @@ jobs:
       - name: Deploy to FTP server
         uses: rasmusbuchholdt/simply-web-deploy@2.2.0
         with:
-          website-name:  'salahtimes.dk'
+          website-name:  'http://salahtimes.dk'
           server-computer-name: 'http://salahtimes.dk.nt38.unoeuro-server.com:8172'
           server-username: 'salahtimes.dk'
           server-password: ${{ secrets.DATABASE_PASSWORD }}
