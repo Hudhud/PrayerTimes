@@ -1,7 +1,11 @@
 ﻿using Application.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
@@ -15,13 +19,17 @@ namespace Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IPrayerTimeService _prayerTimeService;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _environment;
+        private readonly IConfiguration _configuration;
 
 
-        public HomeController(ILogger<HomeController> logger, IPrayerTimeService prayerTimeService, IMapper mapper)
+        public HomeController(ILogger<HomeController> logger, IPrayerTimeService prayerTimeService, IMapper mapper, IWebHostEnvironment environment, IConfiguration configuration)
         {
             _logger = logger;
             _prayerTimeService = prayerTimeService;
             _mapper = mapper;
+            _environment = environment;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
@@ -45,10 +53,23 @@ namespace Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error occurred while fetching prayer data for city {City}", selectedCity);
+
+                var adminSecret = _configuration["AdminErrorDetailsSecret"];
+                var providedSecret = HttpContext.Request.Query["adminSecret"].ToString();
+                var showAdminDetails = !string.IsNullOrWhiteSpace(adminSecret)
+                    && !string.IsNullOrWhiteSpace(providedSecret)
+                    && string.Equals(adminSecret, providedSecret, StringComparison.Ordinal);
+
+                var details = string.Empty;
+                if (_environment.IsDevelopment() || showAdminDetails)
+                {
+                    details = e.ToString();
+                }
+
                 return View("Error", new CustomErrorViewModel
                 {
                     ErrorMessage = "An error occurred while processing your request.",
-                    Details = e.Message,
+                    Details = details,
                     ErrorCode = "500",
                     RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
                 });
@@ -68,11 +89,26 @@ namespace Web.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(string errorMessage = "An unexpected error occurred.", string errorCode = "500")
         {
+            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            var details = string.Empty;
+
+            var adminSecret = _configuration["AdminErrorDetailsSecret"];
+            var providedSecret = HttpContext.Request.Query["adminSecret"].ToString();
+            var showAdminDetails = !string.IsNullOrWhiteSpace(adminSecret)
+                && !string.IsNullOrWhiteSpace(providedSecret)
+                && string.Equals(adminSecret, providedSecret, StringComparison.Ordinal);
+
+            if ((_environment.IsDevelopment() || showAdminDetails) && exceptionFeature?.Error != null)
+            {
+                details = exceptionFeature.Error.ToString();
+            }
+
             return View(new CustomErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
                 ErrorMessage = errorMessage,
-                ErrorCode = errorCode
+                ErrorCode = errorCode,
+                Details = details
             });
         }
     }
