@@ -5,12 +5,23 @@
 
 <div class="text-center">
     <h1 class="display-4">Error</h1>
+
     <p>
         Error Code: @Model.ErrorCode
     </p>
+
     <p>
         Error Message: @Model.ErrorMessage
     </p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Details))
+    {
+        <div class="alert alert-danger text-start mt-4">
+            <strong>Details:</strong>
+            <pre class="mt-2 mb-0">@Model.Details</pre>
+        </div>
+    }
+
     @if (Model.ShowRequestId)
     {
         <p>
