@@ -26,10 +26,10 @@ namespace Infrastructure.Services
         private static readonly TimeSpan DefaultRetryDelay = TimeSpan.FromSeconds(45);
         private readonly Dictionary<string, (string Fajr, string Isha)> _predefinedTimes = new()
         {
-            { "cph", ("01:21:00", "00:38:00") },
-            { "odense", ("01:28:00", "00:46:00") },
-            { "aarhus", ("01:38:00", "01:06:00") },
-            { "aalborg", ("01:41:00", "00:46:00") }
+            { "cph", ("01:57:00", "00:38:00") },
+            { "odense", ("01:57:00", "00:46:00") },
+            { "aarhus", ("01:57:00", "01:06:00") },
+            { "aalborg", ("01:57:00", "00:46:00") }
         };
 
         public PrayerTimeService(
