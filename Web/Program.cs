@@ -24,6 +24,8 @@ namespace Web
             var fileSizeLimitBytes = long.TryParse(configuration["Serilog:FileSizeLimitBytes"], out var fileSizeLimit) ? fileSizeLimit : 10_485_760;
             var rollOnFileSizeLimit = bool.TryParse(configuration["Serilog:RollOnFileSizeLimit"], out var roll) ? roll : true;
             var outputTemplate = configuration["Serilog:OutputTemplate"] ?? "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+            var adminSecret = configuration["AdminErrorDetailsSecret"];
+            Log.Information("Admin secret configured: {HasSecret}", string.IsNullOrEmpty(adminSecret) ? "NO" : "YES");
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Is(ParseLogLevel(configuration["Serilog:MinimumLevel:Default"], LogEventLevel.Debug))
