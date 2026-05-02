@@ -41,8 +41,8 @@ jobs:
       - name: Deploy to FTP server
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
-          server: 'http://salahtimes.dk.nt38.unoeuro-server.com'
-          username: 'salahtimes.dk'
-          password: ${{ secrets.DATABASE_PASSWORD }}
+          server: nt38.unoeuro.com
+          username: salahtimes.dk
+          password: ${{ secrets.DATABASE_PASSWORD  }}
           local-dir: ./publish/
           server-dir: /public_html/
