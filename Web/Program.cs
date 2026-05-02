@@ -32,6 +32,7 @@ namespace Web
                 .MinimumLevel.Override("Microsoft", ParseLogLevel(configuration["Serilog:MinimumLevel:Override:Microsoft"], LogEventLevel.Information))
                 .MinimumLevel.Override("Microsoft.Hosting.Lifetime", ParseLogLevel(configuration["Serilog:MinimumLevel:Override:Microsoft.Hosting.Lifetime"], LogEventLevel.Information))
                 .Enrich.FromLogContext()
+                .WriteTo.Console()
                 .WriteTo.File(
                     logFilePath,
                     rollingInterval: RollingInterval.Day,
