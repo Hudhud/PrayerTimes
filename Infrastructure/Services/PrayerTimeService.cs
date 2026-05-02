@@ -5,19 +5,24 @@ using Domain.Repositories;
 using Infrastructure.DTO;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Infrastructure.Services
 {
     public class PrayerTimeService : IPrayerTimeService
     {
+        private static readonly SemaphoreSlim ApiRequestSemaphore = new(1, 1);
+        private static readonly TimeSpan InterCityFetchDelay = TimeSpan.FromSeconds(15);
+
         private readonly ICityPrayerTimesRepository _cityPrayerTimesRepository;
         private readonly ILogger<PrayerTimeService> _logger;
         private readonly HttpClient _httpClient;
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string URL_SUFFIX = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
         private const int MaxApiRetries = 5;
-        private static readonly TimeSpan DefaultRetryDelay = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan DefaultRetryDelay = TimeSpan.FromSeconds(45);
         private readonly Dictionary<string, (string Fajr, string Isha)> _predefinedTimes = new()
         {
             { "cph", ("01:21:00", "00:38:00") },
@@ -50,8 +55,17 @@ namespace Infrastructure.Services
             if (cityPrayerTimes == null || !hasCurrentMonthData)
             {
                 _logger.LogWarning("No current-month data found for city: {CityName}, fetching from API.", city);
-                var apiData = await GetApiPrayerData(BuildApiUrl(city));
-                cityPrayerTimes = await ProcessAndStoreApiData(new CityPrayerTimes { City = city }, apiData, city);
+                await ApiRequestSemaphore.WaitAsync();
+                try
+                {
+                    var apiData = await GetApiPrayerData(BuildApiUrl(city));
+                    cityPrayerTimes = await ProcessAndStoreApiData(new CityPrayerTimes { City = city }, apiData, city);
+                }
+                finally
+                {
+                    await Task.Delay(InterCityFetchDelay);
+                    ApiRequestSemaphore.Release();
+                }
             }
 
             return new CityPrayerTimesDTO
