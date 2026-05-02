@@ -11,6 +11,7 @@ jobs:
 
     env:
       CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+      AdminErrorDetailsSecret: ${{ secrets.ADMIN_ERROR_DETAILS_SECRET }}
 
     steps:
       - name: Checkout
