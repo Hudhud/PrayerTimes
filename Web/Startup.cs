@@ -42,9 +42,18 @@ namespace Web
             services.AddDistributedMemoryCache();
             services.AddMvc();
             services.AddScoped<ICityPrayerTimesRepository, CityPrayerTimesRepository>();
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            }
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException("Database connection string is not configured. Set ConnectionStrings:DefaultConnection or the CONNECTION_STRING environment variable.");
+            }
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"),
-                    ServerVersion.AutoDetect(Configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING"))));
+                options.UseMySql(connectionString,
+                    ServerVersion.AutoDetect(connectionString)));
 
             services.AddHttpClient<IPrayerTimeService, PrayerTimeService>()
                 .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
