@@ -45,7 +45,7 @@ jobs:
         uses: rasmusbuchholdt/simply-web-deploy@2.2.0
         with:
           website-name: salahtimes.dk
-          server-computer-name: https://nt8.unoeuro.com:21
+          server-computer-name: https://nt8.unoeuro.com:8172
           server-username: salahtimes.dk
           server-password: ${{ secrets.DATABASE_PASSWORD }}
           source-path: './publish'
