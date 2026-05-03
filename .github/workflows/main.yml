@@ -27,6 +27,16 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
+      - name: Inject connection string
+        shell: pwsh
+        run: |
+          $config = @{
+            ConnectionStrings = @{
+              DefaultConnection = $env:CONNECTION_STRING
+            }
+          } | ConvertTo-Json
+          Set-Content -Path ./Web/appsettings.Production.json -Value $config
+
       - name: Publish
         run: >
           dotnet publish ./Web/Web.csproj
