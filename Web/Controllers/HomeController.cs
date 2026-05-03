@@ -53,7 +53,6 @@ namespace Web.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error occurred while fetching prayer data for city {City}", selectedCity);
-                Console.Error.WriteLine($"[HomeController] Error occurred while fetching prayer data for city {selectedCity}: {e}");
 
                 var adminSecret = _configuration["AdminErrorDetailsSecret"];
                 var providedSecret = HttpContext.Request.Query["adminSecret"].ToString();
@@ -116,11 +115,6 @@ namespace Web.Controllers
                 details = secretConfigured
                     ? "Provided admin secret did not match the configured secret."
                     : "Admin error-secret is not configured in the deployed app.";
-            }
-
-            if (exceptionFeature?.Error != null)
-            {
-                Console.Error.WriteLine($"[HomeController] Unhandled error in Error action: {exceptionFeature.Error}");
             }
 
             return View(new CustomErrorViewModel
