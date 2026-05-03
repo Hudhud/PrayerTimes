@@ -48,6 +48,4 @@ jobs:
           server-computer-name: https://nt38.unoeuro.com:8172
           server-username: salahtimes.dk
           server-password: ${{ secrets.DATABASE_PASSWORD }}
-          source-path: ${{ github.workspace }}\publish
-          target-path: /public_html
 
