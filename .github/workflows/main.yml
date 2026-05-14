@@ -69,7 +69,7 @@ jobs:
           }
 
           $source = "-source:contentPath=$PWD\publish"
-          $destination = "-dest:contentPath=salahtimes.dk,computerName=https://nt38.unoeuro.com:8172/MsDeploy.axd,userName=salahtimes.dk,password=${{ secrets.DATABASE_PASSWORD }},authType=Basic"
+          $destination = "-dest:contentPath=salahtimes.dk/public_html,computerName=https://nt38.unoeuro.com:8172/MsDeploy.axd,userName=salahtimes.dk,password=${{ secrets.DATABASE_PASSWORD }},authType=Basic"
 
           $arguments = @(
             "-verb:sync"
