@@ -22,10 +22,10 @@ jobs:
           global-json-file: global.json
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore ./Web/Web.csproj --runtime win-x86
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build ./Web/Web.csproj --configuration Release --runtime win-x86 --no-restore
 
       - name: Inject connection string
         shell: pwsh
