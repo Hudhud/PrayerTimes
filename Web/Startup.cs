@@ -16,6 +16,8 @@ using Web.Mapping;
 using Web.Services;
 using System.Net;
 using System.Net.Http;
+using System.Net.Security;
+using System.Runtime.InteropServices;
 using System.Security.Authentication;
 
 namespace Web
@@ -51,14 +53,12 @@ namespace Web
                     ServerVersion.AutoDetect(connectionString)));
 
             services.AddHttpClient<IPrayerTimeService, PrayerTimeService>()
-                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-                {
-                    SslProtocols = SslProtocols.Tls12
-                })
+                .ConfigurePrimaryHttpMessageHandler(CreateMuwaqqitHttpHandler)
                 .ConfigureHttpClient(client =>
                 {
                     client.DefaultRequestVersion = HttpVersion.Version11;
                     client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
                 });
 
             services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
@@ -67,6 +67,29 @@ namespace Web
                 typeof(MappingProfile).Assembly,
                 typeof(DTOToviewModelMappingProfile).Assembly);
             services.AddHostedService<MonthlyPrayerTimesRefreshService>();
+        }
+
+        private static HttpMessageHandler CreateMuwaqqitHttpHandler()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return new HttpClientHandler
+                {
+                    SslProtocols = SslProtocols.Tls12
+                };
+            }
+
+            return new SocketsHttpHandler
+            {
+                SslOptions = new SslClientAuthenticationOptions
+                {
+                    EnabledSslProtocols = SslProtocols.Tls12,
+                    CipherSuitesPolicy = new CipherSuitesPolicy(
+                    [
+                        TlsCipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+                    ])
+                }
+            };
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
