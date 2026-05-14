@@ -73,7 +73,7 @@ jobs:
           $publishPath = Join-Path $PWD "publish"
 
           $source = "-source:iisApp=$publishPath"
-          $destination = "-dest:iisApp=salahtimes.dk,computerName=https://nt38.unoeuro.com,userName=salahtimes.dk,password=$env:WEBDEPLOY_PASSWORD,authType=Basic"
+          $destination = "-dest:iisApp=salahtimes.dk,computerName=https://nt38.unoeuro.com:8172/MsDeploy.axd,userName=salahtimes.dk,password=$env:WEBDEPLOY_PASSWORD,authType=Basic"
 
           $arguments = @(
             "-verb:sync"
