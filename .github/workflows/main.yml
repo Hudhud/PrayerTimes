@@ -1,4 +1,4 @@
-name: Build, publish and deploy project to Web Deploy server
+name: Build, publish and deploy project to FTP server
 
 on:
   push:
@@ -59,30 +59,13 @@ jobs:
           Write-Host "File count:"
           (Get-ChildItem ./publish -Recurse -File).Count
 
-      - name: Deploy with msdeploy
-        shell: pwsh
-        env:
-          WEBDEPLOY_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-        run: |
-          $msdeploy = "${env:ProgramFiles(x86)}\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-
-          if (!(Test-Path $msdeploy)) {
-            throw "msdeploy.exe not found at $msdeploy"
-          }
-
-          $publishPath = Join-Path $PWD "publish"
-
-          $source = "-source:contentPath=$publishPath"
-          $destination = "-dest:contentPath=salahtimes.dk,computerName=https://nt38.unoeuro.com:8172/MsDeploy.axd,userName=salahtimes.dk,password=$env:WEBDEPLOY_PASSWORD,authType=Basic"
-
-          $arguments = @(
-            "-verb:sync"
-            $source
-            $destination
-            "-allowUntrusted"
-            "-enableRule:AppOffline"
-            "-retryAttempts:2"
-            "-verbose"
-          )
-
-          & $msdeploy @arguments
+      - name: Deploy to Simply via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: nt38.unoeuro.com
+          port: 21
+          username: salahtimes.dk
+          password: ${{ secrets.SERVER_PASSWORD }}
+          local-dir: ./publish/
+          server-dir: /public_html/
+          protocol: ftp
