@@ -68,11 +68,17 @@ jobs:
             throw "msdeploy.exe not found at $msdeploy"
           }
 
-          & $msdeploy `
-            -verb:sync `
-            -source:contentPath="$PWD\publish" `
-            -dest:contentPath="salahtimes.dk",computerName="https://nt38.unoeuro.com:8172/MsDeploy.axd",userName="salahtimes.dk",password="${{ secrets.DATABASE_PASSWORD }}",authType="Basic" `
-            -allowUntrusted `
-            -enableRule:AppOffline `
-            -retryAttempts:2 `
-            -verbose
+          $source = "-source:contentPath=$PWD\publish"
+          $destination = "-dest:contentPath=salahtimes.dk,computerName=https://nt38.unoeuro.com:8172/MsDeploy.axd,userName=salahtimes.dk,password=${{ secrets.DATABASE_PASSWORD }},authType=Basic"
+
+          $arguments = @(
+            "-verb:sync"
+            $source
+            $destination
+            "-allowUntrusted"
+            "-enableRule:AppOffline"
+            "-retryAttempts:2"
+            "-verbose"
+          )
+
+          & $msdeploy @arguments
