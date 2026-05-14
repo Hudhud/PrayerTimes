@@ -61,6 +61,8 @@ jobs:
 
       - name: Deploy with msdeploy
         shell: pwsh
+        env:
+          WEBDEPLOY_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
           $msdeploy = "${env:ProgramFiles(x86)}\IIS\Microsoft Web Deploy V3\msdeploy.exe"
 
@@ -68,8 +70,10 @@ jobs:
             throw "msdeploy.exe not found at $msdeploy"
           }
 
-          $source = "-source:contentPath=$PWD\publish"
-          $destination = "-dest:contentPath=salahtimes.dk/public_html,computerName=https://nt38.unoeuro.com:8172/MsDeploy.axd,userName=salahtimes.dk,password=${{ secrets.DATABASE_PASSWORD }},authType=Basic"
+          $publishPath = Join-Path $PWD "publish"
+
+          $source = "-source:contentPath=$publishPath"
+          $destination = "-dest:contentPath=salahtimes.dk,computerName=https://nt38.unoeuro.com:8172/MsDeploy.axd,userName=salahtimes.dk,password=$env:WEBDEPLOY_PASSWORD,authType=Basic"
 
           $arguments = @(
             "-verb:sync"
