@@ -139,99 +139,100 @@ namespace Infrastructure.Services
 
         private async Task<MuwaqqitResponse> GetApiPrayerData(string url)
         {
-            var candidateUrls = GetCandidateApiUrls(url);
-
-            foreach (var candidateUrl in candidateUrls)
+            for (var attempt = 1; attempt <= MaxApiRetries; attempt++)
             {
-                for (var attempt = 1; attempt <= MaxApiRetries; attempt++)
+                HttpResponseMessage response;
+
+                try
                 {
-                    HttpResponseMessage response;
-
-                    try
-                    {
-                        response = await _httpClient.GetAsync(candidateUrl);
-                    }
-                    catch (HttpRequestException ex) when (IsTlsHandshakeFailure(ex))
-                    {
-                        _logger.LogWarning(ex, "TLS handshake failure while requesting {Url} (attempt {Attempt}/{MaxAttempts}).", candidateUrl, attempt, MaxApiRetries);
-
-                        if (attempt == MaxApiRetries)
-                        {
-                            break;
-                        }
-
-                        var retryDelay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
-                        await Task.Delay(retryDelay);
-                        continue;
-                    }
-
-                    _logger.LogInformation("Received HTTP status {StatusCode} for URL {Url} on attempt {Attempt}/{MaxAttempts}", response.StatusCode, candidateUrl, attempt, MaxApiRetries);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseContent = await response.Content.ReadAsStringAsync();
-
-                        if (int.TryParse(responseContent.Trim(), out var numericResponse) && numericResponse == 429)
-                        {
-                            if (attempt == MaxApiRetries)
-                            {
-                                break;
-                            }
-
-                            _logger.LogWarning("Muwaqqit returned body-only rate limit marker (429). Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", DefaultRetryDelay.TotalSeconds, attempt, MaxApiRetries);
-                            await Task.Delay(DefaultRetryDelay);
-                            continue;
-                        }
-
-                        var deserialized = JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
-                        if (deserialized == null)
-                        {
-                            throw new HttpRequestException("Muwaqqit API returned an empty or invalid JSON payload.");
-                        }
-
-                        return deserialized;
-                    }
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-                    {
-                        var retryDelay = response.Headers.RetryAfter?.Delta ?? DefaultRetryDelay;
-
-                        if (attempt == MaxApiRetries)
-                        {
-                            break;
-                        }
-
-                        _logger.LogWarning("Rate limit hit. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", retryDelay.TotalSeconds, attempt, MaxApiRetries);
-                        await Task.Delay(retryDelay);
-                        continue;
-                    }
-
-                    if ((int)response.StatusCode >= 500 && attempt < MaxApiRetries)
-                    {
-                        var retryDelay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
-                        _logger.LogWarning("Transient server error {StatusCode}. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).", response.StatusCode, retryDelay.TotalSeconds, attempt, MaxApiRetries);
-                        await Task.Delay(retryDelay);
-                        continue;
-                    }
-
-                    response.EnsureSuccessStatusCode();
+                    response = await _httpClient.GetAsync(url);
                 }
+                catch (HttpRequestException ex) when (IsTlsHandshakeFailure(ex))
+                {
+                    _logger.LogError(
+                        ex,
+                        "TLS handshake failure while requesting {Url}. This is not retryable from this Windows Server.",
+                        url);
+
+                    throw;
+                }
+
+                _logger.LogInformation(
+                    "Received HTTP status {StatusCode} for URL {Url} on attempt {Attempt}/{MaxAttempts}",
+                    response.StatusCode,
+                    url,
+                    attempt,
+                    MaxApiRetries);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+
+                    if (int.TryParse(responseContent.Trim(), out var numericResponse) && numericResponse == 429)
+                    {
+                        if (attempt == MaxApiRetries)
+                        {
+                            break;
+                        }
+
+                        _logger.LogWarning(
+                            "Muwaqqit returned body-only rate limit marker (429). Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).",
+                            DefaultRetryDelay.TotalSeconds,
+                            attempt,
+                            MaxApiRetries);
+
+                        await Task.Delay(DefaultRetryDelay);
+                        continue;
+                    }
+
+                    var deserialized = JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
+
+                    if (deserialized == null)
+                    {
+                        throw new HttpRequestException("Muwaqqit API returned an empty or invalid JSON payload.");
+                    }
+
+                    return deserialized;
+                }
+
+                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    var retryDelay = response.Headers.RetryAfter?.Delta ?? DefaultRetryDelay;
+
+                    if (attempt == MaxApiRetries)
+                    {
+                        break;
+                    }
+
+                    _logger.LogWarning(
+                        "Rate limit hit. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).",
+                        retryDelay.TotalSeconds,
+                        attempt,
+                        MaxApiRetries);
+
+                    await Task.Delay(retryDelay);
+                    continue;
+                }
+
+                if ((int)response.StatusCode >= 500 && attempt < MaxApiRetries)
+                {
+                    var retryDelay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
+
+                    _logger.LogWarning(
+                        "Transient server error {StatusCode}. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).",
+                        response.StatusCode,
+                        retryDelay.TotalSeconds,
+                        attempt,
+                        MaxApiRetries);
+
+                    await Task.Delay(retryDelay);
+                    continue;
+                }
+
+                response.EnsureSuccessStatusCode();
             }
 
-            throw new HttpRequestException($"Failed to fetch prayer data from API after trying {candidateUrls.Count} URL variant(s) with {MaxApiRetries} attempts each.");
-        }
-
-        private static List<string> GetCandidateApiUrls(string url)
-        {
-            var normalizedUrl = url.Replace("www.muwaqqit.com", "api.muwaqqit.com", StringComparison.OrdinalIgnoreCase);
-            var candidates = new List<string> { normalizedUrl };
-
-            if (!normalizedUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-            {
-                candidates.Add($"https://{normalizedUrl[(normalizedUrl.IndexOf("://", StringComparison.Ordinal) + 3)..]}");
-            }
-
-            return candidates.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            throw new HttpRequestException($"Failed to fetch prayer data from API after {MaxApiRetries} attempt(s): {url}");
         }
 
         private static bool IsTlsHandshakeFailure(HttpRequestException ex)
