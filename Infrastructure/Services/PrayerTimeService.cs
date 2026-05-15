@@ -111,10 +111,10 @@ namespace Infrastructure.Services
         {
             string baseUrl = city switch
             {
-                "cph" => "https://api.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=",
-                "odense" => "https://api.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=",
-                "aarhus" => "https://api.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=",
-                "aalborg" => "https://api.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=",
+                "cph" => "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=",
+                "odense" => "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=",
+                "aarhus" => "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=",
+                "aalborg" => "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=",
                 _ => throw new ArgumentException($"Invalid city: {city}")
             };
 
