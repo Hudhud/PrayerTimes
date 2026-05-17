@@ -33,3 +33,7 @@ msbuild.wrn
 /Web/appsettings.Development.json
 /Web/appsettings.Production.json
 /Web/Logs/
+
+
+# Visual Studio / MSBuild cache files
+*.csproj.lscache
