@@ -99,10 +99,10 @@ namespace Web
                 SslOptions = new SslClientAuthenticationOptions
                 {
                     EnabledSslProtocols = SslProtocols.Tls12,
-                    CipherSuitesPolicy = new CipherSuitesPolicy(new[]
-                    {
-                        TlsCipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
-                    })
+                    CipherSuitesPolicy = new CipherSuitesPolicy(
+                    [
+                        TlsCipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+                    ])
                 }
             };
         }
