@@ -101,7 +101,7 @@ namespace Web
                     EnabledSslProtocols = SslProtocols.Tls12,
                     CipherSuitesPolicy = new CipherSuitesPolicy(
                     [
-                        TlsCipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+                        TlsCipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
                     ])
                 }
             };
