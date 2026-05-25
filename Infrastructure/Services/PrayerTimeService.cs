@@ -81,7 +81,8 @@ namespace Infrastructure.Services
                     AsrTime = pt.AsrTime,
                     AsrHanafiTime = pt.AsrHanafiTime,
                     MaghribTime = pt.MaghribTime,
-                    IshaTime = pt.IshaTime
+                    IshaTime = pt.IshaTime,
+                    UsesPredefinedIshaTime = pt.UsesPredefinedIshaTime
                 })]
             };
         }
@@ -100,7 +101,8 @@ namespace Infrastructure.Services
                     AsrTime = pt.AsrTime,
                     AsrHanafiTime = pt.AsrHanafiTime,
                     MaghribTime = pt.MaghribTime,
-                    IshaTime = pt.IshaTime
+                    IshaTime = pt.IshaTime,
+                    UsesPredefinedIshaTime = pt.UsesPredefinedIshaTime
                 }).ToList()
             };
 
@@ -253,6 +255,7 @@ namespace Infrastructure.Services
 
             foreach (var prayerTimeData in muwaqqitResponse.PrayerTimesDataList)
             {
+                var usesPredefinedIshaTime = string.IsNullOrWhiteSpace(prayerTimeData.EshaTime);
                 var dailyPrayerTimes = new DailyPrayerTimes
                 {
                     Date = DateTime.Parse(prayerTimeData.FajrDate).Date,
@@ -264,9 +267,10 @@ namespace Infrastructure.Services
                     FajrTime = prayerTimeData.FajrAngle is string s && s == "anti-transit"
                     ? PrayerTimesHelper.AddMinutesAndConvertToString(_predefinedTimes[city.ToLower()].Fajr, 3)
                     : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.FajrTime, 3),
-                    IshaTime = string.IsNullOrWhiteSpace(prayerTimeData.EshaTime)
+                    IshaTime = usesPredefinedIshaTime
                             ? PrayerTimesHelper.AddMinutesAndConvertToString(_predefinedTimes[city.ToLower()].Isha, 3)
-                            : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.EshaTime, 3)
+                            : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.EshaTime, 3),
+                    UsesPredefinedIshaTime = usesPredefinedIshaTime
                 };
 
                 dailyPrayerTimesList.Add(dailyPrayerTimes);

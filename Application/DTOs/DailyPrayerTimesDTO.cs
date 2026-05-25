@@ -10,5 +10,6 @@
         public string AsrHanafiTime { get; set; } = null!;
         public string MaghribTime { get; set; } = null!;
         public string IshaTime { get; set; } = null!;
+        public bool UsesPredefinedIshaTime { get; set; }
     }
 }

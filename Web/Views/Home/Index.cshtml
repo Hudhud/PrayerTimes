@@ -80,6 +80,20 @@
         color: #1a1a1a !important;
     }
 
+    .predefined-isha {
+        background-color: #006D77 !important;
+        color: #FFFFFF !important;
+        font-weight: 700;
+    }
+
+    .predefined-isha-key {
+        background-color: #006D77;
+        color: #FFFFFF;
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-weight: 700;
+    }
+
     .prayer-note {
         max-width: 850px;
         margin: 0 auto 40px auto;
@@ -147,12 +161,14 @@
                     <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.DhuhrTime</td>
                     <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.AsrTime</td>
                     <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.MaghribTime</td>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.IshaTime</td>
+                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "") @(prayer.UsesPredefinedIshaTime ? "predefined-isha" : "")"
+                        title="@(prayer.UsesPredefinedIshaTime ? "Isha-tiden er fastsat efter reglen for lyse nætter." : null)">@prayer.IshaTime</td>
                 </tr>
             }
         </table>
         <div class="prayer-note">
             <strong>NB!</strong> I maj måned begynder de lyse nætter, hvor tegnene for Fajr og Isha ikke længere er synlige. Tiderne i tabellen følger én af de anerkendte holdninger, som baserer sig på den sidste dag, hvor tegnene kunne observeres. Fajr er derfor sat til kl. 02:00 på grund af de lyse nætter, mens Isha-tiden udtræder omkring 20–30 minutter før dette.
+            <span class="predefined-isha-key">Markeret Isha</span> viser en Isha-tid, der er fastsat efter denne regel.
         </div>
     }
 </div>

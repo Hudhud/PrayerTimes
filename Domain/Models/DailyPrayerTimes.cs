@@ -31,6 +31,8 @@ namespace Domain.Models
         [Required]
         public string IshaTime { get; set; } = null!;
 
+        public bool UsesPredefinedIshaTime { get; set; }
+
         public int CityPrayerTimesId { get; set; }
 
         public CityPrayerTimes CityPrayerTimes { get; set; } = null!;
