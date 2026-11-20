@@ -30,6 +30,46 @@ public sealed class DanishPrayerTimeCalculatorTests
         Assert.Contains(days, day => day.IshaDayOffset == 1 && !day.UsesPredefinedIshaTime);
     }
 
+    [Theory]
+    [InlineData(54.56832, 11.96767)] // Birkemose
+    [InlineData(56.11667, 8.11667)] // Søndervig
+    [InlineData(57.72819, 10.52275)] // Højen
+    [InlineData(55.32006, 15.18662)] // Christiansø
+    public void CalculatesUsablePrayerDaysAtTheExtremesOfTheDanishCatalog(double latitude, double longitude)
+    {
+        var first = new DateOnly(2026, 1, 1);
+
+        for (var index = 0; index < 365; index++)
+        {
+            var date = first.AddDays(index);
+            Assert.True(PrayerDay.IsUsable(calculator.Calculate(date, latitude, longitude)),
+                date.ToString("yyyy-MM-dd"));
+        }
+    }
+
+    [Theory]
+    [InlineData("aalborg", 11, 6, "12:08", "14:35")]
+    [InlineData("aarhus", 12, 8, "12:15", "14:00")]
+    public void DhuhrAndHanafiAsrDoNotLeadTheEstablishedExamples(string citySlug, int month, int day,
+        string referenceDhuhr, string referenceHanafi)
+    {
+        var city = PrayerCities.Find(citySlug)!;
+        var calculated = calculator.Calculate(new DateOnly(2026, month, day),
+            double.Parse(city.Latitude, CultureInfo.InvariantCulture),
+            double.Parse(city.Longitude, CultureInfo.InvariantCulture));
+
+        foreach (var (actual, reference) in new[]
+        {
+            (calculated.DhuhrTime, referenceDhuhr),
+            (calculated.AsrHanafiTime, referenceHanafi)
+        })
+        {
+            var difference = TimeOnly.ParseExact(actual, "HH:mm", CultureInfo.InvariantCulture).ToTimeSpan() -
+                TimeOnly.ParseExact(reference, "HH:mm", CultureInfo.InvariantCulture).ToTimeSpan();
+            Assert.InRange(difference.TotalMinutes, 0, 1);
+        }
+    }
+
     [Fact]
     public void BrightNightsHaveNoEstimatedFajrOrIsha()
     {

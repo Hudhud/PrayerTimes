@@ -11,6 +11,8 @@ public sealed class DanishPrayerTimeCalculator
     private const double IshaAltitude = -17;
     private const int TimeAdjustmentMinutes = 3;
     private const double DegreesToRadians = Math.PI / 180;
+    private const double SolarRadiusKilometers = 695700;
+    private const double AstronomicalUnitKilometers = 149597870.7;
 
     public DailyPrayerTimes Calculate(DateOnly date, double latitude, double longitude)
     {
@@ -38,8 +40,16 @@ public sealed class DanishPrayerTimeCalculator
         var fajr = SearchAltitude(observer, Direction.Rise, previousSolarMidnight, sunrise, FajrAltitude);
         var isha = SearchAltitude(observer, Direction.Set, sunset, followingSolarMidnight, IshaAltitude);
 
-        var declination = Astronomy.Equator(Body.Sun, noon, observer, EquatorEpoch.OfDate, Aberration.Corrected).dec;
-        var noonShadow = Math.Tan(Math.Abs(latitude - declination) * DegreesToRadians);
+        var sun = Astronomy.Equator(Body.Sun, noon, observer, EquatorEpoch.OfDate, Aberration.Corrected);
+        // Dhuhr begins after the trailing edge of the solar disk has crossed the meridian.
+        var solarRadius = Math.Asin(SolarRadiusKilometers / (sun.dist * AstronomicalUnitKilometers));
+        var diskClearance = Math.Asin(Math.Sin(solarRadius) / Math.Cos(sun.dec * DegreesToRadians));
+        var dhuhr = Astronomy.SearchHourAngle(Body.Sun, observer, diskClearance / DegreesToRadians / 15,
+            noon, +1).time;
+
+        var noonAltitude = 90 - Math.Abs(latitude - sun.dec);
+        var apparentNoon = noonAltitude + Astronomy.RefractionAngle(Refraction.Normal, noonAltitude);
+        var noonShadow = 1 / Math.Tan(apparentNoon * DegreesToRadians);
         var asr = FindAsr(observer, noon, sunset, noonShadow, shadowLength: 1);
         var asrHanafi = FindAsr(observer, noon, sunset, noonShadow, shadowLength: 2);
 
@@ -49,7 +59,7 @@ public sealed class DanishPrayerTimeCalculator
             Date = date.ToDateTime(TimeOnly.MinValue),
             FajrTime = fajr is null ? string.Empty : FormatOnDate(date, fajr),
             SunriseTime = FormatOnDate(date, sunrise),
-            DhuhrTime = FormatOnDate(date, noon),
+            DhuhrTime = FormatOnDate(date, dhuhr),
             AsrTime = FormatOnDate(date, asr),
             AsrHanafiTime = FormatOnDate(date, asrHanafi),
             MaghribTime = FormatOnDate(date, sunset),
@@ -74,7 +84,9 @@ public sealed class DanishPrayerTimeCalculator
     private static AstroTime FindAsr(Observer observer, AstroTime noon, AstroTime sunset, double noonShadow,
         int shadowLength)
     {
-        var altitude = Math.Atan(1 / (noonShadow + shadowLength)) / DegreesToRadians;
+        // Shadows use the apparent sun. SearchAltitude takes a geometric altitude.
+        var apparentAltitude = Math.Atan(1 / (noonShadow + shadowLength)) / DegreesToRadians;
+        var altitude = apparentAltitude + Astronomy.InverseRefractionAngle(Refraction.Normal, apparentAltitude);
         return Required(SearchAltitude(observer, Direction.Set, noon, sunset, altitude), "Asr");
     }
 

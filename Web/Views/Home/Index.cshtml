@@ -7,6 +7,7 @@
     var monthName = Model.Date.ToString("MMMM yyyy", danish);
     var dateParameter = Model.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     ViewData["Title"] = $"Bønnetider i {Model.City.Name}";
+    ViewData["PlaceDataAttribution"] = Model.CanSearchPlaces;
     var today = Model.Today;
     var next = Model.Next;
     var nextStart = next?.StartsAt;
@@ -26,13 +27,20 @@
         }
     }
 }
-<nav class="city-nav" aria-label="Vælg by">
-    @foreach (var city in PrayerCities.All)
-    {
-        <a asp-route="City" asp-route-city="@city.Slug"
-           aria-current="@(city == Model.City ? "page" : null)">@city.Name</a>
-    }
-</nav>
+@if (Model.CanSearchPlaces)
+{
+    <partial name="_PlacePicker" model="string.Empty" />
+}
+else
+{
+    <nav class="city-nav" aria-label="Vælg by">
+        @foreach (var city in PrayerCities.All)
+        {
+            <a asp-route="City" asp-route-city="@city.Slug"
+               aria-current="@(city == Model.City ? "page" : null)">@city.Name</a>
+        }
+    </nav>
+}
 
 <section aria-labelledby="today-title" class="today" data-refresh-at="@refreshAt.ToString("o", CultureInfo.InvariantCulture)">
     <h1 id="today-title">Bønnetider i @Model.City.Name i dag</h1>

@@ -1,25 +1,26 @@
 # Salah Times
 
-Danish prayer timetables for København, Odense, Aarhus and Aalborg. The ASP.NET Core site uses .NET 10 and a MySQL-compatible database. All dates and displayed times use Copenhagen time.
+Danish prayer timetables with city and postcode search. The ASP.NET Core site uses .NET 10 and local astronomical calculations. All dates and displayed times use Copenhagen time.
 
 ## Run locally
 
-Install the .NET SDK from [global.json](global.json) and create an empty MySQL or MariaDB database. Set the connection string in user secrets for development or in the hosting environment for production.
+Install the .NET SDK from [global.json](global.json).
 
 ```sh
-dotnet user-secrets set 'ConnectionStrings:DefaultConnection' 'Server=localhost;Database=salahtimes;User ID=YOUR_USER;Password=YOUR_PASSWORD' --project Web
 dotnet restore PrayerTimes.sln --locked-mode
 dotnet run --project Web
 ```
 
-The app applies EF migrations at startup. To apply them separately, set `Database__ApplyMigrations=false` on the host and use a database identity with schema permissions for the migration command.
+## Previous provider
+
+Set `PrayerTimes__UseLocalCalculation=false` to run with the previous provider. In this mode, set `ConnectionStrings__DefaultConnection` or `CONNECTION_STRING` for a MySQL-compatible database. EF migrations run at startup. To apply them separately, set `Database__ApplyMigrations=false` and use a database identity with schema permissions.
 
 ```sh
 dotnet tool restore
-dotnet ef database update --project Infrastructure --startup-project Web
+PrayerTimes__UseLocalCalculation=false dotnet ef database update --project Infrastructure --startup-project Web
 ```
 
-The worker prepares the current and next month in the background. An empty database can therefore take a few minutes to populate. City rules live in [PrayerCities.cs](Application/Calendars/PrayerCities.cs). Provider values and summer exceptions are converted and validated in [PrayerTimeService.cs](Infrastructure/Services/PrayerTimeService.cs). The website reads saved rows directly. During bright nights, it displays dashes for Fajr or Isha when there is no regular time for that prayer.
+The previous worker refreshes the current and following month for the four established cities.
 
 ## Verify
 
@@ -31,13 +32,11 @@ Set `PRAYERTIMES_TEST_DATABASE` to a dedicated MariaDB test database to include 
 
 ## Deploy
 
-Set `ConnectionStrings__DefaultConnection` or `CONNECTION_STRING` in the IIS hosting environment. The workflow no longer generates a production settings file. An existing host-managed `appsettings.Production.json` can serve as a transitional fallback while the environment value is set. The deployment remains a self-contained Windows x86 publish and expects the ASP.NET Core IIS hosting module.
-
-The upgrade adds two nullable timetable columns. Existing rows remain readable and the worker refreshes their metadata as needed. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
+The deployment publishes a self-contained Windows x86 build for the ASP.NET Core IIS hosting module. The default local calculation mode uses the shipped place index and an in-memory month cache. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
 
 ## Evaluate local prayer-time calculations
 
-The offline prototype uses Astronomy Engine in `Calculation`. It calculates sunrise, sunset, solar noon, both Asr shadow conventions, and separate twilight crossings for Fajr and Isha. A missing twilight crossing produces an empty time with the corresponding bright-night flag. The website still uses its existing timetable provider during evaluation.
+Astronomy Engine powers the local calculation in `Calculation`. The calculator places Dhuhr after the solar disk clears the meridian. Both Asr conventions use apparent solar altitudes for the reference shadow at noon and the afternoon shadow. Fajr and Isha use separate twilight crossings, with the corresponding bright-night flag when a crossing is absent.
 
 Run the comparison against saved reference times that use Salah Times' current city coordinates and displayed time conventions.
 
@@ -55,4 +54,16 @@ The JSON file contains an array of objects with these fields.
 | `fajr`, `isha` | Displayed time in `HH:mm`, or `null` when the site shows dashes |
 | `ishaDayOffset` | `0` on the row's date, `1` after midnight, or `null` when Isha has no regular time |
 
-The report lists coverage per city and month, availability differences, and signed differences in minutes. Positive values mean the calculation is later than the reference. The release review should cover a full year for the four existing cities, including the start and end of bright nights, daylight-saving transitions, after-midnight Isha, and any systematic differences around solar noon or the Asr shadow thresholds.
+The report lists coverage per city and month, availability differences, and signed differences in minutes. Positive values mean the calculation is later than the reference. The 2026 cutover comparison covered all 1,460 city-days for the four established cities. Displayed times differed by at most one minute and both providers agreed on the dates with missing Fajr or Isha. Repeat the comparison when changing calculation rules.
+
+## Local place search
+
+Place search runs with the default local calculator and uses the installed snapshot.
+
+The place index is a filtered, combined copy of the GeoNames [Danish place export](https://download.geonames.org/export/dump/DK.zip) and [Danish postal export](https://download.geonames.org/export/zip/DK.zip), used under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The four established URLs use their existing coordinates. The snapshot can be refreshed with the source ZIP files.
+
+```sh
+python3 Tools/PlaceData/import_geonames.py places.zip postal.zip Web/wwwroot/data/prayer-places.json
+```
+
+The browser loads this index on request to find a nearby named place. The user opens the suggested place's shareable URL. The site handles city and postal-code search directly.

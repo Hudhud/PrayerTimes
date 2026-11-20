@@ -389,6 +389,7 @@
         "type": "Project",
         "dependencies": {
           "Application": "[1.0.0, )",
+          "Calculation": "[1.0.0, )",
           "Domain": "[1.0.0, )",
           "Infrastructure": "[1.0.0, )",
           "Microsoft.EntityFrameworkCore": "[8.0.34, )",

@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Calendars;
-using Application.Interfaces;
+using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -31,7 +31,7 @@ public sealed class MonthlyPrayerTimesRefreshService(
         foreach (var city in PrayerCities.All)
         {
             await using var scope = scopeFactory.CreateAsyncScope();
-            var service = scope.ServiceProvider.GetRequiredService<IPrayerTimeService>();
+            var service = scope.ServiceProvider.GetRequiredService<PrayerTimeService>();
             try
             {
                 await service.RefreshMonthIfNeededAsync(city, month, stoppingToken);

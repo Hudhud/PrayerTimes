@@ -1,0 +1,10 @@
+@model string
+<div class="place-picker">
+    <form method="get" asp-controller="Home" asp-action="Places" class="place-search">
+        <label class="visually-hidden" for="place-query">By eller postnummer</label>
+        <input id="place-query" name="q" type="search" value="@Model" placeholder="By eller postnummer" maxlength="80" />
+        <button class="button" type="submit">Søg</button>
+    </form>
+    <button class="button" type="button" data-use-location data-catalog="@Url.Content("~/data/prayer-places.json")" hidden>Brug min placering</button>
+    <p class="location-status" data-location-status role="status" hidden></p>
+</div>

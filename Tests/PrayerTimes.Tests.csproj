@@ -14,4 +14,7 @@
     <ProjectReference Include="../Calculation/Calculation.csproj" />
     <ProjectReference Include="../Web/Web.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="../Web/wwwroot/data/prayer-places.json" Link="prayer-places.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

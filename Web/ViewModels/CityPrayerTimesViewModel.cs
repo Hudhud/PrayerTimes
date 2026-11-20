@@ -12,7 +12,8 @@ public sealed record CityPrayerTimesViewModel(
     IReadOnlyList<DailyPrayerTimes> Month,
     DailyPrayerTimes? Today,
     PrayerEvent? Next,
-    string? RequestId)
+    string? RequestId,
+    bool CanSearchPlaces)
 {
     public DateOnly Date => DateOnly.FromDateTime(Now.Date);
 

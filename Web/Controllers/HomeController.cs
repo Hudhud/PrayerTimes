@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Web.Services;
 using Web.ViewModels;
 
 namespace Web.Controllers;
@@ -21,6 +22,7 @@ namespace Web.Controllers;
 public sealed class HomeController(
     IPrayerTimeService prayerTimes,
     DanishTime clock,
+    PrayerPlaceDirectory places,
     ILogger<HomeController> logger) : Controller
 {
     public const string CityCookie = "salahtimes-city";
@@ -30,7 +32,7 @@ public sealed class HomeController(
     [HttpGet("/")]
     public Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        var rememberedCity = PrayerCities.Find(Request.Cookies[CityCookie]);
+        var rememberedCity = places.Find(Request.Cookies[CityCookie]);
         return rememberedCity is null || rememberedCity == PrayerCities.Default
             ? ShowCityAsync(PrayerCities.Default, cancellationToken)
             : Task.FromResult<IActionResult>(RedirectToAction(nameof(City), new { city = rememberedCity.Slug }));
@@ -39,7 +41,7 @@ public sealed class HomeController(
     [HttpGet("/{city}", Name = "City")]
     public Task<IActionResult> City(string city, CancellationToken cancellationToken)
     {
-        var selected = PrayerCities.Find(city);
+        var selected = places.Find(city);
         if (selected is null)
         {
             return Task.FromResult<IActionResult>(NotFound());
@@ -51,6 +53,18 @@ public sealed class HomeController(
         }
 
         return ShowCityAsync(selected, cancellationToken);
+    }
+
+    [HttpGet("/steder")]
+    public IActionResult Places(string? q)
+    {
+        if (!places.IsEnabled)
+        {
+            return NotFound();
+        }
+
+        var query = q?.Trim() ?? string.Empty;
+        return query.Length > 80 ? BadRequest() : View(new PlaceSearchViewModel(query, places.Search(query)));
     }
 
     private async Task<IActionResult> ShowCityAsync(PrayerCity city, CancellationToken cancellationToken)
@@ -81,14 +95,14 @@ public sealed class HomeController(
             var next = todayRow is null ? null : FindNextPrayer(days, today, now);
 
             return View("Index", new CityPrayerTimesViewModel(city, now, monthRows, todayRow, next,
-                todayRow is null ? requestId : null));
+                todayRow is null ? requestId : null, places.IsEnabled));
         }
         catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
         {
             logger.LogError(exception, "Could not load prayer times for {City}, {Date}. Request {RequestId}",
                 city.Slug, today, requestId);
             Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
-            return View("Index", new CityPrayerTimesViewModel(city, now, [], null, null, requestId));
+            return View("Index", new CityPrayerTimesViewModel(city, now, [], null, null, requestId, places.IsEnabled));
         }
     }
 
@@ -134,7 +148,7 @@ public sealed class HomeController(
     }
 
     [HttpGet("/privatliv")]
-    public IActionResult Privacy() => View();
+    public IActionResult Privacy() => View(places.IsEnabled);
 
     [HttpPost("/statistik")]
     [ValidateAntiForgeryToken]
@@ -165,7 +179,7 @@ public sealed class HomeController(
     [HttpGet("/meld-en-fejl")]
     public IActionResult Correction(string? city, string? date, string? prayer, bool open = false)
     {
-        var selected = PrayerCities.Find(city) ?? PrayerCities.Default;
+        var selected = places.Find(city) ?? PrayerCities.Default;
         var hasDate = DateOnly.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture,
             DateTimeStyles.None, out var parsedDate);
         var validPrayer = PrayerNames.Contains(prayer, StringComparer.Ordinal);

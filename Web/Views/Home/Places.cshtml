@@ -1,0 +1,33 @@
+@model Web.ViewModels.PlaceSearchViewModel
+@{
+    ViewData["Title"] = "Find bønnetider";
+    ViewData["PlaceDataAttribution"] = true;
+}
+
+<section class="readable" aria-labelledby="places-title">
+    <h1 id="places-title">Find bønnetider</h1>
+    <partial name="_PlacePicker" model="Model.Query" />
+    @if (Model.Results.Count > 0)
+    {
+        <ul class="place-results">
+            @foreach (var place in Model.Results)
+            {
+                <li>
+                    <a asp-route="City" asp-route-city="@place.Id">@place.Label</a>
+                    @if (!string.IsNullOrWhiteSpace(place.Area) && place.Area != place.Name)
+                    {
+                        <small>@place.Area</small>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else if (Model.Query.Length == 1)
+    {
+        <p>Skriv mindst to tegn for at søge.</p>
+    }
+    else if (Model.Query.Length > 0)
+    {
+        <p>Der blev ikke fundet et sted. Prøv et andet bynavn eller postnummer.</p>
+    }
+</section>
