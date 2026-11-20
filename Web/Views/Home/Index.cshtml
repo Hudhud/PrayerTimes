@@ -85,12 +85,7 @@
         </dl>
         <p class="sunrise">Solopgang (Shuruk) <time datetime="@today.SunriseTime">@today.SunriseTime</time></p>
     }
-    <a class="correction" asp-controller="Home" asp-action="Correction"
-       asp-route-city="@Model.City.Slug" asp-route-date="@dateParameter"
-       asp-route-prayer="@(nextDate == Model.Date ? next?.Name : "Fajr")">Meld en fejl i en bønnetid</a>
 </section>
-
-<partial name="_StatisticsPrompt" />
 
 <section class="month" aria-labelledby="month-title">
     <div class="month-heading">
@@ -189,3 +184,12 @@
         </aside>
     }
 </section>
+
+@section Footer {
+    <p class="correction">
+        <a asp-controller="Home" asp-action="Correction"
+           asp-route-city="@Model.City.Slug" asp-route-date="@dateParameter"
+           asp-route-prayer="@(nextDate == Model.Date ? next?.Name : "Fajr")">Meld en fejl i en bønnetid</a>
+    </p>
+    <partial name="_StatisticsPrompt" />
+}
