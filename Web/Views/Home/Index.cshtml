@@ -1,180 +1,191 @@
-﻿@model Web.ViewModels.CityPrayerTimesViewModel
-@using Microsoft.AspNetCore.Http
-@using Web.ViewModels
+@model Web.ViewModels.CityPrayerTimesViewModel
+@using Application.Calendars
+@using System.Globalization
 @{
-    ViewData["Title"] = "Home Page";
-    var activeButton = Context.Session.GetString("SelectedCity") ?? "cph";
-    DateTime currentDate = DateTime.Today;
-}
-
-<style>
-    body {
-        background-color: #1a1a1a;
-        color: #FFFFFF;
-        font-family: 'Lato', sans-serif;
-        margin: 0;
-        padding: 20px;
-    }
-
-    .prayer-buttons {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 35px;
-    }
-
-    .prayer-button {
-        background-color: transparent;
-        color: #FFDC00;
-        font-size: 16px;
-        border: 2px solid #FFDC00;
-        padding: 8px 15px;
-        margin: 0 10px;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
-    }
-
-        .prayer-button:hover {
-            background-color: #FFDC00;
-            color: #1a1a1a;
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
-        }
-
-    .selected-prayer-button {
-        background-color: #FFDC00;
-        color: #1a1a1a;
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-    }
-
-    .prayer-table {
-        width: 100%;
-        max-width: 850px;
-        margin: 0 auto;
-        border-collapse: collapse;
-        margin-bottom: 35px;
-        background-color: #262626;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
-    }
-
-        .prayer-table th, .prayer-table td {
-            border: 1px solid #FFDC00;
-            padding: 10px 15px;
-            text-align: center;
-            font-size: 16px;
-        }
-
-        .prayer-table th {
-            background-color: #333333;
-            color: #FFDC00;
-        }
-
-        .prayer-table td {
-            background-color: #1a1a1a;
-            color: #FFFFFF;
-        }
-
-    .highlight {
-        background-color: #FFDC00 !important;
-        color: #1a1a1a !important;
-    }
-
-    .predefined-isha {
-        background-color: #006D77 !important;
-        color: #FFFFFF !important;
-        font-weight: 700;
-    }
-
-    .highlight.predefined-isha {
-        background-color: #FFDC00 !important;
-        color: #1a1a1a !important;
-        box-shadow: inset 0 0 0 3px #006D77;
-    }
-
-    .predefined-isha-key {
-        background-color: #006D77;
-        color: #FFFFFF;
-        border-radius: 4px;
-        padding: 2px 6px;
-        font-weight: 700;
-    }
-
-    .prayer-note {
-        max-width: 850px;
-        margin: 0 auto 40px auto;
-        background-color: #333333;
-        border-left: 5px solid #FFDC00;
-        padding: 15px 20px;
-        color: #FFDC00;
-        font-size: 15px;
-        border-radius: 8px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    @@media only screen and (max-width: 600px) {
-        .prayer-table {
-            display: block;
-            width: 100%;
-            overflow-x: auto;
-        }
-
-            .prayer-table th, .prayer-table td {
-                font-size: 12px;
-                padding: 5px;
-            }
-
-        .prayer-buttons {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .prayer-button {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-    }
-</style>
-
-<div class="text-center">
-    @if (Model.PrayerTimes != null)
+    var danish = CultureInfo.GetCultureInfo("da-DK");
+    var fullDate = Model.Date.ToString("dddd 'den' d. MMMM yyyy", danish);
+    var monthName = Model.Date.ToString("MMMM yyyy", danish);
+    var dateParameter = Model.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+    ViewData["Title"] = $"Bønnetider i {Model.City.Name}";
+    var today = Model.Today;
+    var next = Model.Next;
+    var nextStart = next?.StartsAt;
+    var nextDate = nextStart is { } start ? DateOnly.FromDateTime(start.Date) : Model.Date;
+    var midnight = DanishTime.At(Model.Date.AddDays(1), TimeOnly.MinValue);
+    var refreshAt = midnight;
+    if (nextStart is { } nextTime && nextTime < midnight)
     {
-        <form method="post" asp-controller="Home" asp-action="Check">
-            <div class="prayer-buttons">
-                <button class="prayer-button @(activeButton == "cph" ? "selected-prayer-button" : "")" name="button_value" value="cph">København</button>
-                <button class="prayer-button @(activeButton == "odense" ? "selected-prayer-button" : "")" name="button_value" value="odense">Odense</button>
-                <button class="prayer-button @(activeButton == "aarhus" ? "selected-prayer-button" : "")" name="button_value" value="aarhus">Århus</button>
-                <button class="prayer-button @(activeButton == "aalborg" ? "selected-prayer-button" : "")" name="button_value" value="aalborg">Aalborg</button>
-            </div>
-        </form>
+        refreshAt = nextTime;
+    }
+    else if (nextStart is null && today is not null)
+    {
+        var sunrise = PrayerDay.Sunrise(today);
+        if (Model.Now < sunrise)
+        {
+            refreshAt = sunrise;
+        }
+    }
+}
+<nav class="city-nav" aria-label="Vælg by">
+    @foreach (var city in PrayerCities.All)
+    {
+        <a asp-route="City" asp-route-city="@city.Slug"
+           aria-current="@(city == Model.City ? "page" : null)">@city.Name</a>
+    }
+</nav>
 
-        <table class="prayer-table">
-            <tr>
-                <th>Dato</th>
-                <th>Fajr</th>
-                <th>Shuruk</th>
-                <th>Dhuhr</th>
-                <th>Asr</th>
-                <th>Maghrib</th>
-                <th>Isha</th>
-            </tr>
-            @foreach (var prayer in Model.PrayerTimes)
-            {
-                <tr>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.Date.ToString("dd-MM-yyyy")</td>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.FajrTime</td>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.SunriseTime</td>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.DhuhrTime</td>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.AsrTime</td>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "")">@prayer.MaghribTime</td>
-                    <td class="@(prayer.Date.Date == currentDate.Date ? "highlight" : "") @(prayer.UsesPredefinedIshaTime ? "predefined-isha" : "")"
-                        title="@(prayer.UsesPredefinedIshaTime ? "Isha-tiden er fastsat efter reglen for lyse nætter." : null)">@prayer.IshaTime</td>
-                </tr>
-            }
-        </table>
-        <div class="prayer-note">
-            <strong>NB!</strong> I maj måned begynder de lyse nætter, hvor tegnene for Fajr og Isha ikke længere er synlige. Tiderne i tabellen følger én af de anerkendte holdninger, som baserer sig på den sidste dag, hvor tegnene kunne observeres. Fajr er derfor sat til kl. 02:00 på grund af de lyse nætter, mens Isha-tiden udtræder omkring 20–30 minutter før dette.
-            <span class="predefined-isha-key">Markeret Isha</span> viser en Isha-tid, der er fastsat efter denne regel.
+<section aria-labelledby="today-title" class="today" data-refresh-at="@refreshAt.ToString("o", CultureInfo.InvariantCulture)">
+    <h1 id="today-title">Bønnetider i @Model.City.Name i dag</h1>
+    <p class="subtitle"><time datetime="@dateParameter">@fullDate</time></p>
+    @if (today is null)
+    {
+        <div class="notice" role="status">
+            <strong>Dagens bønnetider er midlertidigt utilgængelige.</strong>
+            <p>Prøv igen om lidt.</p>
+            <p><small>Reference @Model.RequestId</small></p>
         </div>
     }
-</div>
+    else
+    {
+        @if (next is not null && nextStart is { } nextPrayerTime)
+        {
+            <div class="next-prayer">
+                <div>
+                    <h2>Næste bøn</h2>
+                    <p>@next.Name @if (nextDate != Model.Date)
+                        {
+                            <span class="next-date">i morgen, @nextDate.ToString("d. MMMM", danish)</span>
+                        }
+                    </p>
+                </div>
+                <time datetime="@nextPrayerTime.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
+            </div>
+        }
+        <dl class="prayer-list">
+            @foreach (var prayer in PrayerDay.Events(today))
+            {
+                <div>
+                    <dt>@prayer.Name</dt>
+                    <dd>
+                        @if (prayer.StartsAt is { } startsAt)
+                        {
+                            <time datetime="@startsAt.ToString("o", CultureInfo.InvariantCulture)">@prayer.Time</time>
+                            @if (DateOnly.FromDateTime(startsAt.Date) != Model.Date)
+                            {
+                                <small>Næste døgn</small>
+                            }
+                        }
+                        else
+                        {
+                            <partial name="_BrightNightTime" />
+                        }
+                    </dd>
+                </div>
+            }
+        </dl>
+        <p class="sunrise">Solopgang (Shuruk) <time datetime="@today.SunriseTime">@today.SunriseTime</time></p>
+    }
+    <a class="correction" asp-controller="Home" asp-action="Correction"
+       asp-route-city="@Model.City.Slug" asp-route-date="@dateParameter"
+       asp-route-prayer="@(nextDate == Model.Date ? next?.Name : "Fajr")">Meld en fejl i en bønnetid</a>
+</section>
+
+<partial name="_StatisticsPrompt" />
+
+<section class="month" aria-labelledby="month-title">
+    <div class="month-heading">
+        <div>
+            <h2 id="month-title">@monthName</h2>
+            <p class="print-city">@Model.City.Name · Dansk lokal tid</p>
+        </div>
+        @if (Model.Month.Count > 0)
+        {
+            <button class="button print-button" type="button" data-print hidden>Udskriv måneden</button>
+        }
+    </div>
+    @if (Model.Month.Count == 0)
+    {
+        <p>Månedsoversigten er midlertidigt utilgængelig.</p>
+    }
+    else
+    {
+        @if (Model.Month.Count != DateTime.DaysInMonth(Model.Date.Year, Model.Date.Month))
+        {
+            <p>Månedsoversigten er ufuldstændig. Nogle datoer mangler.</p>
+        }
+        <p class="table-hint">Stryg eller rul vandret for at se hele tabellen.</p>
+        <div class="table-scroll" role="region" aria-labelledby="month-title" tabindex="0">
+            <table>
+                <caption>Bønnetider i @Model.City.Name · @monthName · Dansk lokal tid</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Dato</th>
+                        <th scope="col">Fajr</th>
+                        <th scope="col">Solopgang</th>
+                        <th scope="col">Dhuhr</th>
+                        <th scope="col">Asr</th>
+                        <th scope="col">Maghrib</th>
+                        <th scope="col">Isha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var day in Model.Month)
+                    {
+                        var dayDate = DateOnly.FromDateTime(day.Date);
+                        var isToday = dayDate == Model.Date;
+                        var ishaNextDay = (day.IshaDayOffset ?? (string.CompareOrdinal(day.IshaTime, day.MaghribTime) < 0 ? 1 : 0)) == 1;
+                        <tr class="@(isToday ? "current-day" : null)">
+                            <th scope="row">
+                                <time datetime="@dayDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">@dayDate.ToString("d. MMM", danish)</time>
+                                @if (isToday)
+                                {
+                                    <small>I dag</small>
+                                }
+                            </th>
+                            <td>
+                                @if (day.FajrTimeUnavailable)
+                                {
+                                    <partial name="_BrightNightTime" />
+                                }
+                                else
+                                {
+                                    @day.FajrTime
+                                }
+                            </td>
+                            <td>@day.SunriseTime</td>
+                            <td>@day.DhuhrTime</td>
+                            <td>@day.AsrTime</td>
+                            <td>@day.MaghribTime</td>
+                            <td>
+                                @if (day.UsesPredefinedIshaTime)
+                                {
+                                    <partial name="_BrightNightTime" />
+                                }
+                                else
+                                {
+                                    @day.IshaTime
+                                    @if (ishaNextDay)
+                                    {
+                                        <small>Næste døgn</small>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @if (Model.HasBrightNightTimes)
+    {
+        <aside class="summer-note" aria-labelledby="summer-note-title">
+            <h3 id="summer-note-title">Fajr og Isha under de lyse nætter</h3>
+            <p>I en del af sommeren er der så lyst om natten i Danmark, at de tegn, man normalt bruger til at
+                fastsætte Fajr og Isha, ikke kan skelnes tydeligt. Når der står <strong>- -</strong>, betyder det,
+                at tidspunktet for den pågældende bøn må fastsættes på en anden måde i den periode.</p>
+            <p>Der er flere anerkendte holdninger blandt islamiske lærde om, hvordan man fastsætter bønnetiderne
+                under de lyse nætter. Du kan følge den bønneplan, din lokale moské anbefaler, eller spørge en lærd,
+                du har tillid til, hvilken metode du kan følge.</p>
+        </aside>
+    }
+</section>

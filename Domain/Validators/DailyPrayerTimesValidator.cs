@@ -13,7 +13,8 @@ namespace Domain.Validators
 
             RuleFor(x => x.FajrTime)
                 .NotEmpty()
-                .WithMessage("Fajr time is required.");
+                .WithMessage("Fajr time is required.")
+                .When(x => !x.FajrTimeUnavailable);
 
             RuleFor(x => x.SunriseTime)
                 .NotEmpty()
@@ -33,7 +34,8 @@ namespace Domain.Validators
 
             RuleFor(x => x.IshaTime)
                 .NotEmpty()
-                .WithMessage("Isha time is required.");
+                .WithMessage("Isha time is required.")
+                .When(x => !x.UsesPredefinedIshaTime);
         }
     }
 }

@@ -1,122 +1,49 @@
-﻿<!DOCTYPE html>
+@using Web.Controllers
+@{
+    var statistics = Context.Request.Cookies[HomeController.AnalyticsCookie];
+}
+<!DOCTYPE html>
 <html lang="da">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Salah Times</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-03RLGPN608"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-03RLGPN608');
-    </script>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            background-color: #1a1a1a;
-            color: #FFFFFF;
-        }
-
-        h1 {
-            font-size: 32px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #FFDC00;
-            text-align: center;
-            margin: 0;
-        }
-
-        .navbar {
-            background-color: rgba(0, 0, 0, 0.85);
-            padding: 10px 0;
-        }
-
-        .navbar a {
-            color: #FFDC00;
-            text-align: right;
-        }
-
-        .container {
-            flex: 1;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        footer {
-            background-color: #343a40;
-            color: #FFDC00;
-            padding: 20px 0;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        @@media (max-width: 768px) {
-            h1 {
-                font-size: 28px;
-            }
-
-            .container {
-                padding: 15px;
-            }
-
-            .navbar a {
-                font-size: 14px;
-            }
-
-            footer {
-                font-size: 12px;
-            }
-        }
-
-        @@media (max-width: 480px) {
-            h1 {
-                font-size: 24px;
-            }
-
-            .container {
-                padding: 10px;
-            }
-
-            footer {
-                padding: 10px 0;
-                font-size: 12px;
-            }
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>@ViewData["Title"] · Salah Times</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @if (statistics == "yes")
+    {
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-03RLGPN608"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'G-03RLGPN608', {
+                cookie_domain: 'none',
+                cookie_expires: 15552000,
+                cookie_update: false,
+                page_location: window.location.origin + window.location.pathname,
+                allow_google_signals: false,
+                allow_ad_personalization_signals: false
+            });
+        </script>
+    }
+    <script defer src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <h1>Salah Times <img src="~/icons/crescent.svg" alt="Crescent" style="width:30px; vertical-align:middle; margin-left:5px;" /></h1>
-                <a style="font-size: 18px; color: #FFDC00; letter-spacing: 1px;">
-                    @DateTime.Now.ToString("dddd 'd.' dd'/'MM'-'yy", new System.Globalization.CultureInfo("da-DK"))
-                </a>
-            </div>
-        </nav>
+    <a class="skip-link" href="#indhold">Spring til indhold</a>
+    <header class="site-header">
+        <div class="site-width">
+            <a class="brand" href="/">
+                <img src="~/icons/crescent.svg" width="22" height="22" alt="" />
+                <span>Salah Times</span>
+            </a>
+        </div>
     </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer>
-        @DateTime.Now.Year - Salah Times
+    <main class="site-width" id="indhold">
+        @RenderBody()
+    </main>
+    <footer class="site-footer site-width">
+        <a href="/privatliv">Privatliv og statistik</a>
     </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

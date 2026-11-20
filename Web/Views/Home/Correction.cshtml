@@ -1,0 +1,30 @@
+@model Web.ViewModels.CorrectionViewModel
+@using Application.Calendars
+@using System.Globalization
+@{
+    ViewData["Title"] = "Meld en fejl i en bønnetid";
+    string[] prayers = ["Fajr", "Solopgang", "Dhuhr", "Asr", "Maghrib", "Isha"];
+}
+<section class="readable">
+    <h1>Meld en fejl i en bønnetid</h1>
+    <p>Din rapport bliver sendt via GitHub, hvor du skal være logget ind. Rapporten bliver offentlig, når du selv indsender den.</p>
+    <form method="get" action="/meld-en-fejl" class="report-form">
+        <label for="city">By</label>
+        <select id="city" name="city">
+            @foreach (var city in PrayerCities.All)
+            {
+                <option value="@city.Slug" selected="@(city == Model.City)">@city.Name</option>
+            }
+        </select>
+        <label for="date">Dato</label>
+        <input id="date" name="date" type="date" required value="@Model.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
+        <label for="prayer">Bøn eller solopgang</label>
+        <select id="prayer" name="prayer">
+            @foreach (var prayer in prayers)
+            {
+                <option value="@prayer" selected="@(prayer == Model.Prayer)">@prayer</option>
+            }
+        </select>
+        <button class="button" type="submit" name="open" value="true">Fortsæt til GitHub</button>
+    </form>
+</section>

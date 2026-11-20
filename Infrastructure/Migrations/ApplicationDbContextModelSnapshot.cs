@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -16,14 +17,18 @@ namespace Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "8.0.34")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Domain.Models.CityPrayerTimes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -42,6 +47,8 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AsrHanafiTime")
                         .IsRequired()
@@ -65,6 +72,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("IshaDayOffset")
+                        .HasColumnType("int");
+
                     b.Property<string>("IshaTime")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -76,6 +86,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("SunriseTime")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool?>("UsesPredefinedFajrTime")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("UsesPredefinedIshaTime")
                         .HasColumnType("tinyint(1)");

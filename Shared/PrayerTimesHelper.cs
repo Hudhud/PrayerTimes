@@ -1,11 +1,14 @@
-﻿using System.Globalization;
+using System.Globalization;
 
-public class PrayerTimesHelper
+public static class PrayerTimesHelper
 {
-    public static string AddMinutesAndConvertToString(string inputDateTimeString, int minutesToAdd)
+    public static TimeOnly AdjustTime(string? value, int minutes, out int days)
     {
-        var inputDateTime = DateTime.ParseExact(inputDateTimeString, "HH:mm:ss", CultureInfo.InvariantCulture);
-        var adjustedDateTime = inputDateTime.AddMinutes(minutesToAdd);
-        return adjustedDateTime.ToString("HH:mm");
+        if (!TimeOnly.TryParseExact(value, "HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var time))
+        {
+            throw new InvalidDataException("The timetable contains a missing or malformed time.");
+        }
+
+        return time.AddMinutes(minutes, out days);
     }
 }

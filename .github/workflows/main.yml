@@ -1,70 +1,66 @@
-name: Build, publish and deploy project to Web Deploy server
+name: Verify and deploy Salah Times
 
 on:
+  pull_request:
+    branches: [master]
   push:
-    branches:
-      - master
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  build_and_deploy:
-    runs-on: windows-latest
-
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: test-root
+          MARIADB_DATABASE: salahtimes_test
+          MARIADB_USER: salahtimes_test
+          MARIADB_PASSWORD: test-password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=3s --health-timeout=5s --health-retries=15
     env:
-      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-
+      PRAYERTIMES_TEST_DATABASE: Server=127.0.0.1;Port=3306;Database=salahtimes_test;User ID=salahtimes_test;Password=test-password
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+      - run: dotnet restore PrayerTimes.sln --locked-mode
+      - run: dotnet test PrayerTimes.sln --configuration Release --no-restore
 
-      - name: Restore
-        run: dotnet restore ./Web/Web.csproj --runtime win-x86
-
-      - name: Build
-        run: dotnet build ./Web/Web.csproj --configuration Release --runtime win-x86 --no-restore
-
-      - name: Inject connection string
-        shell: pwsh
-        run: |
-          $config = @{
-            ConnectionStrings = @{
-              DefaultConnection = $env:CONNECTION_STRING
-            }
-          } | ConvertTo-Json -Depth 10
-
-          Set-Content -Path ./Web/appsettings.Production.json -Value $config
-
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: verify
+    runs-on: windows-latest
+    concurrency:
+      group: salahtimes-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
       - name: Publish
-        run: >
+        run: >-
           dotnet publish ./Web/Web.csproj
           --configuration Release
-          --framework net8.0
           --output ./publish
           --runtime win-x86
           --self-contained true
-          --no-restore
-          -p:PublishTrimmed=false
-          -p:PublishSingleFile=false
-
-      - name: Show publish output size
-        shell: pwsh
-        run: |
-          Write-Host "Total publish size:"
-          Get-ChildItem ./publish -Recurse -File | Measure-Object -Property Length -Sum
-
-          Write-Host "File count:"
-          (Get-ChildItem ./publish -Recurse -File).Count
-
       - name: Deploy to Simply with Web Deploy
         uses: rasmusbuchholdt/simply-web-deploy@2.2.0
         with:
           website-name: salahtimes.dk
           server-computer-name: https://nt38.unoeuro.com:8172
           server-username: salahtimes.dk
-          server-password: ${{ secrets.sERVER_PASSWORD }}
+          server-password: ${{ secrets.SERVER_PASSWORD }}
           source-path: '\publish\'
           target-delete: false

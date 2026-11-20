@@ -1,0 +1,21 @@
+@using Web.Controllers
+@{
+    ViewData["Title"] = "Privatliv og statistik";
+    var statistics = Context.Request.Cookies[HomeController.AnalyticsCookie];
+}
+
+<section class="readable">
+    <h1>Privatliv og statistik</h1>
+    <p>Salah Times gemmer dit valg af by og dit valg om besøgsstatistik i din browser i op til 180 dage.</p>
+    <h2>Google Analytics</h2>
+    <p>Hvis du siger ja, bruger vi Google Analytics til at se antal besøg og viste sider.
+        Google Analytics kan gemme sine målingscookies i op til 180 dage. Du kan ændre dit valg her. Hvis du
+        trækker dit samtykke tilbage, stopper målingen fra næste sidevisning.</p>
+    <p><a href="https://policies.google.com/technologies/partner-sites?hl=da">Sådan bruger Google oplysninger fra websteder</a></p>
+    <p><strong>Dit valg</strong> @(statistics == "yes" ? "Tilladt" : statistics == "no" ? "Afvist" : "Intet valg gemt")</p>
+    <form method="post" asp-controller="Home" asp-action="Statistics" class="actions">
+        <input type="hidden" name="returnUrl" value="/privatliv" />
+        <button class="button" name="choice" value="no">Afvis</button>
+        <button class="button" name="choice" value="yes">Tillad</button>
+    </form>
+</section>

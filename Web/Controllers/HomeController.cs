@@ -1,129 +1,207 @@
-﻿using Application.Interfaces;
-using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Application.Calendars;
+using Application.Interfaces;
+using Domain.Models;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Web.ViewModels;
 
-namespace Web.Controllers
+namespace Web.Controllers;
+
+[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+public sealed class HomeController(
+    IPrayerTimeService prayerTimes,
+    DanishTime clock,
+    ILogger<HomeController> logger) : Controller
 {
-    public class HomeController : Controller
+    public const string CityCookie = "salahtimes-city";
+    public const string AnalyticsCookie = "salahtimes-statistics";
+    private static readonly string[] PrayerNames = ["Fajr", "Solopgang", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
+    [HttpGet("/")]
+    public Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly IPrayerTimeService _prayerTimeService;
-        private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _environment;
-        private readonly IConfiguration _configuration;
+        var rememberedCity = PrayerCities.Find(Request.Cookies[CityCookie]);
+        return rememberedCity is null || rememberedCity == PrayerCities.Default
+            ? ShowCityAsync(PrayerCities.Default, cancellationToken)
+            : Task.FromResult<IActionResult>(RedirectToAction(nameof(City), new { city = rememberedCity.Slug }));
+    }
 
-
-        public HomeController(ILogger<HomeController> logger, IPrayerTimeService prayerTimeService, IMapper mapper, IWebHostEnvironment environment, IConfiguration configuration)
+    [HttpGet("/{city}", Name = "City")]
+    public Task<IActionResult> City(string city, CancellationToken cancellationToken)
+    {
+        var selected = PrayerCities.Find(city);
+        if (selected is null)
         {
-            _logger = logger;
-            _prayerTimeService = prayerTimeService;
-            _mapper = mapper;
-            _environment = environment;
-            _configuration = configuration;
+            return Task.FromResult<IActionResult>(NotFound());
         }
 
-        public async Task<IActionResult> Index()
+        if (Request.Cookies[CityCookie] != selected.Slug)
         {
-            string selectedCity = HttpContext.Session.GetString("SelectedCity") ?? "cph";
-            HttpContext.Session.SetString("SelectedCity", selectedCity);
-
-            try
-            {
-                var prayerDataDTO = await _prayerTimeService.FetchAndCachePrayerTimesAsync(selectedCity.ToLower());
-
-                if (prayerDataDTO == null)
-                {
-                    _logger.LogWarning("No prayer data available for {City}", selectedCity);
-                    return View("Error", new CustomErrorViewModel { ErrorMessage = "No prayer data available." });
-                }
-
-                var prayerDataViewModel = _mapper.Map<CityPrayerTimesViewModel>(prayerDataDTO);
-                return View(prayerDataViewModel);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error occurred while fetching prayer data for city {City}", selectedCity);
-
-                var adminSecret = _configuration["AdminErrorDetailsSecret"];
-                var providedSecret = HttpContext.Request.Query["adminSecret"].ToString();
-                var secretConfigured = !string.IsNullOrWhiteSpace(adminSecret);
-                var showAdminDetails = secretConfigured
-                    && !string.IsNullOrWhiteSpace(providedSecret)
-                    && string.Equals(adminSecret, providedSecret, StringComparison.Ordinal);
-
-                var details = string.Empty;
-                if (_environment.IsDevelopment() || showAdminDetails)
-                {
-                    details = e.ToString();
-                }
-                else if (!string.IsNullOrWhiteSpace(providedSecret))
-                {
-                    details = secretConfigured
-                        ? "Provided admin secret did not match the configured secret."
-                        : "Admin error-secret is not configured in the deployed app.";
-                }
-
-                return View("Error", new CustomErrorViewModel
-                {
-                    ErrorMessage = "An error occurred while processing your request.",
-                    Details = details,
-                    ErrorCode = "500",
-                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-                });
-            }
+            Response.Cookies.Append(CityCookie, selected.Slug, PreferenceCookie());
         }
 
-        [HttpPost]
-        public IActionResult Check(string button_value)
+        return ShowCityAsync(selected, cancellationToken);
+    }
+
+    private async Task<IActionResult> ShowCityAsync(PrayerCity city, CancellationToken cancellationToken)
+    {
+        var now = clock.Now;
+        var today = DateOnly.FromDateTime(now.Date);
+        var month = new DateOnly(today.Year, today.Month, 1);
+        var nextMonth = month.AddMonths(1);
+        var requestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+
+        try
         {
-            if (!string.IsNullOrEmpty(button_value))
+            var rows = await prayerTimes.GetDaysAsync(city, month.AddDays(-1), nextMonth.AddDays(1),
+                cancellationToken);
+            var days = rows.GroupBy(row => DateOnly.FromDateTime(row.Date))
+                .Where(group => group.Count() == 1 && PrayerDay.IsUsable(group.Single()))
+                .ToDictionary(group => group.Key, group => group.Single());
+            var monthRows = days.Where(entry => entry.Key >= month && entry.Key < nextMonth)
+                .OrderBy(entry => entry.Key).Select(entry => entry.Value).ToArray();
+
+            if (!days.TryGetValue(today, out var todayRow))
             {
-                HttpContext.Session.SetString("SelectedCity", button_value);
+                logger.LogWarning("No valid prayer times for {City}, {Date}. Request {RequestId}", city.Slug, today,
+                    requestId);
+                Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
             }
-            return RedirectToAction("Index");
+
+            var next = todayRow is null ? null : FindNextPrayer(days, today, now);
+
+            return View("Index", new CityPrayerTimesViewModel(city, now, monthRows, todayRow, next,
+                todayRow is null ? requestId : null));
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error(string errorMessage = "An unexpected error occurred.", string errorCode = "500")
+        catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
         {
-            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            var details = string.Empty;
-
-            var adminSecret = _configuration["AdminErrorDetailsSecret"];
-            var providedSecret = HttpContext.Request.Query["adminSecret"].ToString();
-            var secretConfigured = !string.IsNullOrWhiteSpace(adminSecret);
-            var showAdminDetails = secretConfigured
-                && !string.IsNullOrWhiteSpace(providedSecret)
-                && string.Equals(adminSecret, providedSecret, StringComparison.Ordinal);
-
-            if ((_environment.IsDevelopment() || showAdminDetails) && exceptionFeature?.Error != null)
-            {
-                details = exceptionFeature.Error.ToString();
-            }
-            else if (!string.IsNullOrWhiteSpace(providedSecret))
-            {
-                details = secretConfigured
-                    ? "Provided admin secret did not match the configured secret."
-                    : "Admin error-secret is not configured in the deployed app.";
-            }
-
-            return View(new CustomErrorViewModel
-            {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-                ErrorMessage = errorMessage,
-                ErrorCode = errorCode,
-                Details = details
-            });
+            logger.LogError(exception, "Could not load prayer times for {City}, {Date}. Request {RequestId}",
+                city.Slug, today, requestId);
+            Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+            return View("Index", new CityPrayerTimesViewModel(city, now, [], null, null, requestId));
         }
     }
+
+    internal static PrayerEvent? FindNextPrayer(
+        IReadOnlyDictionary<DateOnly, DailyPrayerTimes> days,
+        DateOnly today, DateTimeOffset now)
+    {
+        if (!days.TryGetValue(today, out var currentDay))
+        {
+            return null;
+        }
+
+        var previousIsha = days.TryGetValue(today.AddDays(-1), out var previousDay)
+            ? PrayerDay.Events(previousDay)[^1]
+            : null;
+        var prayers = PrayerDay.Events(currentDay);
+
+        // Leave the next prayer unspecified while an overnight prayer may still be due.
+        if (now < (prayers[0].StartsAt ?? PrayerDay.Sunrise(currentDay))
+            && (prayers[0].StartsAt is null || previousIsha is { StartsAt: null }))
+        {
+            return null;
+        }
+
+        if (previousIsha?.StartsAt > now)
+        {
+            return previousIsha;
+        }
+
+        var next = prayers.FirstOrDefault(prayer => prayer.StartsAt > now);
+        if (next is not null || prayers[^1].StartsAt is null)
+        {
+            return next;
+        }
+
+        if (days.TryGetValue(today.AddDays(1), out var tomorrow))
+        {
+            var tomorrowFajr = PrayerDay.Events(tomorrow)[0];
+            return tomorrowFajr.StartsAt > now ? tomorrowFajr : null;
+        }
+
+        return null;
+    }
+
+    [HttpGet("/privatliv")]
+    public IActionResult Privacy() => View();
+
+    [HttpPost("/statistik")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Statistics(string? choice, string? returnUrl)
+    {
+        if (choice is not ("yes" or "no"))
+        {
+            return BadRequest();
+        }
+
+        Response.Cookies.Append(AnalyticsCookie, choice, PreferenceCookie());
+
+        if (choice == "no")
+        {
+            foreach (var key in Request.Cookies.Keys.Where(key => key == "_ga" || key.StartsWith("_ga_", StringComparison.Ordinal)))
+            {
+                Response.Cookies.Delete(key, new CookieOptions { Path = "/" });
+                if (Request.Host.Host is "salahtimes.dk" or "www.salahtimes.dk")
+                {
+                    Response.Cookies.Delete(key, new CookieOptions { Path = "/", Domain = "salahtimes.dk" });
+                }
+            }
+        }
+
+        return Url.IsLocalUrl(returnUrl) ? LocalRedirect(returnUrl!) : RedirectToAction(nameof(Privacy));
+    }
+
+    [HttpGet("/meld-en-fejl")]
+    public IActionResult Correction(string? city, string? date, string? prayer, bool open = false)
+    {
+        var selected = PrayerCities.Find(city) ?? PrayerCities.Default;
+        var hasDate = DateOnly.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture,
+            DateTimeStyles.None, out var parsedDate);
+        var validPrayer = PrayerNames.Contains(prayer, StringComparer.Ordinal);
+
+        if (open && selected.Slug == city && hasDate && validPrayer)
+        {
+            var title = $"Bønnetid i {selected.Name} den {parsedDate:dd.MM.yyyy}";
+            var body = $"By: {selected.Name}\nDato: {parsedDate:yyyy-MM-dd}\nBøn: {prayer}\n\nBeskriv fejlen her:";
+            return Redirect(QueryHelpers.AddQueryString("https://github.com/Hudhud/PrayerTimes/issues/new",
+                new Dictionary<string, string?> { ["title"] = title, ["body"] = body }));
+        }
+
+        return View(new CorrectionViewModel(selected, hasDate ? parsedDate : DateOnly.FromDateTime(clock.Now.Date),
+            validPrayer ? prayer! : "Fajr"));
+    }
+
+    [Route("/fejl")]
+    public IActionResult Error()
+    {
+        if (HttpContext.Features.Get<IExceptionHandlerFeature>() is null)
+        {
+            return NotFound();
+        }
+
+        Response.StatusCode = StatusCodes.Status500InternalServerError;
+        var requestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+        return View(new CustomErrorViewModel("Siden kunne ikke indlæses. Prøv igen om lidt.", requestId));
+    }
+
+    private CookieOptions PreferenceCookie() => new()
+    {
+        Path = "/",
+        MaxAge = TimeSpan.FromDays(180),
+        HttpOnly = true,
+        Secure = Request.IsHttps,
+        SameSite = SameSiteMode.Lax,
+        IsEssential = true
+    };
 }

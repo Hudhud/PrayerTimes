@@ -1,105 +1,51 @@
-﻿using Domain.Models;
+using Domain.Models;
 using Domain.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Repositories
+namespace Infrastructure.Repositories;
+
+public sealed class CityPrayerTimesRepository(ApplicationDbContext context) : ICityPrayerTimesRepository
 {
-    public class CityPrayerTimesRepository : ICityPrayerTimesRepository
+    public async Task<IReadOnlyList<DailyPrayerTimes>> GetDaysAsync(string city, DateOnly from, DateOnly until,
+        CancellationToken cancellationToken)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<CityPrayerTimesRepository> _logger;
+        var start = from.ToDateTime(TimeOnly.MinValue);
+        var end = until.ToDateTime(TimeOnly.MinValue);
 
-        public CityPrayerTimesRepository(ApplicationDbContext context, ILogger<CityPrayerTimesRepository> logger)
+        return await context.DailyPrayerTimes.AsNoTracking()
+            .Where(day => day.CityPrayerTimes.City == city && day.Date >= start && day.Date < end)
+            .OrderBy(day => day.Date)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task ReplaceMonthAsync(string city, DateOnly month, IReadOnlyList<DailyPrayerTimes> days,
+        CancellationToken cancellationToken)
+    {
+        var start = month.ToDateTime(TimeOnly.MinValue);
+        var end = month.AddMonths(1).ToDateTime(TimeOnly.MinValue);
+
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
+        // The unique city row serializes writes even when two app instances overlap during a deployment.
+        await context.Database.ExecuteSqlInterpolatedAsync(
+            $"INSERT INTO CityPrayerTimes (City) VALUES ({city}) ON DUPLICATE KEY UPDATE Id = Id",
+            cancellationToken);
+
+        var cityId = await context.CityPrayerTimes.Where(row => row.City == city)
+            .Select(row => row.Id).SingleAsync(cancellationToken);
+
+        await context.DailyPrayerTimes
+            .Where(day => day.CityPrayerTimesId == cityId && day.Date >= start && day.Date < end)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        foreach (var day in days)
         {
-            _context = context;
-            _logger = logger;
+            day.CityPrayerTimesId = cityId;
         }
 
-        public async Task AddOrUpdateAsync(CityPrayerTimes cityPrayerTimes)
-        {
-            try
-            {
-                var existingCity = await _context.CityPrayerTimes
-                    .Include(c => c.PrayerTimes)
-                    .FirstOrDefaultAsync(c => c.City.ToLower() == cityPrayerTimes.City.ToLower());
-
-                if (existingCity != null)
-                {
-                    existingCity.City = cityPrayerTimes.City;
-
-                    if (existingCity.PrayerTimes.Any())
-                    {
-                        _context.DailyPrayerTimes.RemoveRange(existingCity.PrayerTimes);
-                    }
-
-                    existingCity.PrayerTimes = cityPrayerTimes.PrayerTimes;
-                    _context.CityPrayerTimes.Update(existingCity);
-                }
-                else
-                {
-                    await _context.CityPrayerTimes.AddAsync(cityPrayerTimes);
-                }
-
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while adding or updating city prayer times.");
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<CityPrayerTimes>> GetAllAsync()
-        {
-            try
-            {
-                return await _context.CityPrayerTimes
-                    .Include(c => c.PrayerTimes)
-                    .AsNoTracking()
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while retrieving all city prayer times.");
-                throw;
-            }
-        }
-
-        public async Task<CityPrayerTimes?> GetByCityAsync(string city)
-        {
-            try
-            {
-                return await _context.CityPrayerTimes
-                    .Include(c => c.PrayerTimes)
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(c => c.City.ToLower() == city.ToLower());
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while retrieving prayer times for city: {City}", city);
-                throw;
-            }
-        }
-
-        public async Task TruncateTablesAsync()
-        {
-            try
-            {
-                await using var transaction = await _context.Database.BeginTransactionAsync();
-
-                _context.DailyPrayerTimes.RemoveRange(_context.DailyPrayerTimes);
-                _context.CityPrayerTimes.RemoveRange(_context.CityPrayerTimes);
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while truncating the CityPrayerTimes and DailyPrayerTimes tables.");
-                throw;
-            }
-        }
+        context.DailyPrayerTimes.AddRange(days);
+        await context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
     }
 }
