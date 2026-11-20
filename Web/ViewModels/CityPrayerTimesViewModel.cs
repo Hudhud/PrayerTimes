@@ -18,7 +18,7 @@ public sealed record DailyPrayerTimesViewModel(
 {
     public DateOnly Date => DateOnly.FromDateTime(Now.Date);
     public DateOnly? NextDate => Next?.StartsAt is { } start ? DateOnly.FromDateTime(start.Date) : null;
-    public bool HasBrightNightTimes => Day is not null && (Day.FajrTimeUnavailable || Day.UsesPredefinedIshaTime);
+    public bool HasBrightNightTimes => Day is not null && (Day.FajrTimeUnavailable || Day.IshaTimeUnavailable);
 
     public DateTimeOffset RefreshAt
     {
@@ -53,7 +53,7 @@ public sealed record CalendarViewModel(
     public DateOnly? PreviousWeek => WeekStart > Month
         ? DateOnly.FromDayNumber(Math.Max(Month.DayNumber, WeekStart.DayNumber - 7)) : null;
     public DateOnly? NextWeek => WeekStart.DayNumber + 7 < NextMonth.DayNumber ? WeekStart.AddDays(7) : null;
-    public bool HasBrightNightTimes => Days.Any(day => day.FajrTimeUnavailable || day.UsesPredefinedIshaTime);
+    public bool HasBrightNightTimes => Days.Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
     public IEnumerable<DailyPrayerTimes> WeekDays =>
         Days.Where(day => DateOnly.FromDateTime(day.Date).DayNumber - WeekStart.DayNumber is >= 0 and < 7);
 
@@ -64,7 +64,6 @@ public sealed record CalendarViewModel(
 
 public sealed record CityPrayerTimesViewModel(
     DailyPrayerTimesViewModel Daily,
-    CalendarViewModel Calendar,
-    bool CanSearchPlaces);
+    CalendarViewModel Calendar);
 
 public sealed record PrayerListViewModel(DailyPrayerTimes Day, bool Hanafi, bool ShowSunrise = false);

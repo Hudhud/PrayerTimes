@@ -18,11 +18,11 @@ public static class PrayerDay
         var dhuhr = Read(day.DhuhrTime);
         var asr = Read(hanafi ? day.AsrHanafiTime : day.AsrTime);
         var maghrib = Read(day.MaghribTime);
-        TimeOnly? isha = day.UsesPredefinedIshaTime ? null : Read(day.IshaTime);
-        var ishaDayOffset = day.IshaDayOffset ?? (isha < maghrib ? 1 : 0);
+        TimeOnly? isha = day.IshaTimeUnavailable ? null : Read(day.IshaTime);
+        var ishaDayOffset = day.IshaDayOffset;
 
         if (fajr >= sunrise || !(sunrise < dhuhr && dhuhr < asr && asr < maghrib)
-            || (isha is { } ishaTime && (ishaDayOffset is < 0 or > 1
+            || (isha is { } ishaTime && (ishaDayOffset is not (0 or 1)
                 || (ishaDayOffset == 0 && ishaTime <= maghrib)
                 || (ishaDayOffset == 1 && ishaTime >= maghrib))))
         {
@@ -35,7 +35,7 @@ public static class PrayerDay
             new("Dhuhr", DanishTime.At(date, dhuhr)),
             new("Asr", DanishTime.At(date, asr)),
             new("Maghrib", DanishTime.At(date, maghrib)),
-            new("Isha", isha is { } regularIsha ? DanishTime.At(date.AddDays(ishaDayOffset), regularIsha) : null)
+            new("Isha", isha is { } regularIsha && ishaDayOffset is { } offset ? DanishTime.At(date.AddDays(offset), regularIsha) : null)
         ];
     }
 
@@ -53,14 +53,6 @@ public static class PrayerDay
         {
             return false;
         }
-    }
-
-    public static bool IsCompleteMonth(DateOnly month, IReadOnlyList<DailyPrayerTimes> days)
-    {
-        var expectedDays = DateTime.DaysInMonth(month.Year, month.Month);
-
-        return days.Count == expectedDays && days.Select((day, index) =>
-            DateOnly.FromDateTime(day.Date) == month.AddDays(index) && IsUsable(day)).All(valid => valid);
     }
 
     private static TimeOnly Read(string? value)

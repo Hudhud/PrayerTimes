@@ -14,7 +14,7 @@ public sealed record PrayerPlace(string Id, string Name, string Area, double Lat
 {
     public string Label => PostalCode is null ? Name : $"{PostalCode} {Name}";
 
-    public PrayerCity ToPrayerCity() => new(Id, Label, Id,
+    public PrayerCity ToPrayerCity() => new(Id, Label,
         Latitude.ToString(CultureInfo.InvariantCulture), Longitude.ToString(CultureInfo.InvariantCulture));
 }
 
@@ -24,25 +24,18 @@ public sealed class PrayerPlaceDirectory
     private static readonly StringComparer DanishComparer = StringComparer.Create(CultureInfo.GetCultureInfo("da-DK"), true);
     private readonly (PrayerPlace Place, string Label, string FoldedLabel, string Area)[] searchable;
 
-    public PrayerPlaceDirectory(string? path)
+    public PrayerPlaceDirectory(string path)
     {
-        var locations = Array.Empty<PrayerPlace>();
-        if (path is not null)
+        using var data = File.OpenRead(path);
+        var locations = JsonSerializer.Deserialize<PrayerPlace[]>(data, JsonSerializerOptions.Web);
+        if (locations is not { Length: > 0 })
         {
-            using var data = File.OpenRead(path);
-            locations = JsonSerializer.Deserialize<PrayerPlace[]>(data, JsonSerializerOptions.Web)
-                ?? throw new InvalidDataException("The Danish place index is missing.");
-            if (locations.Length == 0)
-            {
-                throw new InvalidDataException("The Danish place index is empty.");
-            }
+            throw new InvalidDataException("The Danish place index is empty.");
         }
 
         places = locations.ToDictionary(place => place.Id, StringComparer.OrdinalIgnoreCase);
         searchable = locations.Select(place => (place, Normalize(place.Label), Fold(place.Label), Fold(place.Area))).ToArray();
     }
-
-    public bool IsEnabled => places.Count > 0;
 
     public PrayerCity? Find(string? slug)
     {

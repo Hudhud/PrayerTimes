@@ -11,24 +11,11 @@ dotnet restore PrayerTimes.sln --locked-mode
 dotnet run --project Web
 ```
 
-## Previous provider
-
-Set `PrayerTimes__UseLocalCalculation=false` to run with the previous provider. In this mode, set `ConnectionStrings__DefaultConnection` or `CONNECTION_STRING` for a MySQL-compatible database. EF migrations run at startup. To apply them separately, set `Database__ApplyMigrations=false` and use a database identity with schema permissions.
-
-```sh
-dotnet tool restore
-PrayerTimes__UseLocalCalculation=false dotnet ef database update --project Infrastructure --startup-project Web
-```
-
-The previous worker refreshes the current and following month for the four established cities.
-
 ## Verify
 
 ```sh
 dotnet test PrayerTimes.sln --configuration Release
 ```
-
-Set `PRAYERTIMES_TEST_DATABASE` to a dedicated MariaDB test database to include the relational test. It migrates that database and tests concurrent writes and rollback. GitHub Actions runs both the unit and MariaDB tests before deployment.
 
 The checked-in regression fixture captures the local calculator at the 2026 cutover (`dc61543`), across six places and selected calendar and bright-night boundaries. It detects changes to the established local results. Use separate source timetables when evaluating an intentional change to calculation rules.
 
@@ -43,7 +30,7 @@ npm test
 
 ## Deploy
 
-The deployment publishes a self-contained Windows x86 build for the ASP.NET Core IIS hosting module. The default local calculation mode uses the shipped place index and caches individual days by coordinates. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
+The deployment publishes a self-contained Windows x86 build for the ASP.NET Core IIS hosting module. The local calculator uses the shipped place index and caches individual days by coordinates. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
 
 After deployment, CI opens the public site and verifies the prayer times, postcode picker and calculation method. To roll back one release, revert its squash commit through a pull request so verification and deployment run again. A revert leaves the public place URLs and preference cookies usable by the earlier local release.
 
@@ -71,7 +58,7 @@ The report lists coverage per city and month, availability differences, and sign
 
 ## Local place search
 
-Place search runs with the default local calculator and uses the installed snapshot.
+Place search uses the installed place snapshot.
 
 The place index is a filtered, combined copy of the GeoNames [Danish place export](https://download.geonames.org/export/dump/DK.zip) and [Danish postal export](https://download.geonames.org/export/zip/DK.zip), used under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The four established URLs use their existing coordinates. The snapshot can be refreshed with the source ZIP files.
 

@@ -30,10 +30,17 @@ test('a one-result search also works without JavaScript', async ({ browser }) =>
     }
 });
 
-test('location opens a nearby timetable and a manual place disables it', async ({ page }) => {
+test('location opens and refreshes the nearby timetable, then respects a manual choice', async ({ page }) => {
     await page.addInitScript(() => {
         Object.defineProperty(navigator, 'geolocation', {
-            value: { getCurrentPosition: success => success({ coords: { latitude: 56.162939, longitude: 10.203921 } }) }
+            value: {
+                getCurrentPosition: success => {
+                    const coords = localStorage.getItem('mock-moved') === 'yes'
+                        ? { latitude: 55.403756, longitude: 10.40237 }
+                        : { latitude: 56.162939, longitude: 10.203921 };
+                    success({ coords });
+                }
+            }
         });
         Object.defineProperty(navigator, 'permissions', {
             value: { query: async () => ({ state: 'granted' }) }
@@ -42,6 +49,15 @@ test('location opens a nearby timetable and a manual place disables it', async (
     await page.goto('/');
     await page.getByRole('button', { name: 'Brug min placering' }).click();
     await expect(page).toHaveURL(/\/aarhus$/);
+    await expect(page.getByRole('button', { name: 'Stop automatisk placering' })).toBeVisible();
+    await page.evaluate(() => {
+        const preference = JSON.parse(localStorage.getItem('salahtimes-auto-location'));
+        preference.checkedAt = 0;
+        localStorage.setItem('salahtimes-auto-location', JSON.stringify(preference));
+        localStorage.setItem('mock-moved', 'yes');
+    });
+    await page.reload();
+    await expect(page).toHaveURL(/\/odense$/);
     await expect(page.getByRole('button', { name: 'Stop automatisk placering' })).toBeVisible();
     await search(page).fill('6700');
     await page.getByRole('option', { name: /6700 Esbjerg/ }).click();
@@ -60,6 +76,15 @@ test('denied location keeps search usable', async ({ page }) => {
     await expect(page.getByText(/Browseren giver ikke adgang/)).toBeVisible();
     await search(page).fill('Viby Aarhus');
     await expect(page.getByRole('option', { name: /Viby Aarhus Kommune/ })).toBeVisible();
+});
+
+test('the public location catalog is compressed and keeps its entries', async ({ request }) => {
+    const response = await request.get('/data/prayer-places.json', {
+        headers: { 'accept-encoding': 'gzip' }
+    });
+    expect(response.ok()).toBeTruthy();
+    expect(response.headers()['content-encoding']).toBe('gzip');
+    expect(await response.json()).toContainEqual(expect.objectContaining({ id: 'aarhus', name: 'Aarhus' }));
 });
 
 test('shared month, mobile calendar, method and calendar export', async ({ page, isMobile }) => {

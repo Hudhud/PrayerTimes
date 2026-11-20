@@ -59,11 +59,6 @@ public sealed class HomeController(
     [HttpGet("/steder")]
     public IActionResult Places(string? q)
     {
-        if (!places.IsEnabled)
-        {
-            return NotFound();
-        }
-
         var query = q?.Trim() ?? string.Empty;
         if (query.Length > 80)
         {
@@ -79,11 +74,6 @@ public sealed class HomeController(
     [HttpGet("/steder/forslag")]
     public IActionResult PlaceSuggestions(string? q)
     {
-        if (!places.IsEnabled)
-        {
-            return NotFound();
-        }
-
         var query = q?.Trim() ?? string.Empty;
         if (query.Length > 80)
         {
@@ -112,13 +102,13 @@ public sealed class HomeController(
     }
 
     [HttpGet("/beregning")]
-    public IActionResult Method() => View("Method", places.IsEnabled);
+    public IActionResult Method() => View("Method");
 
     [HttpPost("/asr")]
     [ValidateAntiForgeryToken]
     public IActionResult Asr(string? choice, string? returnUrl)
     {
-        if (!places.IsEnabled || choice is not ("standard" or "hanafi"))
+        if (choice is not ("standard" or "hanafi"))
         {
             return BadRequest();
         }
@@ -131,7 +121,7 @@ public sealed class HomeController(
     public async Task<IActionResult> Export(string city, string? month, CancellationToken cancellationToken)
     {
         var selected = places.Find(city);
-        if (selected is null || !places.IsEnabled)
+        if (selected is null)
         {
             return NotFound();
         }
@@ -153,7 +143,7 @@ public sealed class HomeController(
             $"salah-times-{selected.Slug}-{CalendarViewModel.MonthParameter(monthStart)}.ics");
     }
 
-    private bool UsesHanafi => places.IsEnabled && Request.Cookies[AsrCookie] == "hanafi";
+    private bool UsesHanafi => Request.Cookies[AsrCookie] == "hanafi";
 
     private async Task<IActionResult> ShowCityAsync(PrayerCity city, string? month, string? week,
         CancellationToken cancellationToken)
@@ -177,7 +167,7 @@ public sealed class HomeController(
         var monthRows = await LoadMonthAsync(city, monthStart, hanafi, cancellationToken);
         var daily = await LoadTodayAsync(city, now, hanafi, cancellationToken);
         var calendar = new CalendarViewModel(city, today, monthStart, CalendarViewModel.StartOfWeek(weekDate), monthRows, hanafi);
-        return View("Index", new CityPrayerTimesViewModel(daily, calendar, places.IsEnabled));
+        return View("Index", new CityPrayerTimesViewModel(daily, calendar));
     }
 
     private static bool TryReadMonth(string? value, DateOnly today, out DateOnly month)
@@ -222,7 +212,7 @@ public sealed class HomeController(
             if (days.TryGetValue(today, out var todayRow))
             {
                 var next = FindNextPrayer(days, today, now, hanafi);
-                var brightNights = next is null && days.Values.Any(day => day.FajrTimeUnavailable || day.UsesPredefinedIshaTime);
+                var brightNights = next is null && days.Values.Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
                 return new DailyPrayerTimesViewModel(city, now, todayRow, next, brightNights, null, hanafi);
             }
 
@@ -285,7 +275,7 @@ public sealed class HomeController(
     }
 
     [HttpGet("/privatliv")]
-    public IActionResult Privacy() => View(places.IsEnabled);
+    public IActionResult Privacy() => View();
 
     [HttpPost("/statistik")]
     [ValidateAntiForgeryToken]

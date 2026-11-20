@@ -17,7 +17,7 @@
             @if (hasMonth)
             {
                 <button class="button print-button" type="button" data-print hidden>Udskriv</button>
-                @if (ViewData["PlaceDataAttribution"] is true && Model.Days.Count == DateTime.DaysInMonth(Model.Month.Year, Model.Month.Month))
+                @if (Model.Days.Count == DateTime.DaysInMonth(Model.Month.Year, Model.Month.Month))
                 {
                     <a class="button" asp-route="CalendarExport" asp-route-city="@Model.City.Slug" asp-route-month="@month">Hent kalenderfil</a>
                 }

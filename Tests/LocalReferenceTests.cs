@@ -30,7 +30,7 @@ public sealed class LocalReferenceTests
                 Asr = day.AsrTime,
                 AsrHanafi = day.AsrHanafiTime,
                 Maghrib = day.MaghribTime,
-                Isha = day.UsesPredefinedIshaTime ? null : day.IshaTime,
+                Isha = day.IshaTimeUnavailable ? null : day.IshaTime,
                 IshaDayOffset = day.IshaDayOffset
             };
             Assert.Equal(expected, actual);

@@ -1,47 +1,16 @@
-using System.ComponentModel.DataAnnotations;
+namespace Domain.Models;
 
-namespace Domain.Models
+public sealed class DailyPrayerTimes
 {
-    public class DailyPrayerTimes
-    {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public DateTime Date { get; set; }
-
-        [Required]
-        public string FajrTime { get; set; } = null!;
-
-        [Required]
-        public string SunriseTime { get; set; } = null!;
-
-        [Required]
-        public string DhuhrTime { get; set; } = null!;
-
-        [Required]
-        public string AsrTime { get; set; } = null!;
-
-        [Required]
-        public string AsrHanafiTime { get; set; } = null!;
-
-        [Required]
-        public string MaghribTime { get; set; } = null!;
-
-        [Required]
-        public string IshaTime { get; set; } = null!;
-
-        public bool? UsesPredefinedFajrTime { get; set; }
-
-        public int? IshaDayOffset { get; set; }
-
-        public bool UsesPredefinedIshaTime { get; set; }
-
-        // Older rows used 02:00 for the summer exception without storing its flag.
-        public bool FajrTimeUnavailable => UsesPredefinedFajrTime ?? FajrTime == "02:00";
-
-        public int CityPrayerTimesId { get; set; }
-
-        public CityPrayerTimes CityPrayerTimes { get; set; } = null!;
-    }
+    public required DateTime Date { get; init; }
+    public required string FajrTime { get; init; }
+    public required string SunriseTime { get; init; }
+    public required string DhuhrTime { get; init; }
+    public required string AsrTime { get; init; }
+    public required string AsrHanafiTime { get; init; }
+    public required string MaghribTime { get; init; }
+    public required string IshaTime { get; init; }
+    public bool FajrTimeUnavailable { get; init; }
+    public bool IshaTimeUnavailable { get; init; }
+    public int? IshaDayOffset { get; init; }
 }

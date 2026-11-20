@@ -13,7 +13,16 @@ try {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('8000 Aarhus C');
     await page.getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
-    console.log('Verified prayer times, postcode navigation and calculation method on the deployed site.');
+    const catalog = await page.evaluate(async () => {
+        const response = await fetch('/data/prayer-places.json');
+        await response.arrayBuffer();
+        const timing = performance.getEntriesByName(response.url).at(-1);
+        return { ok: response.ok, transferred: timing?.encodedBodySize, decoded: timing?.decodedBodySize };
+    });
+    expect(catalog.ok).toBeTruthy();
+    expect(catalog.transferred).toBeGreaterThan(0);
+    expect(catalog.transferred).toBeLessThan(catalog.decoded);
+    console.log('Verified prayer times, postcode navigation, calculation method and catalog compression.');
 } finally {
     await browser.close();
 }
