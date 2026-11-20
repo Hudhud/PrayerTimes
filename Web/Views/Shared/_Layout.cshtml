@@ -43,6 +43,7 @@
         @RenderBody()
     </main>
     <footer class="site-footer site-width">
+        @await RenderSectionAsync("Footer", required: false)
         <a href="/privatliv">Privatliv og statistik</a>
     </footer>
 </body>
