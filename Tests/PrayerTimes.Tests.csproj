@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="../Web/wwwroot/data/prayer-places.json" Link="prayer-places.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Fixtures/local-provider-2026.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

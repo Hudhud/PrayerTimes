@@ -13,49 +13,38 @@ namespace Web.Services;
 
 public sealed class LocalPrayerTimeService(DanishPrayerTimeCalculator calculator) : IPrayerTimeService, IDisposable
 {
-    private readonly MemoryCache cache = new(new MemoryCacheOptions { SizeLimit = 128 });
+    private readonly MemoryCache cache = new(new MemoryCacheOptions { SizeLimit = 128 * 31 });
+    private readonly object[] gates = Array.ConvertAll(new int[32], _ => new object());
 
     public Task<IReadOnlyList<DailyPrayerTimes>> GetDaysAsync(PrayerCity city, DateOnly from, DateOnly until,
         CancellationToken cancellationToken)
     {
         var result = new List<DailyPrayerTimes>();
-        var month = new DateOnly(from.Year, from.Month, 1);
-        while (month < until)
+        var latitude = double.Parse(city.Latitude, CultureInfo.InvariantCulture);
+        var longitude = double.Parse(city.Longitude, CultureInfo.InvariantCulture);
+
+        for (var date = from; date < until; date = date.AddDays(1))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var days = cache.GetOrCreate((city, month), entry =>
+            var key = (latitude, longitude, date);
+            if (!cache.TryGetValue(key, out DailyPrayerTimes? day))
             {
-                entry.SetSize(1).SetSlidingExpiration(TimeSpan.FromDays(1));
-                return CalculateMonth(city, month, cancellationToken);
-            })!;
-
-            foreach (var day in days)
-            {
-                var date = DateOnly.FromDateTime(day.Date);
-                if (date >= from && date < until)
+                // An exact date is small enough to compute under a bounded set of locks.
+                lock (gates[(uint)key.GetHashCode() % gates.Length])
                 {
-                    result.Add(day);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    day = cache.GetOrCreate(key, entry =>
+                    {
+                        entry.SetSize(1).SetSlidingExpiration(TimeSpan.FromDays(1));
+                        return calculator.Calculate(date, latitude, longitude);
+                    });
                 }
             }
 
-            month = month.AddMonths(1);
+            result.Add(day!);
         }
 
         return Task.FromResult<IReadOnlyList<DailyPrayerTimes>>(result);
-    }
-
-    private DailyPrayerTimes[] CalculateMonth(PrayerCity city, DateOnly month, CancellationToken cancellationToken)
-    {
-        var latitude = double.Parse(city.Latitude, CultureInfo.InvariantCulture);
-        var longitude = double.Parse(city.Longitude, CultureInfo.InvariantCulture);
-        var days = new DailyPrayerTimes[DateTime.DaysInMonth(month.Year, month.Month)];
-        for (var index = 0; index < days.Length; index++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            days[index] = calculator.Calculate(month.AddDays(index), latitude, longitude);
-        }
-
-        return days;
     }
 
     public void Dispose() => cache.Dispose();

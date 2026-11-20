@@ -1,0 +1,11 @@
+{
+  "name": "salah-times-browser-tests",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "smoke": "node production.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1"
+  }
+}

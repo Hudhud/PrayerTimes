@@ -10,7 +10,9 @@
     const searchStatus = form.querySelector('[role="status"]');
     const locationButton = picker.querySelector('[data-use-location]');
     const locationStatus = picker.querySelector('[data-location-status]');
-    const currentPlace = document.querySelector('[data-current-place]')?.dataset.currentPlace;
+    const currentPlace = document.querySelector('[data-current-place]')?.dataset;
+    const recentKey = 'salahtimes-recent-places';
+    const recentPlaces = rememberPlace();
     const locationKey = 'salahtimes-auto-location';
     const locationMaxAge = 5 * 60 * 1000;
     let locationPreference = readLocationPreference();
@@ -63,29 +65,11 @@
                 return;
             }
 
-            suggestions = results;
             if (results.length === 0) {
                 showSearchMessage('Ingen steder fundet. Prøv et andet bynavn eller postnummer.');
-                return;
+            } else {
+                renderSuggestions(results, 'Stedforslag');
             }
-
-            results.forEach((place, index) => {
-                const option = document.createElement('li');
-                option.id = `place-option-${index}`;
-                option.setAttribute('role', 'option');
-                option.setAttribute('aria-selected', 'false');
-                option.textContent = place.label;
-                if (place.area) {
-                    const area = document.createElement('small');
-                    area.textContent = place.area;
-                    option.append(area);
-                }
-                option.addEventListener('click', () => selectPlace(place));
-                list.append(option);
-            });
-            list.hidden = false;
-            input.setAttribute('aria-expanded', 'true');
-            searchStatus.textContent = results.length === 1 ? '1 forslag' : `${results.length} forslag`;
         } catch {
             if (!request.signal.aborted && document.activeElement === input) {
                 showSearchMessage('Forslag kunne ikke hentes. Tryk Søg for at prøve igen.');
@@ -97,11 +81,57 @@
         }
     }
 
+    function rememberPlace() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(recentKey)) ?? [];
+            const places = saved.filter(place => typeof place?.id === 'string' && /^[a-z0-9-]+$/.test(place.id) &&
+                typeof place.label === 'string' && place.label.length <= 100);
+            if (currentPlace) {
+                const id = currentPlace.currentPlace;
+                const previous = places.filter(place => place.id !== id);
+                localStorage.setItem(recentKey, JSON.stringify([{ id, label: currentPlace.placeName }, ...previous].slice(0, 4)));
+                return previous.slice(0, 3);
+            }
+            return places.slice(0, 3);
+        } catch {
+            return [];
+        }
+    }
+
+    function renderSuggestions(results, label) {
+        suggestions = results;
+        list.setAttribute('aria-label', label);
+        results.forEach((place, index) => {
+            const option = document.createElement('li');
+            option.id = `place-option-${index}`;
+            option.setAttribute('role', 'option');
+            option.setAttribute('aria-selected', 'false');
+            option.textContent = place.label;
+            if (place.area) {
+                const area = document.createElement('small');
+                area.textContent = place.area;
+                option.append(area);
+            }
+            option.addEventListener('click', () => selectPlace(place));
+            list.append(option);
+        });
+        list.hidden = false;
+        input.setAttribute('aria-expanded', 'true');
+        searchStatus.textContent = label === 'Stedforslag'
+            ? (results.length === 1 ? '1 forslag' : `${results.length} forslag`)
+            : label;
+    }
+
     function queueSuggestions() {
         closeSuggestions();
         const query = input.value.trim();
         if (query.length >= 2) {
             searchTimer = window.setTimeout(() => loadSuggestions(query), 200);
+        } else if (query.length === 0 && recentPlaces.length > 0) {
+            const base = new URL(locationButton.dataset.placeBase, location.href);
+            renderSuggestions(recentPlaces.map(place => ({
+                label: place.label, url: new URL(encodeURIComponent(place.id), base).href
+            })), 'Senest brugte steder');
         }
     }
 
@@ -173,7 +203,7 @@
     }
 
     function updateLocationButton() {
-        locationButton.textContent = currentPlace && locationPreference?.placeId === currentPlace
+        locationButton.textContent = currentPlace && locationPreference?.placeId === currentPlace.currentPlace
             ? 'Stop automatisk placering' : 'Brug min placering';
     }
 
@@ -182,6 +212,7 @@
             locationRequest.abort();
             locationRequest = undefined;
             locationButton.disabled = false;
+            locationButton.removeAttribute('aria-busy');
             locationStatus.textContent = '';
         }
     }
@@ -220,6 +251,7 @@
         lastLocationCheck = Date.now();
         if (!automatic) {
             locationButton.disabled = true;
+            locationButton.setAttribute('aria-busy', 'true');
             locationStatus.textContent = 'Finder et sted i nærheden…';
         }
 
@@ -245,7 +277,7 @@
 
             locationStatus.textContent = '';
             saveLocationPreference({ placeId: nearest.id, checkedAt: Date.now() });
-            if (currentPlace === nearest.id) {
+            if (currentPlace?.currentPlace === nearest.id) {
                 updateLocationButton();
                 if (!automatic) {
                     locationStatus.textContent = `Du ser allerede bønnetiderne for ${nearest.name}.`;
@@ -274,12 +306,13 @@
             if (locationRequest === request) {
                 locationRequest = undefined;
                 locationButton.disabled = false;
+                locationButton.removeAttribute('aria-busy');
             }
         }
     }
 
     function canRefreshLocation() {
-        return currentPlace && locationPreference?.placeId === currentPlace && !locationRequest &&
+        return currentPlace && locationPreference?.placeId === currentPlace.currentPlace && !locationRequest &&
             !document.hidden && document.activeElement !== input;
     }
 
@@ -306,7 +339,7 @@
         locationButton.hidden = false;
         updateLocationButton();
         locationButton.addEventListener('click', () => {
-            if (currentPlace && locationPreference?.placeId === currentPlace) {
+            if (currentPlace && locationPreference?.placeId === currentPlace.currentPlace) {
                 stopLocation();
                 locationStatus.textContent = 'Automatisk placering er slået fra.';
             } else {
