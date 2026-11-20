@@ -1,7 +1,6 @@
 @using Web.Controllers
 @{
     var statistics = Context.Request.Cookies[HomeController.AnalyticsCookie];
-    var currentUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
 }
 <!DOCTYPE html>
 <html lang="da">
@@ -44,21 +43,6 @@
         @RenderBody()
     </main>
     <footer class="site-footer site-width">
-        @if (statistics is not ("yes" or "no"))
-        {
-            <section class="notice statistics" aria-labelledby="statistics-title">
-                <div>
-                    <h2 id="statistics-title">Besøgsstatistik</h2>
-                    <p>Med dit samtykke bruger vi Google Analytics til at se, hvor ofte siden bliver brugt.
-                        <a href="/privatliv">Læs om privatliv</a>.</p>
-                </div>
-                <form method="post" asp-controller="Home" asp-action="Statistics" class="actions">
-                    <input type="hidden" name="returnUrl" value="@currentUrl" />
-                    <button class="button" name="choice" value="no">Afvis</button>
-                    <button class="button" name="choice" value="yes">Tillad</button>
-                </form>
-            </section>
-        }
         <a href="/privatliv">Privatliv og statistik</a>
     </footer>
 </body>

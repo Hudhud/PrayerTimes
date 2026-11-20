@@ -85,6 +85,8 @@
        asp-route-prayer="@(nextDate == Model.Date ? next?.Name : "Fajr")">Meld en fejl i en bønnetid</a>
 </section>
 
+<partial name="_StatisticsPrompt" />
+
 <section class="month" aria-labelledby="month-title">
     <div class="month-heading">
         <div>
@@ -106,7 +108,7 @@
         {
             <p>Månedsoversigten er ufuldstændig. Nogle datoer mangler.</p>
         }
-        <p class="table-hint" id="table-hint">Stryg eller rul vandret for at se hele tabellen.</p>
+        <p class="table-hint">Stryg eller rul vandret for at se hele tabellen.</p>
         <div class="table-scroll" role="region" aria-labelledby="month-title" tabindex="0">
             <table>
                 <caption>Bønnetider i @Model.City.Name · @monthName · Dansk lokal tid</caption>

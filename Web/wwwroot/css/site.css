@@ -135,7 +135,7 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 .current-day small { color: inherit; }
 
 .site-footer { margin-top: 2rem; padding-block: 1rem 1.6rem; border-top: 1px solid var(--border); font-size: .9rem; }
-.statistics { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-block: 0 1rem; }
+.statistics { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-block: 1.15rem 0; }
 .statistics h2 { font-size: 1rem; }
 .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .readable { max-width: 39rem; margin-block: 1.8rem; }
@@ -169,6 +169,8 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     .city-nav { gap: .24rem; }
     .city-nav a { font-size: .78rem; }
 }
+@page { size: A4; margin: 12mm; }
+
 @media print {
     :root { color-scheme: light; }
     body, th, td, tbody th, tbody tr:nth-child(even) th, tbody .current-day th {
@@ -176,7 +178,7 @@ tbody tr:nth-child(even) th { background: var(--surface); }
         background: #fff !important;
     }
     .site-header, .skip-link, .site-footer, .city-nav, .today > :not(.summer-note),
-    .print-button, .table-hint, caption { display: none !important; }
+    .print-button, .table-hint, .statistics, caption { display: none !important; }
     .site-width { width: 100%; }
     .print-city { display: block; }
     .summer-note { color: #000; background: #fff; border-color: #aaa; font-size: .85rem; }
