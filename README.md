@@ -19,7 +19,7 @@ dotnet tool restore
 dotnet ef database update --project Infrastructure --startup-project Web
 ```
 
-The worker prepares the current and next month in the background. An empty database can therefore take a few minutes to populate. City rules live in [PrayerCities.cs](Application/Calendars/PrayerCities.cs). Provider values and summer exceptions are converted and validated in [PrayerTimeService.cs](Infrastructure/Services/PrayerTimeService.cs). The website reads saved rows directly.
+The worker prepares the current and next month in the background. An empty database can therefore take a few minutes to populate. City rules live in [PrayerCities.cs](Application/Calendars/PrayerCities.cs). Provider values and summer exceptions are converted and validated in [PrayerTimeService.cs](Infrastructure/Services/PrayerTimeService.cs). The website reads saved rows directly. During bright nights, it displays dashes for Fajr or Isha when there is no regular time for that prayer.
 
 ## Verify
 

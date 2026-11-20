@@ -30,7 +30,8 @@ public sealed class PrayerTimeService(
     {
         var current = await GetDaysAsync(city, month, month.AddMonths(1), cancellationToken);
         if (PrayerDay.IsCompleteMonth(month, current) &&
-            current.All(day => day.UsesPredefinedFajrTime.HasValue && day.IshaDayOffset.HasValue))
+            current.All(day => day.UsesPredefinedFajrTime.HasValue
+                && (day.UsesPredefinedIshaTime || day.IshaDayOffset.HasValue)))
         {
             return;
         }
@@ -43,7 +44,7 @@ public sealed class PrayerTimeService(
 
     internal static DailyPrayerTimes[] ValidateMonth(MuwaqqitResponse data, PrayerCity city, DateOnly month)
     {
-        var days = (data.Days ?? []).Select(day => ConvertDay(day, city)).OrderBy(day => day.Date).ToArray();
+        var days = (data.Days ?? []).Select(ConvertDay).OrderBy(day => day.Date).ToArray();
 
         if (!PrayerDay.IsCompleteMonth(month, days))
         {
@@ -109,31 +110,32 @@ public sealed class PrayerTimeService(
         }
     }
 
-    private static DailyPrayerTimes ConvertDay(MuwaqqitDay day, PrayerCity city)
+    private static DailyPrayerTimes ConvertDay(MuwaqqitDay day)
     {
         var date = ReadDate(day.FajrDate);
-        var fixedFajr = day.FajrAngle.ValueKind == JsonValueKind.String && day.FajrAngle.GetString() == "anti-transit";
-        var fixedIsha = string.IsNullOrWhiteSpace(day.IshaTime);
-        var maghrib = PrayerTimesHelper.AdjustTime(day.Maghrib, TimeAdjustmentMinutes, out _);
-        var isha = PrayerTimesHelper.AdjustTime(fixedIsha ? city.SummerIsha : day.IshaTime,
-            TimeAdjustmentMinutes, out var wrappedDays);
-
-        var ishaDayOffset = fixedIsha
-            ? (isha < maghrib ? 1 : 0)
-            : ReadDate(day.IshaDate).DayNumber - date.DayNumber + wrappedDays;
+        var unavailableFajr = day.FajrAngle.ValueKind == JsonValueKind.String
+            && day.FajrAngle.GetString() == "anti-transit";
+        var unavailableIsha = string.IsNullOrWhiteSpace(day.IshaTime);
+        var isha = string.Empty;
+        int? ishaDayOffset = null;
+        if (!unavailableIsha)
+        {
+            isha = Format(PrayerTimesHelper.AdjustTime(day.IshaTime, TimeAdjustmentMinutes, out var wrappedDays));
+            ishaDayOffset = ReadDate(day.IshaDate).DayNumber - date.DayNumber + wrappedDays;
+        }
 
         return new DailyPrayerTimes
         {
             Date = date.ToDateTime(TimeOnly.MinValue),
-            FajrTime = Adjust(fixedFajr ? city.SummerFajr : day.FajrTime),
+            FajrTime = unavailableFajr ? string.Empty : Adjust(day.FajrTime),
             SunriseTime = Adjust(day.Sunrise),
             DhuhrTime = Adjust(day.Dhuhr),
             AsrTime = Adjust(day.Asr),
             AsrHanafiTime = Adjust(day.AsrHanafi),
-            MaghribTime = Format(maghrib),
-            IshaTime = Format(isha),
-            UsesPredefinedFajrTime = fixedFajr,
-            UsesPredefinedIshaTime = fixedIsha,
+            MaghribTime = Adjust(day.Maghrib),
+            IshaTime = isha,
+            UsesPredefinedFajrTime = unavailableFajr,
+            UsesPredefinedIshaTime = unavailableIsha,
             IshaDayOffset = ishaDayOffset
         };
     }

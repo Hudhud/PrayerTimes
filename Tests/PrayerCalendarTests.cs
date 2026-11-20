@@ -29,19 +29,64 @@ public sealed class PrayerCalendarTests
     }
 
     [Fact]
-    public void JuneFallbackIsRecordedAndIshaKeepsItsNextDay()
+    public void BrightNightRowsAreCompleteWithoutAnEstimatedFajrOrIsha()
     {
         var june = new DateOnly(2026, 6, 1);
         var days = PrayerTimeService.ValidateMonth(Month(june, summer: true), PrayerCities.Default, june);
 
         Assert.Equal(30, days.Length);
         var june30 = days[^1];
-        Assert.Equal("02:00", june30.FajrTime);
-        Assert.True(june30.UsesPredefinedFajrTime);
-        var isha = PrayerDay.Events(june30)[^1];
-        Assert.True(isha.IsAdjusted);
-        Assert.Equal("00:41", isha.Time);
-        Assert.Equal(DanishTime.At(new DateOnly(2026, 7, 1), new TimeOnly(0, 41)), isha.StartsAt);
+        Assert.True(june30.FajrTimeUnavailable);
+        Assert.True(june30.UsesPredefinedIshaTime);
+        Assert.Empty(june30.FajrTime);
+        Assert.Empty(june30.IshaTime);
+        Assert.Null(june30.IshaDayOffset);
+
+        var prayers = PrayerDay.Events(june30);
+        Assert.Null(prayers[0].StartsAt);
+        Assert.NotNull(prayers[1].StartsAt);
+        Assert.Null(prayers[^1].StartsAt);
+    }
+
+    [Fact]
+    public void BrightNightTimesAreHandledIndependentlyAndLegacyEstimatesAreHidden()
+    {
+        var june = new DateOnly(2026, 6, 1);
+        var data = Month(june);
+        data.Days![0] = data.Days[0] with { FajrAngle = JsonSerializer.SerializeToElement("anti-transit") };
+        data.Days[1] = data.Days[1] with { IshaTime = null, IshaDate = null };
+
+        var days = PrayerTimeService.ValidateMonth(data, PrayerCities.Default, june);
+        Assert.Null(PrayerDay.Events(days[0])[0].StartsAt);
+        Assert.NotNull(PrayerDay.Events(days[0])[^1].StartsAt);
+        Assert.NotNull(PrayerDay.Events(days[1])[0].StartsAt);
+        Assert.Null(PrayerDay.Events(days[1])[^1].StartsAt);
+
+        days[0].FajrTime = "02:00";
+        days[0].UsesPredefinedFajrTime = null;
+        days[1].IshaTime = "00:41";
+        days[1].IshaDayOffset = 1;
+        Assert.Null(PrayerDay.Events(days[0])[0].StartsAt);
+        Assert.Null(PrayerDay.Events(days[1])[^1].StartsAt);
+
+        days[0].UsesPredefinedFajrTime = false;
+        Assert.Equal("02:00", PrayerDay.Events(days[0])[0].Time);
+    }
+
+    [Fact]
+    public async Task CompleteBrightNightMonthDoesNotFetchReplacementTimes()
+    {
+        var june = new DateOnly(2026, 6, 1);
+        var days = PrayerTimeService.ValidateMonth(Month(june, summer: true), PrayerCities.Default, june);
+        var repository = new RecordingRepository(days);
+        var handler = new FakeMuwaqqit();
+        using var client = new HttpClient(handler);
+        var service = new PrayerTimeService(repository, NullLogger<PrayerTimeService>.Instance, client);
+
+        await service.RefreshMonthIfNeededAsync(PrayerCities.Default, june, default);
+
+        Assert.Equal(0, handler.Requests);
+        Assert.Equal(0, repository.Writes);
     }
 
     [Fact]
@@ -74,7 +119,7 @@ public sealed class PrayerCalendarTests
     }
 
     [Fact]
-    public void NextPrayerUsesPriorEveningIshaAndThenNextDaysFajr()
+    public void NextPrayerDoesNotSkipFajrOrIshaWhenTheirTimeIsUnavailable()
     {
         var june = new DateOnly(2026, 6, 1);
         var july = june.AddMonths(1);
@@ -82,26 +127,39 @@ public sealed class PrayerCalendarTests
             .Concat(PrayerTimeService.ValidateMonth(Month(july, summer: true), PrayerCities.Default, july))
             .ToDictionary(day => DateOnly.FromDateTime(day.Date));
 
-        // Rows from the legacy schema lack an explicit date offset.
-        rows[june.AddMonths(1).AddDays(-1)].IshaDayOffset = null;
+        Assert.Null(HomeController.FindNextPrayer(rows, july, DanishTime.At(july, new TimeOnly(0, 15))));
+        Assert.Equal("Dhuhr", HomeController.FindNextPrayer(rows, july, DanishTime.At(july, new TimeOnly(8, 0)))?.Name);
+        Assert.Equal("Maghrib", HomeController.FindNextPrayer(rows, july, DanishTime.At(july, new TimeOnly(18, 0)))?.Name);
+        Assert.Null(HomeController.FindNextPrayer(rows, july, DanishTime.At(july, new TimeOnly(19, 0))));
+    }
 
-        var justAfterMidnight = HomeController.FindNextPrayer(rows, july, DanishTime.At(july, new TimeOnly(0, 15)));
-        Assert.NotNull(justAfterMidnight);
-        Assert.Equal("Isha", justAfterMidnight.Name);
-        Assert.Equal(DanishTime.At(july, new TimeOnly(0, 41)), justAfterMidnight.StartsAt);
-
-        var afterIsha = HomeController.FindNextPrayer(rows, july, DanishTime.At(july, new TimeOnly(0, 42)));
-        Assert.NotNull(afterIsha);
-        Assert.Equal("Fajr", afterIsha.Name);
-        Assert.Equal(DanishTime.At(july, new TimeOnly(2, 0)), afterIsha.StartsAt);
-
-        var winter = new DateOnly(2026, 11, 1);
-        var winterRows = PrayerTimeService.ValidateMonth(Month(winter), PrayerCities.Default, winter)
+    [Fact]
+    public void NextPrayerUsesRegularAfterMidnightIshaAndThenNextDaysFajr()
+    {
+        var month = new DateOnly(2026, 11, 1);
+        var data = Month(month);
+        var nextDay = month.AddDays(1);
+        data.Days![0] = data.Days[0] with { IshaTime = "00:38:00", IshaDate = "2026-11-02" };
+        var rows = PrayerTimeService.ValidateMonth(data, PrayerCities.Default, month)
             .ToDictionary(day => DateOnly.FromDateTime(day.Date));
-        var nextDay = HomeController.FindNextPrayer(winterRows, winter, DanishTime.At(winter, new TimeOnly(23, 0)));
-        Assert.NotNull(nextDay);
-        Assert.Equal("Fajr", nextDay.Name);
-        Assert.Equal(DanishTime.At(winter.AddDays(1), new TimeOnly(5, 33)), nextDay.StartsAt);
+
+        // Older regular Isha rows may not have an explicit date offset.
+        rows[month].IshaDayOffset = null;
+
+        var isha = HomeController.FindNextPrayer(rows, nextDay, DanishTime.At(nextDay, new TimeOnly(0, 15)));
+        Assert.Equal("Isha", isha?.Name);
+        Assert.Equal(DanishTime.At(nextDay, new TimeOnly(0, 41)), isha?.StartsAt);
+
+        var fajr = HomeController.FindNextPrayer(rows, nextDay, DanishTime.At(nextDay, new TimeOnly(0, 42)));
+        Assert.Equal("Fajr", fajr?.Name);
+        Assert.Equal(DanishTime.At(nextDay, new TimeOnly(5, 33)), fajr?.StartsAt);
+
+        var tomorrow = HomeController.FindNextPrayer(rows, nextDay, DanishTime.At(nextDay, new TimeOnly(23, 0)));
+        Assert.Equal("Fajr", tomorrow?.Name);
+        Assert.Equal(DanishTime.At(nextDay.AddDays(1), new TimeOnly(5, 33)), tomorrow?.StartsAt);
+
+        rows[nextDay.AddDays(1)].UsesPredefinedFajrTime = true;
+        Assert.Null(HomeController.FindNextPrayer(rows, nextDay, DanishTime.At(nextDay, new TimeOnly(23, 0))));
     }
 
     [Fact]
@@ -133,12 +191,12 @@ public sealed class PrayerCalendarTests
 
     private sealed record TestClock(DateTime UtcNow) : IDateTimeProvider;
 
-    private sealed class RecordingRepository : ICityPrayerTimesRepository
+    private sealed class RecordingRepository(IReadOnlyList<DailyPrayerTimes>? days = null) : ICityPrayerTimesRepository
     {
         public int Writes { get; private set; }
 
         public Task<IReadOnlyList<DailyPrayerTimes>> GetDaysAsync(string city, DateOnly from, DateOnly until,
-            CancellationToken cancellationToken) => Task.FromResult<IReadOnlyList<DailyPrayerTimes>>([]);
+            CancellationToken cancellationToken) => Task.FromResult(days ?? []);
 
         public Task ReplaceMonthAsync(string city, DateOnly month, IReadOnlyList<DailyPrayerTimes> days,
             CancellationToken cancellationToken)

@@ -37,6 +37,9 @@ namespace Domain.Models
 
         public bool UsesPredefinedIshaTime { get; set; }
 
+        // Older rows used 02:00 for the summer exception without storing its flag.
+        public bool FajrTimeUnavailable => UsesPredefinedFajrTime ?? FajrTime == "02:00";
+
         public int CityPrayerTimesId { get; set; }
 
         public CityPrayerTimes CityPrayerTimes { get; set; } = null!;

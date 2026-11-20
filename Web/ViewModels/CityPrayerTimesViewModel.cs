@@ -8,12 +8,13 @@ namespace Web.ViewModels;
 
 public sealed record CityPrayerTimesViewModel(
     PrayerCity City,
-    DateOnly Date,
+    DateTimeOffset Now,
     IReadOnlyList<DailyPrayerTimes> Month,
     DailyPrayerTimes? Today,
     PrayerEvent? Next,
     string? RequestId)
 {
-    public bool HasSummerAdjustments => Month.Any(day =>
-        day.UsesPredefinedFajrTime == true || day.UsesPredefinedIshaTime);
+    public DateOnly Date => DateOnly.FromDateTime(Now.Date);
+
+    public bool HasBrightNightTimes => Month.Any(day => day.FajrTimeUnavailable || day.UsesPredefinedIshaTime);
 }

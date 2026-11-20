@@ -9,9 +9,22 @@
     ViewData["Title"] = $"Bønnetider i {Model.City.Name}";
     var today = Model.Today;
     var next = Model.Next;
-    var nextDate = next is null ? Model.Date : DateOnly.FromDateTime(next.StartsAt.Date);
+    var nextStart = next?.StartsAt;
+    var nextDate = nextStart is { } start ? DateOnly.FromDateTime(start.Date) : Model.Date;
     var midnight = DanishTime.At(Model.Date.AddDays(1), TimeOnly.MinValue);
-    var refreshAt = next is not null && next.StartsAt < midnight ? next.StartsAt : midnight;
+    var refreshAt = midnight;
+    if (nextStart is { } nextTime && nextTime < midnight)
+    {
+        refreshAt = nextTime;
+    }
+    else if (nextStart is null && today is not null)
+    {
+        var sunrise = PrayerDay.Sunrise(today);
+        if (Model.Now < sunrise)
+        {
+            refreshAt = sunrise;
+        }
+    }
 }
 <nav class="city-nav" aria-label="Vælg by">
     @foreach (var city in PrayerCities.All)
@@ -34,7 +47,7 @@
     }
     else
     {
-        @if (next is not null)
+        @if (next is not null && nextStart is { } nextPrayerTime)
         {
             <div class="next-prayer">
                 <div>
@@ -45,40 +58,32 @@
                         }
                     </p>
                 </div>
-                <time datetime="@next.StartsAt.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
+                <time datetime="@nextPrayerTime.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
             </div>
         }
         <dl class="prayer-list">
             @foreach (var prayer in PrayerDay.Events(today))
             {
-                var afterMidnight = DateOnly.FromDateTime(prayer.StartsAt.Date) != Model.Date;
                 <div>
                     <dt>@prayer.Name</dt>
                     <dd>
-                        <time datetime="@prayer.StartsAt.ToString("o", CultureInfo.InvariantCulture)">@prayer.Time</time>
-                        @if (afterMidnight)
+                        @if (prayer.StartsAt is { } startsAt)
                         {
-                            <small>Næste døgn</small>
+                            <time datetime="@startsAt.ToString("o", CultureInfo.InvariantCulture)">@prayer.Time</time>
+                            @if (DateOnly.FromDateTime(startsAt.Date) != Model.Date)
+                            {
+                                <small>Næste døgn</small>
+                            }
                         }
-                        @if (prayer.IsAdjusted)
+                        else
                         {
-                            <small>Lyse nætter</small>
+                            <partial name="_BrightNightTime" />
                         }
                     </dd>
                 </div>
             }
         </dl>
         <p class="sunrise">Solopgang (Shuruk) <time datetime="@today.SunriseTime">@today.SunriseTime</time></p>
-    }
-    @if (Model.HasSummerAdjustments)
-    {
-        <aside class="summer-note" aria-label="Lyse nætter">
-            <strong>Lyse nætter</strong>
-            <p>I en del af sommeren kan tegnene for Fajr og Isha ikke ses i Danmark.
-                De markerede tider er fastsat efter en regel, der tager udgangspunkt i den sidste dag,
-                hvor tegnene kunne ses. Når Fajr er markeret, er den sat til kl. 02.00.
-                Isha efter midnat står på rækken for den foregående aften.</p>
-        </aside>
     }
     <a class="correction" asp-controller="Home" asp-action="Correction"
        asp-route-city="@Model.City.Slug" asp-route-date="@dateParameter"
@@ -138,10 +143,13 @@
                                 }
                             </th>
                             <td>
-                                @day.FajrTime
-                                @if (day.UsesPredefinedFajrTime == true)
+                                @if (day.FajrTimeUnavailable)
                                 {
-                                    <small>Lyse nætter</small>
+                                    <partial name="_BrightNightTime" />
+                                }
+                                else
+                                {
+                                    @day.FajrTime
                                 }
                             </td>
                             <td>@day.SunriseTime</td>
@@ -149,14 +157,17 @@
                             <td>@day.AsrTime</td>
                             <td>@day.MaghribTime</td>
                             <td>
-                                @day.IshaTime
-                                @if (ishaNextDay)
-                                {
-                                    <small>Næste døgn</small>
-                                }
                                 @if (day.UsesPredefinedIshaTime)
                                 {
-                                    <small>Lyse nætter</small>
+                                    <partial name="_BrightNightTime" />
+                                }
+                                else
+                                {
+                                    @day.IshaTime
+                                    @if (ishaNextDay)
+                                    {
+                                        <small>Næste døgn</small>
+                                    }
                                 }
                             </td>
                         </tr>
@@ -164,5 +175,17 @@
                 </tbody>
             </table>
         </div>
+    }
+    @if (Model.HasBrightNightTimes)
+    {
+        <aside class="summer-note" aria-labelledby="summer-note-title">
+            <h3 id="summer-note-title">Fajr og Isha under de lyse nætter</h3>
+            <p>I en del af sommeren er der så lyst om natten i Danmark, at de tegn, man normalt bruger til at
+                fastsætte Fajr og Isha, ikke kan skelnes tydeligt. Når der står <strong>- -</strong>, betyder det,
+                at tidspunktet for den pågældende bøn må fastsættes på en anden måde i den periode.</p>
+            <p>Der er flere anerkendte holdninger blandt islamiske lærde om, hvordan man fastsætter bønnetiderne
+                under de lyse nætter. Du kan følge den bønneplan, din lokale moské anbefaler, eller spørge en lærd,
+                du har tillid til, hvilken metode du kan følge.</p>
+        </aside>
     }
 </section>

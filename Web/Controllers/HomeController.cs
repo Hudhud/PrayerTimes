@@ -80,7 +80,7 @@ public sealed class HomeController(
 
             var next = todayRow is null ? null : FindNextPrayer(days, today, now);
 
-            return View("Index", new CityPrayerTimesViewModel(city, today, monthRows, todayRow, next,
+            return View("Index", new CityPrayerTimesViewModel(city, now, monthRows, todayRow, next,
                 todayRow is null ? requestId : null));
         }
         catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
@@ -88,7 +88,7 @@ public sealed class HomeController(
             logger.LogError(exception, "Could not load prayer times for {City}, {Date}. Request {RequestId}",
                 city.Slug, today, requestId);
             Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
-            return View("Index", new CityPrayerTimesViewModel(city, today, [], null, null, requestId));
+            return View("Index", new CityPrayerTimesViewModel(city, now, [], null, null, requestId));
         }
     }
 
@@ -96,12 +96,41 @@ public sealed class HomeController(
         IReadOnlyDictionary<DateOnly, DailyPrayerTimes> days,
         DateOnly today, DateTimeOffset now)
     {
-        return new[] { today.AddDays(-1), today, today.AddDays(1) }
-            .Where(days.ContainsKey)
-            .SelectMany(date => PrayerDay.Events(days[date]))
-            .Where(prayer => prayer.StartsAt > now)
-            .OrderBy(prayer => prayer.StartsAt)
-            .FirstOrDefault();
+        if (!days.TryGetValue(today, out var currentDay))
+        {
+            return null;
+        }
+
+        var previousIsha = days.TryGetValue(today.AddDays(-1), out var previousDay)
+            ? PrayerDay.Events(previousDay)[^1]
+            : null;
+        var prayers = PrayerDay.Events(currentDay);
+
+        // Leave the next prayer unspecified while an overnight prayer may still be due.
+        if (now < (prayers[0].StartsAt ?? PrayerDay.Sunrise(currentDay))
+            && (prayers[0].StartsAt is null || previousIsha is { StartsAt: null }))
+        {
+            return null;
+        }
+
+        if (previousIsha?.StartsAt > now)
+        {
+            return previousIsha;
+        }
+
+        var next = prayers.FirstOrDefault(prayer => prayer.StartsAt > now);
+        if (next is not null || prayers[^1].StartsAt is null)
+        {
+            return next;
+        }
+
+        if (days.TryGetValue(today.AddDays(1), out var tomorrow))
+        {
+            var tomorrowFajr = PrayerDay.Events(tomorrow)[0];
+            return tomorrowFajr.StartsAt > now ? tomorrowFajr : null;
+        }
+
+        return null;
     }
 
     [HttpGet("/privatliv")]
