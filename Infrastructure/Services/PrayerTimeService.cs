@@ -1,285 +1,155 @@
-﻿using Application.DTOs;
+using System.Globalization;
+using System.Net;
+using System.Text.Json;
+using Application.Calendars;
 using Application.Interfaces;
 using Domain.Models;
 using Domain.Repositories;
 using Infrastructure.DTO;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security.Authentication;
-using System.Threading;
 
-namespace Infrastructure.Services
+namespace Infrastructure.Services;
+
+public sealed class PrayerTimeService(
+    ICityPrayerTimesRepository repository,
+    ILogger<PrayerTimeService> logger,
+    HttpClient httpClient) : IPrayerTimeService
 {
-    public class PrayerTimeService : IPrayerTimeService
+    private static readonly SemaphoreSlim FetchLock = new(1);
+    private static readonly TimeSpan MinimumRequestInterval = TimeSpan.FromSeconds(15);
+    private static DateTimeOffset nextRequestAt = DateTimeOffset.MinValue;
+    private const int TimeAdjustmentMinutes = 3;
+    private const string ApiOptions = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
+
+    public Task<IReadOnlyList<DailyPrayerTimes>> GetDaysAsync(PrayerCity city, DateOnly from, DateOnly until,
+        CancellationToken cancellationToken) =>
+        repository.GetDaysAsync(city.DataKey, from, until, cancellationToken);
+
+    public async Task RefreshMonthIfNeededAsync(PrayerCity city, DateOnly month,
+        CancellationToken cancellationToken)
     {
-        private static readonly SemaphoreSlim ApiRequestSemaphore = new(1, 1);
-        private static readonly TimeSpan InterCityFetchDelay = TimeSpan.FromSeconds(15);
-
-        private readonly ICityPrayerTimesRepository _cityPrayerTimesRepository;
-        private readonly ILogger<PrayerTimeService> _logger;
-        private readonly HttpClient _httpClient;
-        private readonly IDateTimeProvider _dateTimeProvider;
-        private const string URL_SUFFIX = "&tz=Europe%2FCopenhagen&fa=-18.0&ea=-17.0&fea=0&rsa=0";
-        private const int MaxApiRetries = 5;
-        private static readonly TimeSpan DefaultRetryDelay = TimeSpan.FromSeconds(45);
-        private readonly Dictionary<string, (string Fajr, string Isha)> _predefinedTimes = new()
+        var current = await GetDaysAsync(city, month, month.AddMonths(1), cancellationToken);
+        if (PrayerDay.IsCompleteMonth(month, current) &&
+            current.All(day => day.UsesPredefinedFajrTime.HasValue && day.IshaDayOffset.HasValue))
         {
-            { "cph", ("01:57:00", "00:38:00") },
-            { "odense", ("01:57:00", "00:46:00") },
-            { "aarhus", ("01:57:00", "00:41:00") },
-            { "aalborg", ("01:57:00", "00:46:00") }
-        };
-
-        public PrayerTimeService(
-            ICityPrayerTimesRepository cityPrayerTimesRepository,
-            ILogger<PrayerTimeService> logger,
-            HttpClient httpClient,
-            IDateTimeProvider dateTimeProvider)
-        {
-            _cityPrayerTimesRepository = cityPrayerTimesRepository;
-            _logger = logger;
-            _httpClient = httpClient;
-            _dateTimeProvider = dateTimeProvider;
+            return;
         }
 
-        public async Task<CityPrayerTimesDTO> FetchAndCachePrayerTimesAsync(string city)
+        var data = await FetchMonthAsync(city, month, cancellationToken);
+        var days = ValidateMonth(data, city, month);
+        await repository.ReplaceMonthAsync(city.DataKey, month, days, cancellationToken);
+        logger.LogInformation("Saved {DayCount} prayer days for {City}, {Month}", days.Length, city.Slug, month);
+    }
+
+    internal static DailyPrayerTimes[] ValidateMonth(MuwaqqitResponse data, PrayerCity city, DateOnly month)
+    {
+        var days = (data.Days ?? []).Select(day => ConvertDay(day, city)).OrderBy(day => day.Date).ToArray();
+
+        if (!PrayerDay.IsCompleteMonth(month, days))
         {
-            var cityPrayerTimes = await _cityPrayerTimesRepository.GetByCityAsync(city);
-            var denmarkTimeZone = GetDenmarkTimeZone();
-            var currentMonth = TimeZoneInfo.ConvertTimeFromUtc(_dateTimeProvider.UtcNow, denmarkTimeZone);
+            throw new InvalidDataException($"Muwaqqit returned an incomplete or invalid timetable for {city.Slug}, {month:yyyy-MM}.");
+        }
 
-            var hasCurrentMonthData = cityPrayerTimes?.PrayerTimes
-                .Any(pt => pt.Date.Year == currentMonth.Year && pt.Date.Month == currentMonth.Month) == true;
+        return days;
+    }
 
-            if (cityPrayerTimes == null || !hasCurrentMonthData)
+    private async Task<MuwaqqitResponse> FetchMonthAsync(PrayerCity city, DateOnly month,
+        CancellationToken cancellationToken)
+    {
+        var date = month.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var url = $"https://www.muwaqqit.com/api.json?lt={city.Latitude}&ln={city.Longitude}&d={date}{ApiOptions}";
+
+        await FetchLock.WaitAsync(cancellationToken);
+        try
+        {
+            var wait = nextRequestAt - DateTimeOffset.UtcNow;
+            if (wait > TimeSpan.Zero)
             {
-                _logger.LogWarning("No current-month data found for city: {CityName}, fetching from API.", city);
-                await ApiRequestSemaphore.WaitAsync();
-                try
-                {
-                    var apiData = await GetApiPrayerData(BuildApiUrl(city));
-                    cityPrayerTimes = await ProcessAndStoreApiData(new CityPrayerTimes { City = city }, apiData, city);
-                }
-                finally
-                {
-                    await Task.Delay(InterCityFetchDelay);
-                    ApiRequestSemaphore.Release();
-                }
+                await Task.Delay(wait, cancellationToken);
             }
 
-            return new CityPrayerTimesDTO
+            for (var attempt = 1; ; attempt++)
             {
-                City = cityPrayerTimes.City,
-                PrayerTimes = [.. cityPrayerTimes.PrayerTimes.Select(pt => new DailyPrayerTimesDTO
+                using var response = await httpClient.GetAsync(url, cancellationToken);
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                var rateLimited = response.StatusCode == HttpStatusCode.TooManyRequests || content.Trim() == "429";
+
+                if (rateLimited || (int)response.StatusCode >= 500)
                 {
-                    Date = pt.Date,
-                    FajrTime = pt.FajrTime,
-                    SunriseTime = pt.SunriseTime,
-                    DhuhrTime = pt.DhuhrTime,
-                    AsrTime = pt.AsrTime,
-                    AsrHanafiTime = pt.AsrHanafiTime,
-                    MaghribTime = pt.MaghribTime,
-                    IshaTime = pt.IshaTime,
-                    UsesPredefinedIshaTime = pt.UsesPredefinedIshaTime
-                })]
-            };
-        }
+                    var now = DateTimeOffset.UtcNow;
+                    var retryAfter = response.Headers.RetryAfter;
+                    var retryDelay = retryAfter?.Delta ?? (retryAfter?.Date - now)
+                        ?? TimeSpan.FromSeconds(rateLimited ? 45 : 15);
+                    retryDelay = retryDelay > MinimumRequestInterval ? retryDelay : MinimumRequestInterval;
+                    nextRequestAt = now.Add(retryDelay);
 
-        public async Task AddOrUpdatePrayerTimesAsync(CityPrayerTimesDTO cityPrayerTimesDTO)
-        {
-            var cityPrayerTimes = new CityPrayerTimes
-            {
-                City = cityPrayerTimesDTO.City,
-                PrayerTimes = cityPrayerTimesDTO.PrayerTimes.Select(pt => new DailyPrayerTimes
-                {
-                    Date = pt.Date,
-                    FajrTime = pt.FajrTime,
-                    SunriseTime = pt.SunriseTime,
-                    DhuhrTime = pt.DhuhrTime,
-                    AsrTime = pt.AsrTime,
-                    AsrHanafiTime = pt.AsrHanafiTime,
-                    MaghribTime = pt.MaghribTime,
-                    IshaTime = pt.IshaTime,
-                    UsesPredefinedIshaTime = pt.UsesPredefinedIshaTime
-                }).ToList()
-            };
-
-            await _cityPrayerTimesRepository.AddOrUpdateAsync(cityPrayerTimes);
-        }
-
-        private string BuildApiUrl(string city, DateTime? date = null)
-        {
-            string baseUrl = city switch
-            {
-                "cph" => "https://www.muwaqqit.com/api.json?lt=55.6759142&ln=12.5691285&d=",
-                "odense" => "https://www.muwaqqit.com/api.json?lt=55.4037560&ln=10.4023700&d=",
-                "aarhus" => "https://www.muwaqqit.com/api.json?lt=56.1629390&ln=10.2039210&d=",
-                "aalborg" => "https://www.muwaqqit.com/api.json?lt=57.0488195&ln=9.9217470&d=",
-                _ => throw new ArgumentException($"Invalid city: {city}")
-            };
-
-            var targetDate = date ?? GetCurrentDenmarkDate();
-            return $"{baseUrl}{targetDate:yyyy-MM-dd}{URL_SUFFIX}";
-        }
-
-        private DateTime GetCurrentDenmarkDate()
-        {
-            var denmarkTimeZone = GetDenmarkTimeZone();
-            return TimeZoneInfo.ConvertTimeFromUtc(_dateTimeProvider.UtcNow, denmarkTimeZone).Date;
-        }
-
-        private static TimeZoneInfo GetDenmarkTimeZone()
-        {
-            var timeZoneId = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? "Romance Standard Time"
-                : "Europe/Copenhagen";
-
-            return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-        }
-
-        private async Task<MuwaqqitResponse> GetApiPrayerData(string url)
-        {
-            for (var attempt = 1; attempt <= MaxApiRetries; attempt++)
-            {
-                HttpResponseMessage response;
-
-                try
-                {
-                    response = await _httpClient.GetAsync(url);
-                }
-                catch (HttpRequestException ex) when (IsTlsHandshakeFailure(ex))
-                {
-                    _logger.LogError(
-                        ex,
-                        "TLS handshake failure while requesting {Url}. This is not retryable from this Windows Server.",
-                        url);
-
-                    throw;
-                }
-
-                _logger.LogInformation(
-                    "Received HTTP status {StatusCode} for URL {Url} on attempt {Attempt}/{MaxAttempts}",
-                    response.StatusCode,
-                    url,
-                    attempt,
-                    MaxApiRetries);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-
-                    if (int.TryParse(responseContent.Trim(), out var numericResponse) && numericResponse == 429)
+                    if (attempt < 3 && retryDelay <= TimeSpan.FromMinutes(5))
                     {
-                        if (attempt == MaxApiRetries)
-                        {
-                            break;
-                        }
-
-                        _logger.LogWarning(
-                            "Muwaqqit returned body-only rate limit marker (429). Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).",
-                            DefaultRetryDelay.TotalSeconds,
-                            attempt,
-                            MaxApiRetries);
-
-                        await Task.Delay(DefaultRetryDelay);
+                        await Task.Delay(retryDelay, cancellationToken);
                         continue;
                     }
 
-                    var deserialized = JsonConvert.DeserializeObject<MuwaqqitResponse>(responseContent);
-
-                    if (deserialized == null)
-                    {
-                        throw new HttpRequestException("Muwaqqit API returned an empty or invalid JSON payload.");
-                    }
-
-                    return deserialized;
-                }
-
-                if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-                {
-                    var retryDelay = response.Headers.RetryAfter?.Delta ?? DefaultRetryDelay;
-
-                    if (attempt == MaxApiRetries)
-                    {
-                        break;
-                    }
-
-                    _logger.LogWarning(
-                        "Rate limit hit. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).",
-                        retryDelay.TotalSeconds,
-                        attempt,
-                        MaxApiRetries);
-
-                    await Task.Delay(retryDelay);
-                    continue;
-                }
-
-                if ((int)response.StatusCode >= 500 && attempt < MaxApiRetries)
-                {
-                    var retryDelay = TimeSpan.FromSeconds(Math.Pow(2, attempt));
-
-                    _logger.LogWarning(
-                        "Transient server error {StatusCode}. Retrying in {RetryDelaySeconds} seconds (attempt {Attempt}/{MaxAttempts}).",
-                        response.StatusCode,
-                        retryDelay.TotalSeconds,
-                        attempt,
-                        MaxApiRetries);
-
-                    await Task.Delay(retryDelay);
-                    continue;
+                    throw new HttpRequestException("Muwaqqit postponed the timetable refresh.",
+                        null, response.StatusCode);
                 }
 
                 response.EnsureSuccessStatusCode();
+                return JsonSerializer.Deserialize<MuwaqqitResponse>(content)
+                    ?? throw new InvalidDataException("Muwaqqit returned an empty timetable.");
             }
-
-            throw new HttpRequestException($"Failed to fetch prayer data from API after {MaxApiRetries} attempt(s): {url}");
         }
-
-        private static bool IsTlsHandshakeFailure(HttpRequestException ex)
+        finally
         {
-            return ex.InnerException is AuthenticationException
-                || ex.InnerException?.InnerException is AuthenticationException;
-        }
-
-        private async Task<CityPrayerTimes> ProcessAndStoreApiData(CityPrayerTimes cityPrayerTimes, MuwaqqitResponse muwaqqitResponse, string city)
-        {
-            if (muwaqqitResponse.PrayerTimesDataList == null)
+            var nextAllowed = DateTimeOffset.UtcNow.Add(MinimumRequestInterval);
+            if (nextAllowed > nextRequestAt)
             {
-                _logger.LogWarning("Received empty prayer times data from API for city: {CityName}", city);
-                return cityPrayerTimes;
+                nextRequestAt = nextAllowed;
             }
-
-            var dailyPrayerTimesList = new List<DailyPrayerTimes>();
-
-            foreach (var prayerTimeData in muwaqqitResponse.PrayerTimesDataList)
-            {
-                var usesPredefinedIshaTime = string.IsNullOrWhiteSpace(prayerTimeData.EshaTime);
-                var dailyPrayerTimes = new DailyPrayerTimes
-                {
-                    Date = DateTime.Parse(prayerTimeData.FajrDate).Date,
-                    SunriseTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.SunriseTime, 3),
-                    DhuhrTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.ZohrTime, 3),
-                    AsrTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.AsrTime, 3),
-                    AsrHanafiTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.MithlainTime, 3),
-                    MaghribTime = PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.SunsetTime, 3),
-                    FajrTime = prayerTimeData.FajrAngle is string s && s == "anti-transit"
-                    ? PrayerTimesHelper.AddMinutesAndConvertToString(_predefinedTimes[city.ToLower()].Fajr, 3)
-                    : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.FajrTime, 3),
-                    IshaTime = usesPredefinedIshaTime
-                            ? PrayerTimesHelper.AddMinutesAndConvertToString(_predefinedTimes[city.ToLower()].Isha, 3)
-                            : PrayerTimesHelper.AddMinutesAndConvertToString(prayerTimeData.EshaTime, 3),
-                    UsesPredefinedIshaTime = usesPredefinedIshaTime
-                };
-
-                dailyPrayerTimesList.Add(dailyPrayerTimes);
-            }
-
-            cityPrayerTimes.PrayerTimes = dailyPrayerTimesList;
-            await _cityPrayerTimesRepository.AddOrUpdateAsync(cityPrayerTimes);
-
-            return cityPrayerTimes;
+            FetchLock.Release();
         }
     }
+
+    private static DailyPrayerTimes ConvertDay(MuwaqqitDay day, PrayerCity city)
+    {
+        var date = ReadDate(day.FajrDate);
+        var fixedFajr = day.FajrAngle.ValueKind == JsonValueKind.String && day.FajrAngle.GetString() == "anti-transit";
+        var fixedIsha = string.IsNullOrWhiteSpace(day.IshaTime);
+        var maghrib = PrayerTimesHelper.AdjustTime(day.Maghrib, TimeAdjustmentMinutes, out _);
+        var isha = PrayerTimesHelper.AdjustTime(fixedIsha ? city.SummerIsha : day.IshaTime,
+            TimeAdjustmentMinutes, out var wrappedDays);
+
+        var ishaDayOffset = fixedIsha
+            ? (isha < maghrib ? 1 : 0)
+            : ReadDate(day.IshaDate).DayNumber - date.DayNumber + wrappedDays;
+
+        return new DailyPrayerTimes
+        {
+            Date = date.ToDateTime(TimeOnly.MinValue),
+            FajrTime = Adjust(fixedFajr ? city.SummerFajr : day.FajrTime),
+            SunriseTime = Adjust(day.Sunrise),
+            DhuhrTime = Adjust(day.Dhuhr),
+            AsrTime = Adjust(day.Asr),
+            AsrHanafiTime = Adjust(day.AsrHanafi),
+            MaghribTime = Format(maghrib),
+            IshaTime = Format(isha),
+            UsesPredefinedFajrTime = fixedFajr,
+            UsesPredefinedIshaTime = fixedIsha,
+            IshaDayOffset = ishaDayOffset
+        };
+    }
+
+    private static DateOnly ReadDate(string? date)
+    {
+        if (!DateOnly.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var value))
+        {
+            throw new InvalidDataException("Muwaqqit returned a missing or malformed prayer date.");
+        }
+
+        return value;
+    }
+
+    private static string Adjust(string? time) =>
+        Format(PrayerTimesHelper.AdjustTime(time, TimeAdjustmentMinutes, out _));
+
+    private static string Format(TimeOnly time) => time.ToString("HH:mm", CultureInfo.InvariantCulture);
 }

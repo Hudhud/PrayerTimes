@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{CE6B1CDD-7748-44B8-8CEE-B6FC3EDDC19C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrayerTimes.Tests", "Tests\PrayerTimes.Tests.csproj", "{95E04633-179C-4787-8592-88E334D34DF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{CE6B1CDD-7748-44B8-8CEE-B6FC3EDDC19C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE6B1CDD-7748-44B8-8CEE-B6FC3EDDC19C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE6B1CDD-7748-44B8-8CEE-B6FC3EDDC19C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E04633-179C-4787-8592-88E334D34DF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E04633-179C-4787-8592-88E334D34DF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E04633-179C-4787-8592-88E334D34DF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E04633-179C-4787-8592-88E334D34DF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

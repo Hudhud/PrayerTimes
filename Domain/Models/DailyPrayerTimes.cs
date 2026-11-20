@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
@@ -30,6 +30,10 @@ namespace Domain.Models
 
         [Required]
         public string IshaTime { get; set; } = null!;
+
+        public bool? UsesPredefinedFajrTime { get; set; }
+
+        public int? IshaDayOffset { get; set; }
 
         public bool UsesPredefinedIshaTime { get; set; }
 

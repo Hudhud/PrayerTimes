@@ -1,31 +1,11 @@
-﻿@model Web.ViewModels.CustomErrorViewModel
+@model Web.ViewModels.CustomErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Noget gik galt";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Error</h1>
-
-    <p>
-        Error Code: @Model.ErrorCode
-    </p>
-
-    <p>
-        Error Message: @Model.ErrorMessage
-    </p>
-
-    @if (!string.IsNullOrWhiteSpace(Model.Details))
-    {
-        <div class="alert alert-danger text-start mt-4">
-            <strong>Details:</strong>
-            <pre class="mt-2 mb-0">@Model.Details</pre>
-        </div>
-    }
-
-    @if (Model.ShowRequestId)
-    {
-        <p>
-            <strong>Request ID:</strong> @Model.RequestId
-        </p>
-    }
-</div>
+<section class="notice">
+    <h1>Noget gik galt</h1>
+    <p>@Model.Message</p>
+    <p>Reference @Model.RequestId</p>
+    <a href="/">Til forsiden</a>
+</section>

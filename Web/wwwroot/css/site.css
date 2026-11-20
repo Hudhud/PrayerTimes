@@ -1,71 +1,190 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+:root {
+    color-scheme: dark;
+    --background: #121518;
+    --surface: #1a1e22;
+    --surface-raised: #20262b;
+    --text: #f5f2e9;
+    --muted: #bac1c1;
+    --border: #383f44;
+    --accent: #ffdc54;
+    --on-accent: #201b0c;
+    font-family: system-ui, sans-serif;
+    line-height: 1.5;
 }
 
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--background); color: var(--text); }
+h1, h2, p, dl, dd { margin: 0; }
+a { color: var(--accent); text-underline-offset: .23em; }
+a:hover { text-decoration-thickness: .14em; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+button, select, input { font: inherit; }
+[hidden] { display: none !important; }
+
+.site-width { width: min(100% - 2rem, 58rem); margin-inline: auto; }
+.site-header { border-bottom: 1px solid var(--border); }
+.site-header .site-width { min-height: 3.25rem; display: flex; align-items: center; }
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.skip-link {
+    position: absolute;
+    top: .5rem;
+    left: .5rem;
+    z-index: 2;
+    padding: .5rem .75rem;
+    background: var(--background);
+}
+.skip-link:not(:focus) { clip-path: inset(50%); }
+
+.city-nav {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: .4rem;
+    width: min(100%, 33rem);
+    margin-block: 1.25rem 1.65rem;
+}
+.city-nav a, .button {
+    min-height: 2.75rem;
+    border: 1px solid var(--border);
+    border-radius: .55rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+.city-nav a { font-size: .875rem; padding-inline: .25rem; }
+.button { padding: .45rem .8rem; }
+.city-nav a:hover, .button:hover { background: var(--surface-raised); border-color: var(--muted); }
+.city-nav a[aria-current="page"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2.65rem); line-height: 1.12; letter-spacing: -.035em; }
+h2 { font-size: 1.22rem; line-height: 1.25; }
+.subtitle { margin-top: .35rem; color: var(--muted); }
+.subtitle:first-letter, #month-title:first-letter { text-transform: uppercase; }
+
+.next-prayer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .6rem;
+    padding: .7rem .9rem;
+    margin-block: 1rem .65rem;
+    border: 1px solid #68593b;
+    border-radius: .75rem;
+    background: #2a2417;
+}
+.next-prayer h2 { color: var(--accent); font-size: .875rem; }
+.next-prayer p { font-size: 1.12rem; font-weight: 650; }
+.next-prayer time { font-size: clamp(1.6rem, 7vw, 2.35rem); font-weight: 750; color: var(--accent); }
+.next-date { color: var(--muted); font-weight: 500; font-size: .83rem; display: inline-block; }
+time, table { font-variant-numeric: tabular-nums; }
+
+.prayer-list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin-block: .65rem;
+    border: 1px solid var(--border);
+    border-radius: .75rem;
+    background: var(--surface);
+}
+.prayer-list > div { padding: .65rem .8rem; min-width: 0; }
+.prayer-list > div + div { border-inline-start: 1px solid var(--border); }
+.prayer-list dt { color: var(--muted); font-size: .93rem; }
+.prayer-list dd { font-size: clamp(1.18rem, 3.5vw, 1.68rem); font-weight: 670; }
+small { color: var(--muted); font-size: .72rem; font-weight: 550; }
+.prayer-list small, table small { display: block; }
+.sunrise { display: flex; align-items: baseline; gap: .6rem; color: var(--muted); }
+.sunrise time { color: var(--text); font-weight: 600; }
+.correction { display: inline-block; margin-top: .75rem; font-size: .9rem; }
+.summer-note, .notice {
+    margin-top: .85rem;
+    padding: .75rem .9rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: .65rem;
+}
+.summer-note { border-inline-start: .2rem solid var(--accent); max-width: 46rem; }
+.summer-note p, .notice p { color: var(--muted); margin-top: .2rem; }
+
+.month { margin-top: 2rem; }
+.month-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .6rem; }
+.month-heading .button { font-size: .86rem; }
+.print-city { display: none; }
+.table-hint { display: none; color: var(--muted); font-size: .88rem; margin-bottom: .5rem; }
+.table-scroll { overflow: auto; border: 1px solid var(--border); border-radius: .75rem; }
+table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 37rem; }
+caption { text-align: left; padding: .65rem .8rem; font-size: .9rem; color: var(--muted); }
+th, td { padding: .55rem .65rem; text-align: center; border-top: 1px solid var(--border); }
+thead th { background: var(--surface-raised); font-weight: 650; }
+th:first-child { text-align: left; position: sticky; left: 0; min-width: 5rem; }
+tbody th { background: var(--background); font-weight: 550; }
+tbody tr:nth-child(even) { background: var(--surface); }
+tbody tr:nth-child(even) th { background: var(--surface); }
+.current-day, tbody .current-day th { background: #2a2417; color: var(--accent); }
+.current-day small { color: inherit; }
+
+.site-footer { margin-top: 2rem; padding-block: 1rem 1.6rem; border-top: 1px solid var(--border); font-size: .9rem; }
+.statistics { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-block: 0 1rem; }
+.statistics h2 { font-size: 1rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.readable { max-width: 39rem; margin-block: 1.8rem; }
+.readable p, .readable h2, .readable .actions { margin-top: .85rem; }
+.report-form { display: grid; gap: .45rem; width: min(100%, 23rem); margin-top: 1rem; }
+.report-form select, .report-form input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: .4rem;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: .4rem;
+    margin-bottom: .35rem;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+@media (max-width: 39rem) {
+    .table-hint { display: block; }
 }
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+@media (max-width: 35rem) {
+    .city-nav { margin-block: .8rem 1rem; }
+    .prayer-list { grid-template-columns: 1fr; }
+    .prayer-list > div { display: flex; align-items: baseline; justify-content: space-between; padding: .32rem .75rem; }
+    .prayer-list > div + div { border-inline-start: 0; border-top: 1px solid var(--border); }
+    .prayer-list dd { text-align: end; }
+    .prayer-list small { display: inline; margin-inline-start: .2rem; }
+    .statistics { flex-direction: column; align-items: start; }
 }
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
+@media (max-width: 22rem) {
+    .site-width { width: calc(100% - 1.25rem); }
+    .city-nav { gap: .24rem; }
+    .city-nav a { font-size: .78rem; }
 }
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+@media print {
+    :root { color-scheme: light; }
+    body, th, td, tbody th, tbody tr:nth-child(even) th, tbody .current-day th {
+        color: #000 !important;
+        background: #fff !important;
+    }
+    .site-header, .skip-link, .site-footer, .city-nav, .today > :not(.summer-note),
+    .print-button, .table-hint, caption { display: none !important; }
+    .site-width { width: 100%; }
+    .print-city { display: block; }
+    .summer-note { color: #000; background: #fff; border-color: #aaa; font-size: .85rem; }
+    .summer-note p, small { color: #333; }
+    .month { margin-top: .8rem; }
+    .table-scroll { overflow: visible; border-color: #aaa; }
+    table { min-width: 0; font-size: .8rem; }
+    thead { display: table-header-group; }
+    tr { break-inside: avoid; }
+    th, td { padding: .2rem .25rem; border-color: #ccc; }
 }

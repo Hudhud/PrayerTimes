@@ -1,10 +1,12 @@
-﻿using Application.DTOs;
+using Application.Calendars;
+using Domain.Models;
 
-namespace Application.Interfaces
+namespace Application.Interfaces;
+
+public interface IPrayerTimeService
 {
-    public interface IPrayerTimeService
-    {
-        Task<CityPrayerTimesDTO> FetchAndCachePrayerTimesAsync(string city);
-        Task AddOrUpdatePrayerTimesAsync(CityPrayerTimesDTO cityPrayerTimesDTO);
-    }
+    Task<IReadOnlyList<DailyPrayerTimes>> GetDaysAsync(PrayerCity city, DateOnly from, DateOnly until,
+        CancellationToken cancellationToken);
+
+    Task RefreshMonthIfNeededAsync(PrayerCity city, DateOnly month, CancellationToken cancellationToken);
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using System.Runtime.InteropServices;
+using System.IO;
 using System;
 
 namespace Web
@@ -19,16 +20,15 @@ namespace Web
                 .AddEnvironmentVariables()
                 .Build();
 
-            var logFilePath = configuration["Serilog:LogFilePath"] ?? "Logs/mylog-.txt";
+            var logFilePath = Path.GetFullPath(configuration["Serilog:LogFilePath"] ?? "Logs/log-.txt",
+                AppContext.BaseDirectory);
             var retainedFileCountLimit = int.TryParse(configuration["Serilog:RetainedFileCountLimit"], out var retained) ? retained : 30;
             var fileSizeLimitBytes = long.TryParse(configuration["Serilog:FileSizeLimitBytes"], out var fileSizeLimit) ? fileSizeLimit : 10_485_760;
             var rollOnFileSizeLimit = bool.TryParse(configuration["Serilog:RollOnFileSizeLimit"], out var roll) ? roll : true;
             var outputTemplate = configuration["Serilog:OutputTemplate"] ?? "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
-            var adminSecret = configuration["AdminErrorDetailsSecret"];
-            Log.Information("Admin secret configured: {HasSecret}", string.IsNullOrEmpty(adminSecret) ? "NO" : "YES");
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Is(ParseLogLevel(configuration["Serilog:MinimumLevel:Default"], LogEventLevel.Debug))
+                .MinimumLevel.Is(ParseLogLevel(configuration["Serilog:MinimumLevel:Default"], LogEventLevel.Information))
                 .MinimumLevel.Override("Microsoft", ParseLogLevel(configuration["Serilog:MinimumLevel:Override:Microsoft"], LogEventLevel.Information))
                 .MinimumLevel.Override("Microsoft.Hosting.Lifetime", ParseLogLevel(configuration["Serilog:MinimumLevel:Override:Microsoft.Hosting.Lifetime"], LogEventLevel.Information))
                 .Enrich.FromLogContext()
@@ -56,6 +56,7 @@ namespace Web
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Host terminated unexpectedly");
+                Environment.ExitCode = 1;
             }
             finally
             {
@@ -71,7 +72,7 @@ namespace Web
                     webBuilder.UseStartup<Startup>();
                 });
 
-        private static LogEventLevel ParseLogLevel(string value, LogEventLevel defaultLevel)
+        private static LogEventLevel ParseLogLevel(string? value, LogEventLevel defaultLevel)
         {
             return Enum.TryParse<LogEventLevel>(value, true, out var level)
                 ? level
