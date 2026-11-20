@@ -16,6 +16,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using Web.Services;
+using Serilog;
 
 namespace Web;
 
@@ -85,6 +86,7 @@ public sealed class Startup(IConfiguration configuration)
             app.UseHsts();
         }
 
+        app.UseSerilogRequestLogging();
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseRouting();

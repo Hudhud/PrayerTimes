@@ -64,7 +64,37 @@ public sealed class HomeController(
         }
 
         var query = q?.Trim() ?? string.Empty;
-        return query.Length > 80 ? BadRequest() : View(new PlaceSearchViewModel(query, places.Search(query)));
+        if (query.Length > 80)
+        {
+            return BadRequest();
+        }
+
+        var results = places.Search(query);
+        return results.Count == 1
+            ? RedirectToRoute("City", new { city = results[0].Id })
+            : View(new PlaceSearchViewModel(query, results));
+    }
+
+    [HttpGet("/steder/forslag")]
+    public IActionResult PlaceSuggestions(string? q)
+    {
+        if (!places.IsEnabled)
+        {
+            return NotFound();
+        }
+
+        var query = q?.Trim() ?? string.Empty;
+        if (query.Length > 80)
+        {
+            return BadRequest();
+        }
+
+        return Json(places.Search(query).Take(6).Select(place => new
+        {
+            place.Label,
+            Area = place.Area == place.Name ? null : place.Area,
+            Url = Url.RouteUrl("City", new { city = place.Id })
+        }));
     }
 
     private async Task<IActionResult> ShowCityAsync(PrayerCity city, CancellationToken cancellationToken)

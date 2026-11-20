@@ -68,22 +68,51 @@ button, select, input { font: inherit; }
 .city-nav a:hover, .button:hover { background: var(--surface-raised); border-color: var(--muted); }
 .city-nav a[aria-current="page"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 
-.place-picker { display: flex; flex-wrap: wrap; gap: .5rem; margin-block: 1.25rem 1.65rem; }
-.place-search { display: flex; gap: .4rem; flex: 0 1 26rem; min-width: 0; }
+.place-picker { --control-border: #68747d; margin-block: 1.25rem 1.65rem; }
+.place-picker label { display: block; margin-bottom: .3rem; color: var(--muted); font-size: .875rem; font-weight: 600; }
+.place-controls { display: flex; flex-wrap: wrap; align-items: start; gap: .5rem; }
+.place-search { display: flex; flex: 0 1 26rem; min-width: 0; }
+.place-search-field { position: relative; flex: 1; min-width: 0; }
 .place-search input {
     width: 100%;
-    min-width: 0;
+    min-height: 2.75rem;
     padding: .45rem .75rem;
-    border: 1px solid var(--border);
-    border-radius: .55rem;
+    border: 1px solid var(--control-border);
+    border-inline-end: 0;
+    border-radius: .55rem 0 0 .55rem;
     background: var(--surface);
     color: var(--text);
 }
-.place-picker .button { font-size: .875rem; }
-.location-status { flex-basis: 100%; color: var(--muted); }
-.place-results { padding-inline-start: 1.25rem; }
-.place-results li { padding-block: .3rem; }
-.place-results small { margin-inline-start: .4rem; }
+.place-search input::placeholder { color: var(--muted); }
+.place-search input:focus-visible { position: relative; z-index: 1; outline-offset: -2px; }
+.place-picker .button { font-size: .875rem; border-color: var(--control-border); }
+.place-picker .button:hover { border-color: var(--muted); }
+.place-search .place-search-button { border-start-start-radius: 0; border-end-start-radius: 0; background: var(--surface-raised); }
+.place-search .place-search-button:hover { background: var(--border); }
+.place-suggestions { position: absolute; z-index: 3; inset-inline: 0; top: calc(100% + .3rem); }
+.place-suggestions ul, .place-search-status:not(.visually-hidden) {
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: .55rem;
+    background: var(--surface);
+    box-shadow: 0 .45rem 1.25rem #0006;
+}
+.place-suggestions ul { padding: .2rem; max-height: min(18rem, 40vh); overflow: auto; list-style: none; }
+.place-suggestions li { min-height: 2.75rem; padding: .5rem .65rem; border-radius: .32rem; cursor: pointer; }
+.place-suggestions li:hover, .place-suggestions li[aria-selected="true"] { background: var(--surface-raised); }
+.place-suggestions li[aria-selected="true"] { box-shadow: inset 2px 0 var(--accent); }
+@media (forced-colors: active) {
+    .place-suggestions li[aria-selected="true"] { outline: 2px solid Highlight; outline-offset: -2px; }
+}
+.place-search-status:not(.visually-hidden) { padding: .65rem .75rem; color: var(--muted); }
+.location-button:disabled { cursor: wait; color: var(--muted); }
+.location-status { color: var(--muted); }
+.location-status:not(:empty) { margin-top: .5rem; }
+.place-results { padding: 0; list-style: none; }
+.place-results li + li { margin-top: .4rem; }
+.place-results a { display: block; min-height: 2.75rem; padding: .5rem .75rem; border: 1px solid var(--border); border-radius: .55rem; }
+.place-results a:hover { background: var(--surface); }
+.place-suggestions small, .place-results small { display: block; }
 .data-attribution { margin-top: .75rem; color: var(--muted); }
 
 h1 { font-size: clamp(1.6rem, 4vw, 2.65rem); line-height: 1.12; letter-spacing: -.035em; }
@@ -185,6 +214,7 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 }
 @media (max-width: 35rem) {
     .city-nav { margin-block: .8rem 1rem; }
+    .place-search { flex-basis: 100%; }
     .prayer-list { grid-template-columns: 1fr; }
     .prayer-list > div { display: flex; align-items: baseline; justify-content: space-between; padding: .32rem .75rem; }
     .prayer-list > div + div { border-inline-start: 0; border-top: 1px solid var(--border); }
