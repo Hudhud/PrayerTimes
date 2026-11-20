@@ -21,7 +21,8 @@ public sealed record PrayerPlace(string Id, string Name, string Area, double Lat
 public sealed class PrayerPlaceDirectory
 {
     private readonly Dictionary<string, PrayerPlace> places;
-    private readonly (PrayerPlace Place, string SearchText)[] searchable;
+    private static readonly StringComparer DanishComparer = StringComparer.Create(CultureInfo.GetCultureInfo("da-DK"), true);
+    private readonly (PrayerPlace Place, string Label, string FoldedLabel, string Area)[] searchable;
 
     public PrayerPlaceDirectory(string? path)
     {
@@ -38,7 +39,7 @@ public sealed class PrayerPlaceDirectory
         }
 
         places = locations.ToDictionary(place => place.Id, StringComparer.OrdinalIgnoreCase);
-        searchable = locations.Select(place => (place, Normalize(place.Label))).ToArray();
+        searchable = locations.Select(place => (place, Normalize(place.Label), Fold(place.Label), Fold(place.Area))).ToArray();
     }
 
     public bool IsEnabled => places.Count > 0;
@@ -53,27 +54,69 @@ public sealed class PrayerPlaceDirectory
 
     public IReadOnlyList<PrayerPlace> Search(string query)
     {
-        var text = Normalize(query.Trim());
+        var input = query.Trim();
+        var text = Normalize(input);
         if (text.Length < 2 || text.Length > 80)
         {
             return [];
         }
 
+        if (text == "kbh")
+        {
+            input = "København";
+            text = "koebenhavn";
+        }
+
         var isPostalCode = char.IsAsciiDigit(text[0]);
+        var folded = Fold(input);
+        var words = folded.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         return searchable
-            .Where(entry => (entry.Place.PostalCode is not null) == isPostalCode
-                && entry.SearchText.Contains(text, StringComparison.Ordinal))
-            .OrderBy(entry => entry.SearchText == text ? 0 : entry.SearchText.StartsWith(text, StringComparison.Ordinal) ? 1 : 2)
-            .ThenBy(entry => entry.Place.Label, StringComparer.Create(CultureInfo.GetCultureInfo("da-DK"), true))
+            .Where(entry => (entry.Place.PostalCode is not null) == isPostalCode)
+            .Select(entry => (entry.Place, Rank: Rank(entry.Label, entry.FoldedLabel, entry.Area, text, folded, words, isPostalCode)))
+            .Where(entry => entry.Rank >= 0)
+            .OrderBy(entry => entry.Rank)
+            .ThenBy(entry => entry.Place.Label, DanishComparer)
+            .ThenBy(entry => entry.Place.Area, DanishComparer)
             .Take(25)
             .Select(entry => entry.Place)
             .ToArray();
     }
 
-    private static string Normalize(string text)
+    private static int Rank(string label, string foldedLabel, string area, string query, string folded, string[] words, bool isPostalCode)
     {
-        var normalized = text.ToLowerInvariant().Replace("æ", "ae").Replace("ø", "oe").Replace("å", "aa")
-            .Normalize(NormalizationForm.FormD);
+        if (label == query)
+        {
+            return 0;
+        }
+        if (foldedLabel == folded)
+        {
+            return 1;
+        }
+        if (label.StartsWith(query, StringComparison.Ordinal) || foldedLabel.StartsWith(folded, StringComparison.Ordinal))
+        {
+            return 2;
+        }
+        if (isPostalCode)
+        {
+            return -1;
+        }
+        if (label.Contains(query, StringComparison.Ordinal) || foldedLabel.Contains(folded, StringComparison.Ordinal))
+        {
+            return 3;
+        }
+        return words.Length > 1 && foldedLabel.StartsWith(words[0], StringComparison.Ordinal) &&
+            words.Skip(1).All(word => foldedLabel.Contains(word, StringComparison.Ordinal) || area.Contains(word, StringComparison.Ordinal))
+            ? 4 : -1;
+    }
+
+    private static string Normalize(string text) => RemoveMarks(text.Normalize().ToLowerInvariant()
+        .Replace("æ", "ae").Replace("ø", "oe").Replace("å", "aa"));
+
+    private static string Fold(string text) => RemoveMarks(text.ToLowerInvariant().Replace("æ", "ae").Replace("ø", "o"));
+
+    private static string RemoveMarks(string text)
+    {
+        var normalized = text.Normalize(NormalizationForm.FormD);
         return string.Concat(normalized.Where(character =>
             CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark));
     }

@@ -28,6 +28,10 @@
         </script>
     }
     <script defer src="~/js/site.js" asp-append-version="true"></script>
+    @if (ViewData["PlaceDataAttribution"] is true)
+    {
+        <script defer src="~/js/place-picker.js" asp-append-version="true"></script>
+    }
 </head>
 <body>
     <a class="skip-link" href="#indhold">Spring til indhold</a>

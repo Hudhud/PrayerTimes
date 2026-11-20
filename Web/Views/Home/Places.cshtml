@@ -13,11 +13,13 @@
             @foreach (var place in Model.Results)
             {
                 <li>
-                    <a asp-route="City" asp-route-city="@place.Id">@place.Label</a>
-                    @if (!string.IsNullOrWhiteSpace(place.Area) && place.Area != place.Name)
-                    {
-                        <small>@place.Area</small>
-                    }
+                    <a asp-route="City" asp-route-city="@place.Id" data-place-result>
+                        @place.Label
+                        @if (!string.IsNullOrWhiteSpace(place.Area) && place.Area != place.Name)
+                        {
+                            <small>@place.Area</small>
+                        }
+                    </a>
                 </li>
             }
         </ul>

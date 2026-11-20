@@ -66,4 +66,4 @@ The place index is a filtered, combined copy of the GeoNames [Danish place expor
 python3 Tools/PlaceData/import_geonames.py places.zip postal.zip Web/wwwroot/data/prayer-places.json
 ```
 
-The browser loads this index on request to find a nearby named place. The user opens the suggested place's shareable URL. The site handles city and postal-code search directly.
+City and postal-code suggestions use the server's copy of the index. For geolocation, the browser loads the index and opens the nearest named place's shareable URL. After the user enables that mode, the browser can update the place when they return, while it still has location permission. The user can turn off automatic location or choose a place manually.

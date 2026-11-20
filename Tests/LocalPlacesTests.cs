@@ -14,6 +14,9 @@ public sealed class LocalPlacesTests
     [InlineData("6700", "post-6700", "6700 Esbjerg")]
     [InlineData("Århus", "aarhus", "Aarhus")]
     [InlineData("koebenhavn", "koebenhavn", "København")]
+    [InlineData("Kobenhavn", "koebenhavn", "København")]
+    [InlineData("Kbh", "koebenhavn", "København")]
+    [InlineData("Viby Aarhus", "sted-2610310", "Viby")]
     public void FindsDanishPlacesAndPostalCodes(string query, string slug, string label)
     {
         var place = places.Search(query).First();

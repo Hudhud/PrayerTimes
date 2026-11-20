@@ -42,7 +42,9 @@ else
     </nav>
 }
 
-<section aria-labelledby="today-title" class="today" data-refresh-at="@refreshAt.ToString("o", CultureInfo.InvariantCulture)">
+<section aria-labelledby="today-title" class="today" data-current-place="@Model.City.Slug"
+         data-rendered-at="@Model.Now.ToString("o", CultureInfo.InvariantCulture)"
+         data-refresh-at="@refreshAt.ToString("o", CultureInfo.InvariantCulture)">
     <h1 id="today-title">Bønnetider i @Model.City.Name i dag</h1>
     @if (today is not null && next is not null && nextStart is { } nextPrayerTime)
     {
