@@ -36,6 +36,20 @@
 
 <section aria-labelledby="today-title" class="today" data-refresh-at="@refreshAt.ToString("o", CultureInfo.InvariantCulture)">
     <h1 id="today-title">Bønnetider i @Model.City.Name i dag</h1>
+    @if (today is not null && next is not null && nextStart is { } nextPrayerTime)
+    {
+        <div class="next-prayer">
+            <div>
+                <h2>Næste bøn</h2>
+                <p>@next.Name @if (nextDate != Model.Date)
+                    {
+                        <span class="next-date">i morgen, @nextDate.ToString("d. MMMM", danish)</span>
+                    }
+                </p>
+            </div>
+            <time datetime="@nextPrayerTime.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
+        </div>
+    }
     <p class="subtitle"><time datetime="@dateParameter">@fullDate</time></p>
     @if (today is null)
     {
@@ -47,20 +61,6 @@
     }
     else
     {
-        @if (next is not null && nextStart is { } nextPrayerTime)
-        {
-            <div class="next-prayer">
-                <div>
-                    <h2>Næste bøn</h2>
-                    <p>@next.Name @if (nextDate != Model.Date)
-                        {
-                            <span class="next-date">i morgen, @nextDate.ToString("d. MMMM", danish)</span>
-                        }
-                    </p>
-                </div>
-                <time datetime="@nextPrayerTime.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
-            </div>
-        }
         <dl class="prayer-list">
             @foreach (var prayer in PrayerDay.Events(today))
             {
