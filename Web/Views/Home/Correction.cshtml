@@ -11,7 +11,7 @@
     <form method="get" action="/meld-en-fejl" class="report-form">
         <label for="city">By</label>
         <select id="city" name="city">
-            @foreach (var city in PrayerCities.All)
+            @foreach (var city in PrayerCities.All.Append(Model.City).DistinctBy(city => city.Slug))
             {
                 <option value="@city.Slug" selected="@(city == Model.City)">@city.Name</option>
             }

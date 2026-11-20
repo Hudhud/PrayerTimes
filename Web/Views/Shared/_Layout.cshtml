@@ -45,6 +45,11 @@
     <footer class="site-footer site-width">
         @await RenderSectionAsync("Footer", required: false)
         <a href="/privatliv">Privatliv og statistik</a>
+        @if (ViewData["PlaceDataAttribution"] is true)
+        {
+            <p class="data-attribution">Steddata fra <a href="https://www.geonames.org/">GeoNames</a> ·
+                <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></p>
+        }
     </footer>
 </body>
 </html>

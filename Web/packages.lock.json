@@ -74,6 +74,11 @@
           "Serilog": "4.2.0"
         }
       },
+      "CosineKitty.AstronomyEngine": {
+        "type": "Transitive",
+        "resolved": "2.1.19",
+        "contentHash": "PLb0ZrLMLFdnYbnZDPzaiBD9arL1Mx2x3q5492/8pBV7EVbGA6syFCmeMKadgT07lrQ+UdrPaiSw2sMYejQ0AQ=="
+      },
       "FluentValidation": {
         "type": "Transitive",
         "resolved": "11.9.2",
@@ -267,6 +272,13 @@
         "type": "Project",
         "dependencies": {
           "Domain": "[1.0.0, )"
+        }
+      },
+      "calculation": {
+        "type": "Project",
+        "dependencies": {
+          "Application": "[1.0.0, )",
+          "CosineKitty.AstronomyEngine": "[2.1.19, )"
         }
       },
       "domain": {

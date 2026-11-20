@@ -1,3 +1,4 @@
+@model bool
 @using Web.Controllers
 @{
     ViewData["Title"] = "Privatliv og statistik";
@@ -7,6 +8,13 @@
 <section class="readable">
     <h1>Privatliv og statistik</h1>
     <p>Salah Times gemmer dit valg af by og dit valg om besøgsstatistik i din browser i op til 180 dage.</p>
+    @if (Model)
+    {
+        <h2>Placering</h2>
+        <p>Når du vælger Brug min placering, kan din browser bruge din position til at foreslå et dansk sted i
+            nærheden. Positionen behandles i din browser. Når du åbner forslaget, får Salah Times kun id'et for
+            det sted, du har valgt.</p>
+    }
     <h2>Google Analytics</h2>
     <p>Hvis du siger ja, bruger vi Google Analytics til at se antal besøg og viste sider.
         Google Analytics kan gemme sine målingscookies i op til 180 dage. Du kan ændre dit valg her. Hvis du

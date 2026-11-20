@@ -1,5 +1,6 @@
 using Application.Calendars;
 using Application.Interfaces;
+using Calculation;
 using Domain.Repositories;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using Web.Services;
@@ -19,9 +21,24 @@ namespace Web;
 
 public sealed class Startup(IConfiguration configuration)
 {
+    private readonly bool useLocalCalculation = configuration.GetValue("PrayerTimes:UseLocalCalculation", false);
+
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllersWithViews();
+        services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
+        services.AddSingleton<DanishTime>();
+        services.AddSingleton(provider => new PrayerPlaceDirectory(useLocalCalculation
+            ? Path.Combine(provider.GetRequiredService<IWebHostEnvironment>().WebRootPath, "data", "prayer-places.json")
+            : null));
+
+        if (useLocalCalculation)
+        {
+            services.AddSingleton<DanishPrayerTimeCalculator>();
+            services.AddSingleton<IPrayerTimeService, LocalPrayerTimeService>();
+            return;
+        }
+
         services.AddScoped<ICityPrayerTimesRepository, CityPrayerTimesRepository>();
 
         var connectionString = configuration["CONNECTION_STRING"]
@@ -36,7 +53,7 @@ public sealed class Startup(IConfiguration configuration)
         services.AddDbContextPool<ApplicationDbContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-        services.AddHttpClient<IPrayerTimeService, PrayerTimeService>(client =>
+        services.AddHttpClient<PrayerTimeService>(client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(20);
                 client.DefaultRequestVersion = HttpVersion.Version11;
@@ -47,14 +64,13 @@ public sealed class Startup(IConfiguration configuration)
                 client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             });
 
-        services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
-        services.AddSingleton<DanishTime>();
+        services.AddTransient<IPrayerTimeService>(provider => provider.GetRequiredService<PrayerTimeService>());
         services.AddHostedService<MonthlyPrayerTimesRefreshService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
     {
-        if (configuration.GetValue("Database:ApplyMigrations", true))
+        if (!useLocalCalculation && configuration.GetValue("Database:ApplyMigrations", true))
         {
             ApplyDatabaseMigrations(app.ApplicationServices);
         }
