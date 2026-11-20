@@ -1,18 +1,14 @@
-@model bool
 @{
     ViewData["Title"] = "Sådan beregnes bønnetiderne";
 }
 <article class="readable">
     <h1>Sådan beregnes bønnetiderne</h1>
     <p>Salah Times viser tider i dansk lokal tid, med dansk sommer- og vintertid. Tiderne er knyttet til koordinaterne for det viste sted.</p>
-    @if (Model)
-    {
-        <h2>Solens position</h2>
-        <p>Astronomy Engine beregner solens position. Fajr beregnes, når solen på vej op når 18 grader under horisonten. Isha beregnes, når solen på vej ned når 17 grader under horisonten.</p>
-        <p>Dhuhr beregnes, når hele solskiven har passeret den lokale meridian. Solopgang og Maghrib følger solopgang og solnedgang. Salah Times lægger tre minutter til de beregnede tider, før de vises i timer og minutter.</p>
-        <h2>Asr</h2>
-        <p>Med standardmetoden begynder Asr, når skyggen er blevet én genstandslængde længere end ved solmiddag. I Hanafi-metoden er den to genstandslængder længere. Du kan vælge Asr-metode ved dagens bønnetider.</p>
-    }
+    <h2>Solens position</h2>
+    <p>Astronomy Engine beregner solens position. Fajr beregnes, når solen på vej op når 18 grader under horisonten. Isha beregnes, når solen på vej ned når 17 grader under horisonten.</p>
+    <p>Dhuhr beregnes, når hele solskiven har passeret den lokale meridian. Solopgang og Maghrib følger solopgang og solnedgang. Salah Times lægger tre minutter til de beregnede tider, før de vises i timer og minutter.</p>
+    <h2>Asr</h2>
+    <p>Med standardmetoden begynder Asr, når skyggen er blevet én genstandslængde længere end ved solmiddag. I Hanafi-metoden er den to genstandslængder længere. Du kan vælge Asr-metode ved dagens bønnetider.</p>
     <h2 id="lyse-naetter">Fajr og Isha under lyse nætter</h2>
     <p>I en del af den danske sommer når solen ikke de vinkler, der bruges til Fajr eller Isha. En streg i bønneplanen viser, at tidspunktet skal fastsættes efter en metode for lyse nætter. Isha kan også falde efter midnat. Det fremgår ved tiden.</p>
     <p>Din lokale moské eller en lærd, du har tillid til, kan hjælpe dig med at vælge en metode for de lyse nætter.</p>

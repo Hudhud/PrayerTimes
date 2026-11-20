@@ -13,21 +13,6 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    services:
-      mariadb:
-        image: mariadb:11.8
-        env:
-          MARIADB_ROOT_PASSWORD: test-root
-          MARIADB_DATABASE: salahtimes_test
-          MARIADB_USER: salahtimes_test
-          MARIADB_PASSWORD: test-password
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="healthcheck.sh --connect --innodb_initialized"
-          --health-interval=3s --health-timeout=5s --health-retries=15
-    env:
-      PRAYERTIMES_TEST_DATABASE: Server=127.0.0.1;Port=3306;Database=salahtimes_test;User ID=salahtimes_test;Password=test-password
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4

@@ -1,42 +1,25 @@
 @model Web.ViewModels.CityPrayerTimesViewModel
-@using Application.Calendars
 @using Web.ViewModels
 @{
     var city = Model.Daily.City;
     ViewData["Title"] = $"Bønnetider i {city.Name}";
-    ViewData["PlaceDataAttribution"] = Model.CanSearchPlaces;
+    ViewData["PlaceDataAttribution"] = true;
 }
 
 <h1 class="place-heading">Bønnetider i @city.Name</h1>
-@if (Model.CanSearchPlaces)
-{
-    <partial name="_PlacePicker" model="string.Empty" />
-}
-else
-{
-    <nav class="city-nav" aria-label="Vælg by">
-        @foreach (var place in PrayerCities.All)
-        {
-            <a asp-route="City" asp-route-city="@place.Slug"
-               aria-current="@(place == city ? "page" : null)">@place.Name</a>
-        }
-    </nav>
-}
+<partial name="_PlacePicker" model="string.Empty" />
 <p class="visually-hidden" data-prayer-announcement role="status"></p>
 <p class="notice" data-prayer-refresh-error hidden>Tiderne kunne ikke opdateres. Siden prøver igen.</p>
 <partial name="_Today" model="Model.Daily" />
 
-@if (Model.CanSearchPlaces)
-{
-    <form method="post" asp-action="Asr" class="asr-control">
-        <input type="hidden" name="returnUrl"
-               value="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" />
-        <span>Asr-metode <strong>@(Model.Daily.Hanafi ? "Hanafi" : "Standard")</strong></span>
-        <button class="button" name="choice" value="@(Model.Daily.Hanafi ? "standard" : "hanafi")">
-            @(Model.Daily.Hanafi ? "Vis standard" : "Vis Hanafi")
-        </button>
-    </form>
-}
+<form method="post" asp-action="Asr" class="asr-control">
+    <input type="hidden" name="returnUrl"
+           value="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" />
+    <span>Asr-metode <strong>@(Model.Daily.Hanafi ? "Hanafi" : "Standard")</strong></span>
+    <button class="button" name="choice" value="@(Model.Daily.Hanafi ? "standard" : "hanafi")">
+        @(Model.Daily.Hanafi ? "Vis standard" : "Vis Hanafi")
+    </button>
+</form>
 
 <partial name="_Calendar" model="Model.Calendar" />
 

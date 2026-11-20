@@ -25,9 +25,9 @@ public sealed class DanishPrayerTimeCalculatorTests
 
         Assert.All(days, day => Assert.True(PrayerDay.IsUsable(day), day.Date.ToString("yyyy-MM-dd")));
         Assert.All(days, day => Assert.True(string.CompareOrdinal(day.AsrTime, day.AsrHanafiTime) < 0));
-        Assert.Contains(days, day => day.FajrTimeUnavailable && day.UsesPredefinedIshaTime);
-        Assert.Contains(days, day => day.FajrTimeUnavailable && !day.UsesPredefinedIshaTime);
-        Assert.Contains(days, day => day.IshaDayOffset == 1 && !day.UsesPredefinedIshaTime);
+        Assert.Contains(days, day => day.FajrTimeUnavailable && day.IshaTimeUnavailable);
+        Assert.Contains(days, day => day.FajrTimeUnavailable && !day.IshaTimeUnavailable);
+        Assert.Contains(days, day => day.IshaDayOffset == 1 && !day.IshaTimeUnavailable);
     }
 
     [Theory]
@@ -76,7 +76,7 @@ public sealed class DanishPrayerTimeCalculatorTests
         var day = calculator.Calculate(new DateOnly(2026, 6, 21), 55.6759142, 12.5691285);
 
         Assert.True(day.FajrTimeUnavailable);
-        Assert.True(day.UsesPredefinedIshaTime);
+        Assert.True(day.IshaTimeUnavailable);
         Assert.Empty(day.FajrTime);
         Assert.Empty(day.IshaTime);
         Assert.Null(day.IshaDayOffset);

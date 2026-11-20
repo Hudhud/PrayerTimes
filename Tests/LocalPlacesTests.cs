@@ -26,17 +26,6 @@ public sealed class LocalPlacesTests
     }
 
     [Fact]
-    public void LegacyModeStillResolvesEstablishedCities()
-    {
-        var legacy = new PrayerPlaceDirectory(null);
-
-        Assert.False(legacy.IsEnabled);
-        Assert.Equal(PrayerCities.Default, legacy.Find("koebenhavn"));
-        Assert.Null(legacy.Find("post-6700"));
-        Assert.Empty(legacy.Search("Esbjerg"));
-    }
-
-    [Fact]
     public async Task LocalProviderReturnsTheRequestedRangeAcrossMonthBoundaries()
     {
         using var provider = new LocalPrayerTimeService(new DanishPrayerTimeCalculator());

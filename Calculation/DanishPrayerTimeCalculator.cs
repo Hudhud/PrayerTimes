@@ -64,8 +64,8 @@ public sealed class DanishPrayerTimeCalculator
             AsrHanafiTime = FormatOnDate(date, asrHanafi),
             MaghribTime = FormatOnDate(date, sunset),
             IshaTime = localIsha?.ToString("HH:mm", CultureInfo.InvariantCulture) ?? string.Empty,
-            UsesPredefinedFajrTime = fajr is null,
-            UsesPredefinedIshaTime = isha is null,
+            FajrTimeUnavailable = fajr is null,
+            IshaTimeUnavailable = isha is null,
             IshaDayOffset = localIsha is { } end ? DateOnly.FromDateTime(end.Date).DayNumber - date.DayNumber : null
         };
 

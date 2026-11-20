@@ -43,14 +43,7 @@ button, select, input { font: inherit; }
 }
 .skip-link:not(:focus) { clip-path: inset(50%); }
 
-.city-nav {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: .4rem;
-    width: min(100%, 33rem);
-    margin-block: 1.25rem 1.65rem;
-}
-.city-nav a, .button {
+.button {
     min-height: 2.75rem;
     border: 1px solid var(--border);
     border-radius: .55rem;
@@ -63,10 +56,8 @@ button, select, input { font: inherit; }
     text-decoration: none;
     cursor: pointer;
 }
-.city-nav a { font-size: .875rem; padding-inline: .25rem; }
 .button { padding: .45rem .8rem; }
-.city-nav a:hover, .button:hover { background: var(--surface-raised); border-color: var(--muted); }
-.city-nav a[aria-current="page"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.button:hover { background: var(--surface-raised); border-color: var(--muted); }
 
 .place-picker { --control-border: #68747d; margin-block: 1.25rem 1.65rem; }
 .place-picker label { display: block; margin-bottom: .3rem; color: var(--muted); font-size: .875rem; font-weight: 600; }
@@ -204,7 +195,6 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 }
 
 @media (max-width: 35rem) {
-    .city-nav { margin-block: .8rem 1rem; }
     .place-search { flex-basis: 100%; }
     .prayer-list { grid-template-columns: 1fr; }
     .prayer-list > div { display: flex; align-items: baseline; justify-content: space-between; padding: .32rem .75rem; }
@@ -215,8 +205,6 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 }
 @media (max-width: 22rem) {
     .site-width { width: calc(100% - 1.25rem); }
-    .city-nav { gap: .24rem; }
-    .city-nav a { font-size: .78rem; }
 }
 @page { size: A4; margin: 12mm; }
 
@@ -226,7 +214,7 @@ tbody tr:nth-child(even) th { background: var(--surface); }
         color: #000 !important;
         background: #fff !important;
     }
-    .site-header, .skip-link, .site-footer, .city-nav, .place-picker, .today,
+    .site-header, .skip-link, .site-footer, .place-picker, .today,
     .print-button, .statistics, caption { display: none !important; }
     .site-width { width: 100%; }
     .print-city { display: block; }
