@@ -34,3 +34,25 @@ Set `PRAYERTIMES_TEST_DATABASE` to a dedicated MariaDB test database to include 
 Set `ConnectionStrings__DefaultConnection` or `CONNECTION_STRING` in the IIS hosting environment. The workflow no longer generates a production settings file. An existing host-managed `appsettings.Production.json` can serve as a transitional fallback while the environment value is set. The deployment remains a self-contained Windows x86 publish and expects the ASP.NET Core IIS hosting module.
 
 The upgrade adds two nullable timetable columns. Existing rows remain readable and the worker refreshes their metadata as needed. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
+
+## Evaluate local prayer-time calculations
+
+The offline prototype uses Astronomy Engine in `Calculation`. It calculates sunrise, sunset, solar noon, both Asr shadow conventions, and separate twilight crossings for Fajr and Isha. A missing twilight crossing produces an empty time with the corresponding bright-night flag. The website still uses its existing timetable provider during evaluation.
+
+Run the comparison against saved reference times that use Salah Times' current city coordinates and displayed time conventions.
+
+```sh
+dotnet run --project Tools/PrayerTimeComparison --configuration Release -- reference.json
+```
+
+The JSON file contains an array of objects with these fields.
+
+| Field | Format |
+| --- | --- |
+| `city` | City slug from `PrayerCities.cs` |
+| `date` | Danish calendar date in `yyyy-MM-dd` |
+| `sunrise`, `dhuhr`, `asr`, `asrHanafi`, `maghrib` | Displayed Danish time in `HH:mm` |
+| `fajr`, `isha` | Displayed time in `HH:mm`, or `null` when the site shows dashes |
+| `ishaDayOffset` | `0` on the row's date, `1` after midnight, or `null` when Isha has no regular time |
+
+The report lists coverage per city and month, availability differences, and signed differences in minutes. Positive values mean the calculation is later than the reference. The release review should cover a full year for the four existing cities, including the start and end of bright nights, daylight-saving transitions, after-midnight Isha, and any systematic differences around solar noon or the Asr shadow thresholds.

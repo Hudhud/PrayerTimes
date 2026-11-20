@@ -7,7 +7,10 @@ public sealed class DanishTime(IDateTimeProvider clock)
     private static readonly TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(
         OperatingSystem.IsWindows() ? "Romance Standard Time" : "Europe/Copenhagen");
 
-    public DateTimeOffset Now => TimeZoneInfo.ConvertTime(new DateTimeOffset(clock.UtcNow, TimeSpan.Zero), Zone);
+    public DateTimeOffset Now => FromUtc(clock.UtcNow);
+
+    public static DateTimeOffset FromUtc(DateTime utc) =>
+        TimeZoneInfo.ConvertTime(new DateTimeOffset(utc, TimeSpan.Zero), Zone);
 
     public static DateTimeOffset At(DateOnly date, TimeOnly time)
     {

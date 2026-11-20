@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "CosineKitty.AstronomyEngine": {
+        "type": "Direct",
+        "requested": "[2.1.19, )",
+        "resolved": "2.1.19",
+        "contentHash": "PLb0ZrLMLFdnYbnZDPzaiBD9arL1Mx2x3q5492/8pBV7EVbGA6syFCmeMKadgT07lrQ+UdrPaiSw2sMYejQ0AQ=="
+      },
+      "FluentValidation": {
+        "type": "Transitive",
+        "resolved": "11.9.2",
+        "contentHash": "XeHp9LvFvu1fsQ/NvDCymV02GOCB1nz7ZUhfpI3uMhCcHTkV1K5bMkv+Nc/kuNYyAsX5+5bcmUanIEMd5QN+Eg=="
+      },
+      "application": {
+        "type": "Project",
+        "dependencies": {
+          "Domain": "[1.0.0, )"
+        }
+      },
+      "domain": {
+        "type": "Project",
+        "dependencies": {
+          "FluentValidation": "[11.9.2, )"
+        }
+      }
+    }
+  }
+}

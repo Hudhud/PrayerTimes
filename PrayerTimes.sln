@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrayerTimes.Tests", "Tests\PrayerTimes.Tests.csproj", "{95E04633-179C-4787-8592-88E334D34DF5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calculation", "Calculation\Calculation.csproj", "{1960692F-BDF2-4B74-B85C-646835DD1D6C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrayerTimeComparison", "Tools\PrayerTimeComparison\PrayerTimeComparison.csproj", "{B818FD5D-C844-48D1-A8AC-619AD99BB7F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{95E04633-179C-4787-8592-88E334D34DF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E04633-179C-4787-8592-88E334D34DF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95E04633-179C-4787-8592-88E334D34DF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1960692F-BDF2-4B74-B85C-646835DD1D6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1960692F-BDF2-4B74-B85C-646835DD1D6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1960692F-BDF2-4B74-B85C-646835DD1D6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1960692F-BDF2-4B74-B85C-646835DD1D6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B818FD5D-C844-48D1-A8AC-619AD99BB7F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B818FD5D-C844-48D1-A8AC-619AD99BB7F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B818FD5D-C844-48D1-A8AC-619AD99BB7F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B818FD5D-C844-48D1-A8AC-619AD99BB7F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
