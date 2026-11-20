@@ -17,6 +17,11 @@
         <p>Din position behandles i browseren. Browseren gemmer indstillingen, stedets id og tidspunktet for
             det seneste tjek. Salah Times modtager stedets id, når bønnetiderne åbnes.</p>
     }
+    @if (Model)
+    {
+        <p>Browseren gemmer de senest viste steder, så du kan finde dem ved næste søgning.
+            Dit valg af Asr-metode gemmes i en cookie i op til 180 dage.</p>
+    }
     <h2>Google Analytics</h2>
     <p>Hvis du siger ja, bruger vi Google Analytics til at se antal besøg og viste sider.
         Google Analytics kan gemme sine målingscookies i op til 180 dage. Du kan ændre dit valg her. Hvis du

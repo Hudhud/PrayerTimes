@@ -49,4 +49,18 @@ public sealed class LocalPlacesTests
             days.Select(day => DateOnly.FromDateTime(day.Date)));
         Assert.All(days, day => Assert.True(PrayerDay.IsUsable(day)));
     }
+
+    [Fact]
+    public async Task ConcurrentRangesShareTheSameCachedPlaceAndDay()
+    {
+        using var provider = new LocalPrayerTimeService(new DanishPrayerTimeCalculator());
+        var city = PrayerCities.Default;
+        var date = new DateOnly(2026, 6, 1);
+        var requests = Enumerable.Range(0, 12)
+            .Select(_ => Task.Run(() => provider.GetDaysAsync(city, date, date.AddDays(1), default)));
+
+        var results = await Task.WhenAll(requests);
+
+        Assert.All(results, result => Assert.Same(results[0][0], Assert.Single(result)));
+    }
 }

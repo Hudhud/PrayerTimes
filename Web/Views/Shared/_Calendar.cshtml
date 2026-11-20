@@ -1,0 +1,142 @@
+@model Web.ViewModels.CalendarViewModel
+@using Application.Calendars
+@using System.Globalization
+@using Web.ViewModels
+@{
+    var danish = CultureInfo.GetCultureInfo("da-DK");
+    var month = CalendarViewModel.MonthParameter(Model.Month);
+    var monthName = Model.Month.ToString("MMMM yyyy", danish);
+    var weekDays = Model.WeekDays.ToArray();
+    var hasMonth = Model.Days.Count > 0;
+}
+<section class="month" aria-labelledby="month-title">
+    <div class="month-heading">
+        <h2 id="month-title">@monthName</h2>
+        <p class="print-city">@Model.City.Name · Dansk lokal tid · Asr @(Model.Hanafi ? "Hanafi" : "standard")</p>
+        <div class="calendar-actions">
+            @if (hasMonth)
+            {
+                <button class="button print-button" type="button" data-print hidden>Udskriv</button>
+                @if (ViewData["PlaceDataAttribution"] is true && Model.Days.Count == DateTime.DaysInMonth(Model.Month.Year, Model.Month.Month))
+                {
+                    <a class="button" asp-route="CalendarExport" asp-route-city="@Model.City.Slug" asp-route-month="@month">Hent kalenderfil</a>
+                }
+            }
+        </div>
+    </div>
+    <nav class="calendar-nav" aria-label="Vælg måned">
+        @if (Model.PreviousMonth is { } previous)
+        {
+            <a class="button" asp-route="City" asp-route-city="@Model.City.Slug"
+               asp-route-month="@CalendarViewModel.MonthParameter(previous)" asp-fragment="month-title">Forrige måned</a>
+        }
+        @if (Model.NextMonth < new DateOnly(9999, 12, 1))
+        {
+            <a class="button" asp-route="City" asp-route-city="@Model.City.Slug"
+               asp-route-month="@CalendarViewModel.MonthParameter(Model.NextMonth)" asp-fragment="month-title">Næste måned</a>
+        }
+        <a class="jump-today desktop-calendar" asp-route="City" asp-route-city="@Model.City.Slug"
+           asp-route-week="i-dag" asp-fragment="calendar-today">Hop til i dag</a>
+        <a class="jump-today mobile-calendar" asp-route="City" asp-route-city="@Model.City.Slug"
+           asp-route-week="i-dag" asp-fragment="week-today">Hop til i dag</a>
+    </nav>
+    @if (!hasMonth)
+    {
+        <p>Månedsoversigten er midlertidigt utilgængelig.</p>
+    }
+    else
+    {
+        @if (Model.Days.Count != DateTime.DaysInMonth(Model.Month.Year, Model.Month.Month))
+        {
+            <p>Månedsoversigten er ufuldstændig. Nogle datoer mangler.</p>
+        }
+        <div class="mobile-calendar" aria-label="Ugevisning">
+            <nav class="week-nav" aria-label="Vælg uge">
+                @if (Model.PreviousWeek is { } previousWeek)
+                {
+                    <a class="button" asp-route="City" asp-route-city="@Model.City.Slug"
+                       asp-route-month="@month" asp-route-week="@CalendarViewModel.DayParameter(previousWeek)"
+                       asp-fragment="month-title">Forrige uge</a>
+                }
+                @if (Model.NextWeek is { } nextWeek)
+                {
+                    <a class="button" asp-route="City" asp-route-city="@Model.City.Slug"
+                       asp-route-month="@month" asp-route-week="@CalendarViewModel.DayParameter(nextWeek)"
+                       asp-fragment="month-title">Næste uge</a>
+                }
+            </nav>
+            @if (weekDays.Length == 0)
+            {
+                <p>Der er ingen tider for denne uge.</p>
+            }
+            @foreach (var day in weekDays)
+            {
+                var date = DateOnly.FromDateTime(day.Date);
+                var isToday = date == Model.Today;
+                <article class="week-day @(isToday ? "current-day" : null)" data-calendar-date="@CalendarViewModel.DayParameter(date)"
+                         data-today-anchor="week-today" id="@(isToday ? "week-today" : null)" tabindex="-1">
+                    <h3><time datetime="@CalendarViewModel.DayParameter(date)">@date.ToString("dddd d. MMMM", danish)</time>
+                        <small data-today-label hidden="@(!isToday)">I dag</small></h3>
+                    <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true)" />
+                </article>
+            }
+        </div>
+        <div class="table-scroll desktop-calendar" role="region" aria-labelledby="month-title" tabindex="0">
+            <table>
+                <caption>Bønnetider i @Model.City.Name · @monthName · Dansk lokal tid</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Dato</th>
+                        <th scope="col">Fajr</th>
+                        <th scope="col">Solopgang</th>
+                        <th scope="col">Dhuhr</th>
+                        <th scope="col">Asr</th>
+                        <th scope="col">Maghrib</th>
+                        <th scope="col">Isha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var day in Model.Days)
+                    {
+                        var date = DateOnly.FromDateTime(day.Date);
+                        var isToday = date == Model.Today;
+                        var prayers = PrayerDay.Events(day, Model.Hanafi);
+                        <tr class="@(isToday ? "current-day" : null)" data-calendar-date="@CalendarViewModel.DayParameter(date)"
+                            data-today-anchor="calendar-today" id="@(isToday ? "calendar-today" : null)" tabindex="-1">
+                            <th scope="row">
+                                <time datetime="@CalendarViewModel.DayParameter(date)">@date.ToString("d. MMM", danish)</time>
+                                <small data-today-label hidden="@(!isToday)">I dag</small>
+                            </th>
+                            @for (var i = 0; i < prayers.Count; i++)
+                            {
+                                @if (i == 1)
+                                {
+                                    <td>@day.SunriseTime</td>
+                                }
+                                var prayer = prayers[i];
+                                <td>
+                                    @if (prayer.StartsAt is { } start)
+                                    {
+                                        @prayer.Time
+                                        @if (DateOnly.FromDateTime(start.Date) != date)
+                                        {
+                                            <small>Næste døgn</small>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <partial name="_BrightNightTime" />
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @if (Model.HasBrightNightTimes)
+    {
+        <p class="calendar-note">Streger ved Fajr eller Isha betyder, at tidspunktet skal fastsættes efter en metode for lyse nætter. <a asp-action="Method" asp-fragment="lyse-naetter">Læs om lyse nætter</a>.</p>
+    }
+</section>

@@ -35,6 +35,17 @@ jobs:
           global-json-file: global.json
       - run: dotnet restore PrayerTimes.sln --locked-mode
       - run: dotnet test PrayerTimes.sln --configuration Release --no-restore
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: Tests/Browser/package-lock.json
+      - name: Verify browser flows
+        working-directory: Tests/Browser
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium webkit
+          npm test
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -64,3 +75,20 @@ jobs:
           server-password: ${{ secrets.SERVER_PASSWORD }}
           source-path: '\publish\'
           target-delete: false
+
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: Tests/Browser/package-lock.json
+      - name: Verify Salah Times in production
+        working-directory: Tests/Browser
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npm run smoke

@@ -117,8 +117,7 @@ button, select, input { font: inherit; }
 
 h1 { font-size: clamp(1.6rem, 4vw, 2.65rem); line-height: 1.12; letter-spacing: -.035em; }
 h2 { font-size: 1.22rem; line-height: 1.25; }
-.subtitle { margin-top: .35rem; color: var(--muted); }
-.subtitle:first-letter, #month-title:first-letter { text-transform: uppercase; }
+#month-title:first-letter { text-transform: uppercase; }
 
 .next-prayer {
     display: flex;
@@ -153,17 +152,13 @@ small { color: var(--muted); font-size: .72rem; font-weight: 550; }
 .prayer-list small, table small { display: block; }
 .sunrise { display: flex; align-items: baseline; gap: .6rem; color: var(--muted); }
 .sunrise time { color: var(--text); font-weight: 600; }
-.summer-note, .notice {
+.notice {
     margin-top: .85rem;
     padding: .75rem .9rem;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: .65rem;
 }
-.summer-note { border-inline-start: .2rem solid var(--accent); max-width: 46rem; }
-.summer-note h3 { margin: 0; font-size: 1rem; }
-.summer-note p, .notice p { color: var(--muted); margin-top: .2rem; }
-.summer-note p + p { margin-top: .5rem; }
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -177,7 +172,6 @@ small { color: var(--muted); font-size: .72rem; font-weight: 550; }
 .month-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .6rem; }
 .month-heading .button { font-size: .86rem; }
 .print-city { display: none; }
-.table-hint { display: none; color: var(--muted); font-size: .88rem; margin-bottom: .5rem; }
 .table-scroll { overflow: auto; border: 1px solid var(--border); border-radius: .75rem; }
 table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 37rem; }
 caption { text-align: left; padding: .65rem .8rem; font-size: .9rem; color: var(--muted); }
@@ -209,9 +203,6 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     margin-bottom: .35rem;
 }
 
-@media (max-width: 39rem) {
-    .table-hint { display: block; }
-}
 @media (max-width: 35rem) {
     .city-nav { margin-block: .8rem 1rem; }
     .place-search { flex-basis: 100%; }
@@ -236,21 +227,10 @@ tbody tr:nth-child(even) th { background: var(--surface); }
         background: #fff !important;
     }
     .site-header, .skip-link, .site-footer, .city-nav, .place-picker, .today,
-    .print-button, .table-hint, .statistics, caption { display: none !important; }
+    .print-button, .statistics, caption { display: none !important; }
     .site-width { width: 100%; }
     .print-city { display: block; }
-    .summer-note {
-        max-width: none;
-        margin-top: .55rem;
-        padding: .4rem .55rem;
-        color: #000;
-        background: #fff;
-        border-color: #aaa;
-        font-size: .85rem;
-        line-height: 1.3;
-        break-inside: avoid;
-    }
-    .summer-note p, small { color: #333; }
+    small { color: #333; }
     .month { margin-top: .8rem; }
     .table-scroll { overflow: visible; border-color: #aaa; }
     table { min-width: 0; font-size: .8rem; line-height: 1.3; }
@@ -258,4 +238,71 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     thead { display: table-header-group; }
     tr { break-inside: avoid; }
     th, td { padding: .2rem .25rem; border-color: #ccc; }
+}
+
+.place-heading { margin-top: 1.25rem; }
+.place-heading + .place-picker { margin-block: .75rem 1.1rem; }
+.today-context { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; color: var(--muted); }
+.today-context time:first-letter { text-transform: uppercase; }
+.today-context a { font-size: .875rem; }
+.today .next-prayer { margin-top: .55rem; }
+.next-prayer .next-detail { font-size: .94rem; font-weight: 500; }
+.today-note, .calendar-note {
+    margin-top: .65rem;
+    padding: .65rem .8rem;
+    border-inline-start: .2rem solid var(--accent);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: .35rem;
+    font-size: .9rem;
+}
+.today-note strong { color: var(--text); }
+.asr-control, .calendar-actions, .calendar-nav, .week-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .65rem; }
+.asr-control { margin-top: .85rem; font-size: .875rem; color: var(--muted); }
+.asr-control strong { color: var(--text); }
+.calendar-nav, .week-nav { margin-block: .65rem; }
+.calendar-actions, .calendar-nav, .week-nav { font-size: .875rem; }
+.month-heading { flex-wrap: wrap; }
+.mobile-calendar { display: none; }
+.jump-today { min-height: 2.75rem; align-content: center; }
+.week-day { padding: .6rem .75rem; border: 1px solid var(--border); border-radius: .65rem; }
+.week-day + .week-day { margin-top: .5rem; }
+.week-day h3 { margin: 0; font-size: .97rem; }
+.week-day .prayer-list { margin-block: .35rem; }
+.week-day .prayer-list > div { padding-inline: .6rem; }
+.week-day .prayer-list dd { color: var(--text); }
+[data-today-anchor] { scroll-margin-top: 1rem; }
+.prayer-updated { border-color: var(--accent); }
+
+[data-use-location][aria-busy="true"]::before {
+    content: "";
+    width: .82rem;
+    height: .82rem;
+    margin-inline-end: .45rem;
+    border: 2px solid currentColor;
+    border-inline-start-color: transparent;
+    border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .place-suggestions ul:not([hidden]) { animation: show-suggestions 150ms ease-out; }
+    [data-use-location][aria-busy="true"]::before { animation: find-location 850ms linear infinite; }
+    .prayer-updated { animation: mark-prayer 650ms ease-out; }
+    @keyframes show-suggestions { from { opacity: .55; } }
+    @keyframes find-location { to { transform: rotate(1turn); } }
+    @keyframes mark-prayer { from { background-color: #433518; } }
+}
+
+@media screen and (max-width: 39rem) {
+    .mobile-calendar { display: block; }
+    .desktop-calendar { display: none; }
+    .week-day .prayer-list { grid-template-columns: 1fr; }
+    .week-day .prayer-list > div { display: flex; justify-content: space-between; padding-block: .2rem; }
+    .week-day .prayer-list > div + div { border-inline-start: 0; border-top: 1px solid var(--border); }
+}
+
+@media print {
+    .place-heading, .asr-control, .calendar-actions, .calendar-nav, [data-prayer-refresh-error] { display: none !important; }
+    .calendar-note { color: #000; background: #fff; border-color: #aaa; break-inside: avoid; }
+    .calendar-note a { color: inherit; }
 }

@@ -1,0 +1,32 @@
+@model Web.ViewModels.PrayerListViewModel
+@using Application.Calendars
+@using System.Globalization
+@{
+    var date = DateOnly.FromDateTime(Model.Day.Date);
+}
+<dl class="prayer-list">
+    @foreach (var prayer in PrayerDay.Events(Model.Day, Model.Hanafi))
+    {
+        <div>
+            <dt>@prayer.Name</dt>
+            <dd>
+                @if (prayer.StartsAt is { } start)
+                {
+                    <time datetime="@start.ToString("o", CultureInfo.InvariantCulture)">@prayer.Time</time>
+                    @if (DateOnly.FromDateTime(start.Date) != date)
+                    {
+                        <small>Næste døgn</small>
+                    }
+                }
+                else
+                {
+                    <partial name="_BrightNightTime" />
+                }
+            </dd>
+        </div>
+    }
+</dl>
+@if (Model.ShowSunrise)
+{
+    <p class="sunrise">Solopgang (Shuruk) <time datetime="@Model.Day.SunriseTime">@Model.Day.SunriseTime</time></p>
+}
