@@ -6,7 +6,7 @@
        asp-route-month="@CalendarViewModel.MonthParameter(previous)" asp-fragment="month-title">Forrige</a>
 }
 <a class="button mobile-calendar" asp-route="City" asp-route-city="@Model.City.Slug"
-   asp-fragment="week-today" aria-label="Hop til i dag" data-open-calendar-today>I dag</a>
+   asp-fragment="week-today" aria-label="Hop til i dag" data-open-calendar-today="true">I dag</a>
 <a class="button desktop-calendar" asp-route="City" asp-route-city="@Model.City.Slug"
    asp-fragment="calendar-today" aria-label="Hop til i dag">I dag</a>
 @if (Model.NextMonth < CalendarViewModel.MonthLimit)
