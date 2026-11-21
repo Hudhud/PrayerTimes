@@ -9,6 +9,10 @@
     <partial name="_PlacePicker" model="Model.Query" />
     @if (Model.Results.Count > 0)
     {
+        @if (Model.IsSpellingSuggestion)
+        {
+            <h2>Mente du?</h2>
+        }
         <ul class="place-results">
             @foreach (var place in Model.Results)
             {

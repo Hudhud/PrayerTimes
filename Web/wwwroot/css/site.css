@@ -62,7 +62,7 @@ button, select, input { font: inherit; }
 .place-picker { --control-border: #68747d; margin-block: 1.25rem 1.65rem; }
 .place-picker label { display: block; margin-bottom: .3rem; color: var(--muted); font-size: .875rem; font-weight: 600; }
 .place-controls { display: flex; flex-wrap: wrap; align-items: start; gap: .5rem; }
-.place-search { display: flex; flex: 0 1 26rem; min-width: 0; }
+.place-search { display: flex; align-items: start; flex: 0 1 26rem; min-width: 0; }
 .place-search-field { position: relative; flex: 1; min-width: 0; }
 .place-search input {
     width: 100%;
@@ -81,13 +81,24 @@ button, select, input { font: inherit; }
 .place-search .place-search-button { border-start-start-radius: 0; border-end-start-radius: 0; background: var(--surface-raised); }
 .place-search .place-search-button:hover { background: var(--border); }
 .place-suggestions { position: absolute; z-index: 3; inset-inline: 0; top: calc(100% + .3rem); }
-.place-suggestions ul, .place-search-status:not(.visually-hidden) {
+.place-suggestions ul, .place-search-status:not(.visually-hidden), .place-suggestion-heading {
     margin: 0;
     border: 1px solid var(--border);
     border-radius: .55rem;
     background: var(--surface);
     box-shadow: 0 .45rem 1.25rem #0006;
 }
+.place-suggestion-heading {
+    position: relative;
+    padding: .4rem .65rem;
+    color: var(--muted);
+    font-size: .875rem;
+    font-weight: 650;
+    border-bottom: 0;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+}
+.place-suggestion-heading:not([hidden]) + ul { border-start-start-radius: 0; border-start-end-radius: 0; }
 .place-suggestions ul { padding: .2rem; max-height: min(18rem, 40vh); overflow: auto; list-style: none; }
 .place-suggestions li { min-height: 2.75rem; padding: .5rem .65rem; border-radius: .32rem; cursor: pointer; }
 .place-suggestions li:hover, .place-suggestions li[aria-selected="true"] { background: var(--surface-raised); }
@@ -228,8 +239,11 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     th, td { padding: .2rem .25rem; border-color: #ccc; }
 }
 
-.place-heading { margin-top: 1.25rem; }
-.place-heading + .place-picker { margin-block: .75rem 1.1rem; }
+.place-heading { margin-block: 1.25rem 1rem; }
+.place-heading-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; }
+.place-heading-row h1 { flex: 1 1 10rem; min-width: 0; overflow-wrap: anywhere; }
+.place-heading-row .button { font-size: .875rem; }
+.place-picker-panel .place-picker { margin-block: .75rem 0; }
 .today-context { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; color: var(--muted); }
 .today-context time:first-letter { text-transform: uppercase; }
 .today-context a { font-size: .875rem; }
@@ -273,15 +287,20 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .place-suggestions ul:not([hidden]) { animation: show-suggestions 150ms ease-out; }
+    .place-picker-panel:not([hidden]), .place-suggestions ul:not([hidden]) { animation: show-place-options 150ms ease-out; }
     [data-use-location][aria-busy="true"]::before { animation: find-location 850ms linear infinite; }
     .prayer-updated { animation: mark-prayer 650ms ease-out; }
-    @keyframes show-suggestions { from { opacity: .55; } }
+    @keyframes show-place-options { from { opacity: .55; } }
     @keyframes find-location { to { transform: rotate(1turn); } }
     @keyframes mark-prayer { from { background-color: #433518; } }
 }
 
 @media screen and (max-width: 39rem) {
+    .place-heading-label { display: block; color: var(--muted); font-size: .55em; letter-spacing: normal; margin-bottom: .14em; }
+    .place-suggestions { position: static; }
+    .place-suggestion-heading:not([hidden]),
+    .place-suggestion-heading[hidden] + ul:not([hidden]),
+    .place-search-status:not(.visually-hidden) { margin-top: .3rem; }
     .mobile-calendar { display: block; }
     .desktop-calendar { display: none; }
     .week-day .prayer-list { grid-template-columns: 1fr; }
