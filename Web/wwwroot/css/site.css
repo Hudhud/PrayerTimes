@@ -123,6 +123,7 @@ h2 { font-size: 1.22rem; line-height: 1.25; }
 
 .next-prayer {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: .6rem;
@@ -132,9 +133,10 @@ h2 { font-size: 1.22rem; line-height: 1.25; }
     border-radius: .75rem;
     background: #2a2417;
 }
+.next-prayer > div { flex: 1 1 7rem; min-width: 0; }
 .next-prayer h2 { color: var(--accent); font-size: .875rem; }
 .next-prayer p { font-size: 1.12rem; font-weight: 650; }
-.next-prayer time { font-size: clamp(1.6rem, 7vw, 2.35rem); font-weight: 750; color: var(--accent); }
+.next-prayer time { margin-inline-start: auto; font-size: clamp(1.6rem, 7vw, 2.35rem); font-weight: 750; color: var(--accent); }
 .next-date { color: var(--muted); font-weight: 500; font-size: .83rem; display: inline-block; }
 time, table { font-variant-numeric: tabular-nums; }
 
@@ -152,7 +154,7 @@ time, table { font-variant-numeric: tabular-nums; }
 .prayer-list dd { font-size: clamp(1.18rem, 3.5vw, 1.68rem); font-weight: 670; }
 small { color: var(--muted); font-size: .72rem; font-weight: 550; }
 .prayer-list small, table small { display: block; }
-.sunrise { display: flex; align-items: baseline; gap: .6rem; color: var(--muted); }
+.sunrise { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .6rem; color: var(--muted); }
 .sunrise time { color: var(--text); font-weight: 600; }
 .notice {
     margin-top: .85rem;
@@ -189,6 +191,7 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 .site-footer { margin-top: 2rem; padding-block: 1rem 1.6rem; border-top: 1px solid var(--border); font-size: .9rem; }
 .correction { margin-block-end: .75rem; }
 .statistics { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-block: .75rem; }
+.statistics > div { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
 .statistics h2 { font-size: 1rem; }
 .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .readable { max-width: 39rem; margin-block: 1.8rem; }

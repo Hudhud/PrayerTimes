@@ -19,7 +19,11 @@ test('compact place picker opens with focus and closes with Escape', async ({ pa
         await expect(search(page)).not.toBeFocused();
         await page.getByRole('button', { name: 'Luk stedvælger', exact: true }).tap();
     }
-    await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
+    await page.evaluate(() => {
+        const styles = document.documentElement.style;
+        styles.fontSize = '200%';
+        styles.fontFamily = '"DejaVu Sans", system-ui, sans-serif';
+    });
     await toggle.press('Enter');
     await expect(search(page)).toBeFocused();
     const panel = page.locator('#place-picker-panel');
