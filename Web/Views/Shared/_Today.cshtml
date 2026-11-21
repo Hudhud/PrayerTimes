@@ -44,7 +44,6 @@
     <p class="today-context">
         <strong data-historical-times hidden>Historiske bønnetider</strong>
         <time datetime="@date">@Model.Date.ToString("dddd d. MMMM yyyy", danish)</time>
-        <a asp-controller="Home" asp-action="Method">Dansk lokal tid og beregningsmetode</a>
     </p>
 
     @if (day is null)

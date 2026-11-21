@@ -47,10 +47,11 @@
 <partial name="_Calendar" model="Model.Calendar" />
 
 @section Footer {
-    <p class="correction">
+    <div class="footer-links">
+        <a asp-action="Method">Dansk lokal tid og beregningsmetode</a>
         <a asp-action="Correction" asp-route-city="@city.Slug"
            asp-route-date="@CalendarViewModel.DayParameter(Model.Daily.NextDate ?? Model.Daily.Date)"
            asp-route-prayer="@Model.Daily.Next?.Name" data-correction-link>Meld en fejl i en bønnetid</a>
-    </p>
+    </div>
     <partial name="_StatisticsPrompt" />
 }

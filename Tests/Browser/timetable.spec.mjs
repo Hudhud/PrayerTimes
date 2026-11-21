@@ -228,7 +228,7 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await expect(page.getByRole('table')).toBeVisible();
     await expect(page.getByRole('link', { name: 'Hent kalenderfil' })).toBeHidden();
     await page.emulateMedia({ media: 'screen' });
-    await page.getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
+    await page.getByRole('contentinfo').getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
 });
 

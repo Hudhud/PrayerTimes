@@ -41,7 +41,7 @@ try {
     }
     expect(sunrise < dhuhr && dhuhr < asr && asr < maghrib).toBeTruthy();
 
-    await page.getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
+    await page.getByRole('contentinfo').getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
     const catalog = await page.evaluate(async () => {
         const response = await fetch('/data/prayer-places.json');
