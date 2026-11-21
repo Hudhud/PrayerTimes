@@ -6,8 +6,17 @@
     ViewData["PlaceDataAttribution"] = true;
 }
 
-<h1 class="place-heading">Bønnetider i @city.Name</h1>
-<partial name="_PlacePicker" model="string.Empty" />
+<header class="place-heading">
+    <div class="place-heading-row">
+        <h1><span class="place-heading-label">Bønnetider i </span>@city.Name</h1>
+        <a class="button" asp-controller="Home" asp-action="Places" data-place-fallback>Skift sted</a>
+        <button class="button" type="button" aria-controls="place-picker-panel" aria-expanded="false"
+                data-place-toggle hidden>Skift sted</button>
+    </div>
+    <div id="place-picker-panel" class="place-picker-panel" hidden>
+        <partial name="_PlacePicker" model="string.Empty" />
+    </div>
+</header>
 <p class="visually-hidden" data-prayer-announcement role="status"></p>
 <p class="notice" data-prayer-refresh-error hidden>Tiderne kunne ikke opdateres. Siden prøver igen.</p>
 <partial name="_Today" model="Model.Daily" />

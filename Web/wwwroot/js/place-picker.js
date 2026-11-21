@@ -7,9 +7,12 @@
     const form = picker.querySelector('form');
     const input = form.querySelector('input');
     const list = form.querySelector('[role="listbox"]');
+    const spellingHeading = form.querySelector('[data-spelling-heading]');
     const searchStatus = form.querySelector('[role="status"]');
     const locationButton = picker.querySelector('[data-use-location]');
     const locationStatus = picker.querySelector('[data-location-status]');
+    const toggle = document.querySelector('[data-place-toggle]');
+    const panel = toggle ? document.getElementById(toggle.getAttribute('aria-controls')) : null;
     const currentPlace = document.querySelector('[data-current-place]')?.dataset;
     const recentKey = 'salahtimes-recent-places';
     const recentPlaces = rememberPlace();
@@ -36,6 +39,7 @@
         suggestions = [];
         list.replaceChildren();
         list.hidden = true;
+        spellingHeading.hidden = true;
         activeIndex = -1;
         input.setAttribute('aria-expanded', 'false');
         input.removeAttribute('aria-activedescendant');
@@ -68,7 +72,9 @@
             if (results.length === 0) {
                 showSearchMessage('Ingen steder fundet. Prøv et andet bynavn eller postnummer.');
             } else {
-                renderSuggestions(results, 'Stedforslag');
+                const spelling = results[0].isSpellingSuggestion;
+                renderSuggestions(results, spelling ? 'Mente du?' : 'Stedforslag');
+                spellingHeading.hidden = !spelling;
             }
         } catch {
             if (!request.signal.aborted && document.activeElement === input) {
@@ -313,7 +319,7 @@
 
     function canRefreshLocation() {
         return currentPlace && locationPreference?.placeId === currentPlace.currentPlace && !locationRequest &&
-            !document.hidden && document.activeElement !== input;
+            !document.hidden && (!panel || panel.hidden) && document.activeElement !== input;
     }
 
     async function refreshLocation() {
@@ -333,6 +339,43 @@
         } catch {
             // Some browsers do not support querying geolocation permission.
         }
+    }
+
+    if (panel) {
+        // Keep location updates audible even when the search controls are collapsed.
+        panel.after(locationStatus);
+        toggle.addEventListener('click', event => {
+            if (panel.hidden) {
+                cancelLocationRequest();
+                toggle.textContent = 'Luk stedvælger';
+                toggle.setAttribute('aria-expanded', 'true');
+                panel.hidden = false;
+                if (event.detail === 0 || !window.matchMedia('(pointer: coarse)').matches) {
+                    input.focus();
+                }
+            } else {
+                closePicker();
+            }
+        });
+        panel.parentElement.addEventListener('keydown', event => {
+            if (!panel.hidden && event.key === 'Escape' && !event.defaultPrevented && !event.isComposing) {
+                event.preventDefault();
+                closePicker();
+            }
+        });
+
+        function closePicker() {
+            closeSuggestions();
+            cancelLocationRequest();
+            locationStatus.textContent = '';
+            panel.hidden = true;
+            toggle.textContent = 'Skift sted';
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.focus();
+        }
+
+        document.querySelector('[data-place-fallback]').hidden = true;
+        toggle.hidden = false;
     }
 
     if (window.isSecureContext && navigator.geolocation) {

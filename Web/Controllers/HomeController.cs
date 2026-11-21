@@ -65,10 +65,10 @@ public sealed class HomeController(
             return BadRequest();
         }
 
-        var results = places.Search(query);
-        return results.Count == 1
-            ? RedirectToRoute("City", new { city = results[0].Id })
-            : View(new PlaceSearchViewModel(query, results));
+        var search = SearchPlaces(query);
+        return !search.IsSpellingSuggestion && search.Results.Count == 1
+            ? RedirectToRoute("City", new { city = search.Results[0].Id })
+            : View(search);
     }
 
     [HttpGet("/steder/forslag")]
@@ -80,12 +80,26 @@ public sealed class HomeController(
             return BadRequest();
         }
 
-        return Json(places.Search(query).Take(6).Select(place => new
+        var search = SearchPlaces(query);
+        return Json(search.Results.Take(6).Select(place => new
         {
             place.Label,
             Area = place.Area == place.Name ? null : place.Area,
-            Url = Url.RouteUrl("City", new { city = place.Id })
+            Url = Url.RouteUrl("City", new { city = place.Id }),
+            search.IsSpellingSuggestion
         }));
+    }
+
+    private PlaceSearchViewModel SearchPlaces(string query)
+    {
+        var results = places.Search(query);
+        if (results.Count > 0)
+        {
+            return new PlaceSearchViewModel(query, results);
+        }
+
+        var alternatives = places.SuggestSpelling(query);
+        return new PlaceSearchViewModel(query, alternatives, IsSpellingSuggestion: alternatives.Count > 0);
     }
 
     [HttpGet("/{city}/i-dag", Name = "Today")]

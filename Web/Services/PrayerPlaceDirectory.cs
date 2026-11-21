@@ -75,6 +75,57 @@ public sealed class PrayerPlaceDirectory
             .ToArray();
     }
 
+    public IReadOnlyList<PrayerPlace> SuggestSpelling(string query)
+    {
+        var input = query.Trim();
+        if (input.Length is < 5 or > 80 || !char.IsLetter(input[0]))
+        {
+            return [];
+        }
+
+        var label = Normalize(input);
+        var folded = Fold(input);
+        return searchable
+            .Where(entry => entry.Place.PostalCode is null &&
+                (HasOneEdit(folded, entry.FoldedLabel) || HasOneEdit(label, entry.Label)))
+            .OrderBy(entry => entry.Place.Label, DanishComparer)
+            .ThenBy(entry => entry.Place.Area, DanishComparer)
+            .Take(6)
+            .Select(entry => entry.Place)
+            .ToArray();
+    }
+
+    private static bool HasOneEdit(string first, string second)
+    {
+        if (first.Length > second.Length)
+        {
+            (first, second) = (second, first);
+        }
+        if (second.Length - first.Length > 1)
+        {
+            return false;
+        }
+
+        var index = 0;
+        while (index < first.Length && first[index] == second[index])
+        {
+            index++;
+        }
+        if (first.Length < second.Length)
+        {
+            return first.AsSpan(index).SequenceEqual(second.AsSpan(index + 1));
+        }
+        if (index == first.Length)
+        {
+            return false;
+        }
+
+        // Compare the suffix after one replaced letter or two swapped neighbors.
+        return first.AsSpan(index + 1).SequenceEqual(second.AsSpan(index + 1)) ||
+            (index + 1 < first.Length && first[index] == second[index + 1] && first[index + 1] == second[index] &&
+                first.AsSpan(index + 2).SequenceEqual(second.AsSpan(index + 2)));
+    }
+
     private static int Rank(string label, string foldedLabel, string area, string query, string folded, string[] words, bool isPostalCode)
     {
         if (label == query)

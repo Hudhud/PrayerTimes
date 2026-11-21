@@ -25,6 +25,27 @@ public sealed class LocalPlacesTests
         Assert.Equal(label, places.Find(slug)?.Name);
     }
 
+    [Theory]
+    [InlineData("Købenahvn")]
+    [InlineData("Koebenahvn")]
+    [InlineData("Købenavn")]
+    [InlineData("Købennhavn")]
+    [InlineData("Købenxavn")]
+    public void SuggestsCopenhagenForOneSpellingError(string query)
+    {
+        Assert.Empty(places.Search(query));
+        Assert.Contains(places.SuggestSpelling(query), place => place.Id == "koebenhavn");
+    }
+
+    [Theory]
+    [InlineData("80000")]
+    [InlineData("Vbx")]
+    [InlineData("zzzzzzzzzzzzzz")]
+    public void DoesNotGuessPostalCodesShortNamesOrUnrelatedNames(string query)
+    {
+        Assert.Empty(places.SuggestSpelling(query));
+    }
+
     [Fact]
     public async Task LocalProviderReturnsTheRequestedRangeAcrossMonthBoundaries()
     {

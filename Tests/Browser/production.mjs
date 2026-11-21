@@ -7,7 +7,12 @@ try {
     const home = await page.goto(origin, { waitUntil: 'domcontentloaded', timeout: 30000 });
     expect(home?.ok()).toBeTruthy();
     await expect(page.getByRole('heading', { name: 'Næste bøn', exact: true })).toBeVisible();
-    await page.getByRole('combobox', { name: 'By eller postnummer' }).fill('8000');
+    const placeSearch = page.getByRole('combobox', { name: 'By eller postnummer' });
+    await expect(placeSearch).toBeHidden();
+    await page.getByRole('button', { name: 'Skift sted', exact: true }).click();
+    await placeSearch.fill('Købenahvn');
+    await expect(page.getByRole('listbox', { name: 'Mente du?' }).getByRole('option', { name: /København/ }).first()).toBeVisible();
+    await placeSearch.fill('8000');
     await page.getByRole('option', { name: /8000 Aarhus C/ }).click();
     await expect(page).toHaveURL(/\/post-8000$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('8000 Aarhus C');

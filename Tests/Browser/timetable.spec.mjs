@@ -1,9 +1,42 @@
 import { expect, test } from '@playwright/test';
 
 const search = page => page.getByRole('combobox', { name: 'By eller postnummer' });
+const openPicker = page => page.getByRole('button', { name: 'Skift sted', exact: true }).click();
+
+test('compact place picker opens with focus and closes with Escape', async ({ page, isMobile }) => {
+    if (isMobile) {
+        await page.setViewportSize({ width: 320, height: 720 });
+    }
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    const toggle = page.getByRole('button', { name: 'Skift sted', exact: true });
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(search(page)).toBeHidden();
+    await expect(page.getByRole('heading', { name: 'Næste bøn', exact: true })).toBeInViewport();
+    if (isMobile) {
+        await toggle.tap();
+        await expect(search(page)).toBeVisible();
+        await expect(search(page)).not.toBeFocused();
+        await page.getByRole('button', { name: 'Luk stedvælger', exact: true }).tap();
+    }
+    await page.evaluate(() => {
+        const styles = document.documentElement.style;
+        styles.fontSize = '200%';
+        styles.fontFamily = '"DejaVu Sans", system-ui, sans-serif';
+    });
+    await toggle.press('Enter');
+    await expect(search(page)).toBeFocused();
+    const panel = page.locator('#place-picker-panel');
+    await expect(panel).toHaveCSS('animation-name', 'none');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize().width);
+    await search(page).press('Escape');
+    await expect(toggle).toBeFocused();
+    await expect(search(page)).toBeHidden();
+});
 
 test('search by postcode and return to a recent place', async ({ page }) => {
     await page.goto('/');
+    await openPicker(page);
     await search(page).fill('8000');
     await expect(page.getByRole('option', { name: /8000 Aarhus C/ })).toBeVisible();
     await search(page).press('ArrowDown');
@@ -11,6 +44,7 @@ test('search by postcode and return to a recent place', async ({ page }) => {
     await expect(page).toHaveURL(/\/post-8000$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('8000 Aarhus C');
 
+    await openPicker(page);
     await search(page).focus();
     await expect(page.getByRole('listbox', { name: 'Senest brugte steder' })).toBeVisible();
     await page.getByRole('option', { name: 'København' }).click();
@@ -22,12 +56,26 @@ test('a one-result search also works without JavaScript', async ({ browser }) =>
     try {
         const page = await context.newPage();
         await page.goto('/');
+        await page.getByRole('link', { name: 'Skift sted' }).click();
         await page.getByRole('searchbox', { name: 'By eller postnummer' }).fill('6700');
         await page.getByRole('button', { name: 'Søg', exact: true }).click();
         await expect(page).toHaveURL(/\/post-6700$/);
     } finally {
         await context.close();
     }
+});
+
+test('a spelling suggestion requires an explicit choice', async ({ page }) => {
+    await page.goto('/');
+    await openPicker(page);
+    await search(page).fill('Købenahvn');
+    const suggestions = page.getByRole('listbox', { name: 'Mente du?' });
+    await expect(suggestions.getByRole('option', { name: /København/ }).first()).toBeVisible();
+    await search(page).press('Enter');
+    await expect(page).toHaveURL(/\/steder\?q=/);
+    await expect(page.getByRole('heading', { name: 'Mente du?' })).toBeVisible();
+    await page.getByRole('link', { name: 'København', exact: true }).click();
+    await expect(page).toHaveURL(/\/koebenhavn$/);
 });
 
 test('location opens and refreshes the nearby timetable, then respects a manual choice', async ({ page }) => {
@@ -47,8 +95,10 @@ test('location opens and refreshes the nearby timetable, then respects a manual 
         });
     });
     await page.goto('/');
+    await openPicker(page);
     await page.getByRole('button', { name: 'Brug min placering' }).click();
     await expect(page).toHaveURL(/\/aarhus$/);
+    await openPicker(page);
     await expect(page.getByRole('button', { name: 'Stop automatisk placering' })).toBeVisible();
     await page.evaluate(() => {
         const preference = JSON.parse(localStorage.getItem('salahtimes-auto-location'));
@@ -58,10 +108,12 @@ test('location opens and refreshes the nearby timetable, then respects a manual 
     });
     await page.reload();
     await expect(page).toHaveURL(/\/odense$/);
+    await openPicker(page);
     await expect(page.getByRole('button', { name: 'Stop automatisk placering' })).toBeVisible();
     await search(page).fill('6700');
     await page.getByRole('option', { name: /6700 Esbjerg/ }).click();
     await expect(page).toHaveURL(/\/post-6700$/);
+    await openPicker(page);
     await expect(page.getByRole('button', { name: 'Brug min placering' })).toBeVisible();
 });
 
@@ -72,6 +124,7 @@ test('denied location keeps search usable', async ({ page }) => {
         });
     });
     await page.goto('/');
+    await openPicker(page);
     await page.getByRole('button', { name: 'Brug min placering' }).click();
     await expect(page.getByText(/Browseren giver ikke adgang/)).toBeVisible();
     await search(page).fill('Viby Aarhus');
@@ -132,6 +185,7 @@ test('live timetable refresh keeps the active search intact', async ({ page }) =
     }, { times: 1 });
 
     await page.goto('/');
+    await openPicker(page);
     await search(page).fill('Viby');
     await expect(page.getByRole('heading', { name: 'Næste bøn opdateret' })).toBeVisible();
     await expect(search(page)).toBeFocused();
