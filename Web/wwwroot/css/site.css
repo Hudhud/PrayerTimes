@@ -110,6 +110,7 @@ button, select, input { font: inherit; }
 .location-button:disabled { cursor: wait; color: var(--muted); }
 .location-status { color: var(--muted); }
 .location-status:not(:empty) { margin-top: .5rem; }
+.location-suggestion { margin-top: .35rem; font-size: .875rem; }
 .place-results { padding: 0; list-style: none; }
 .place-results li + li { margin-top: .4rem; }
 .place-results a { display: block; min-height: 2.75rem; padding: .5rem .75rem; border: 1px solid var(--border); border-radius: .55rem; }
@@ -154,6 +155,7 @@ time, table { font-variant-numeric: tabular-nums; }
 .prayer-list dd { font-size: clamp(1.18rem, 3.5vw, 1.68rem); font-weight: 670; }
 small { color: var(--muted); font-size: .72rem; font-weight: 550; }
 .prayer-list small, table small { display: block; }
+.prayer-list .bright-night-explanation { display: block; margin: 0; }
 .sunrise { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .6rem; color: var(--muted); }
 .sunrise time { color: var(--text); font-weight: 600; }
 .notice {
@@ -240,9 +242,9 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     th, td { padding: .2rem .25rem; border-color: #ccc; }
 }
 
-.place-heading { margin-block: 1.25rem 1rem; }
+.place-heading, .offline-plan-heading { margin-block: 1.25rem 1rem; }
 .place-heading-row { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; }
-.place-heading-row h1 { flex: 1 1 10rem; min-width: 0; overflow-wrap: anywhere; }
+.place-title { flex: 1 1 10rem; min-width: 0; overflow-wrap: anywhere; }
 .place-heading-row .button { font-size: .875rem; }
 .place-picker-panel .place-picker { margin-block: .75rem 0; }
 .today-context { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; color: var(--muted); }
@@ -250,7 +252,7 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 .today-context a { font-size: .875rem; }
 .today .next-prayer { margin-top: .55rem; }
 .next-prayer .next-detail { font-size: .94rem; font-weight: 500; }
-.today-note, .calendar-note {
+.calendar-note {
     margin-top: .65rem;
     padding: .65rem .8rem;
     border-inline-start: .2rem solid var(--accent);
@@ -259,7 +261,12 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     border-radius: .35rem;
     font-size: .9rem;
 }
-.today-note strong { color: var(--text); }
+.today-context [data-historical-times] { color: var(--text); }
+.offline-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .75rem; margin-top: 1rem; }
+.offline-controls .button { font-size: .875rem; }
+.offline-status { flex-basis: 100%; color: var(--muted); }
+.offline-status:empty { display: none; }
+.offline-plan .week-day h2 { font-size: 1rem; }
 .asr-control, .calendar-actions, .calendar-nav, .week-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .65rem; }
 .asr-control { margin-top: .85rem; font-size: .875rem; color: var(--muted); }
 .asr-control strong { color: var(--text); }
@@ -328,7 +335,8 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 }
 
 @media print {
-    .place-heading, .asr-control, .calendar-options, .calendar-nav, [data-prayer-refresh-error] { display: none !important; }
+    .place-heading, .asr-control, .offline-controls,
+    .calendar-options, .calendar-nav, [data-prayer-refresh-error] { display: none !important; }
     .calendar-note { color: #000; background: #fff; border-color: #aaa; break-inside: avoid; }
     .calendar-note a { color: inherit; }
 }

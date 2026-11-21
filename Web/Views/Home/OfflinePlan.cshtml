@@ -1,0 +1,29 @@
+@model Web.ViewModels.OfflinePrayerTimesViewModel
+@using System.Globalization
+@using Web.ViewModels
+@{
+    ViewData["Title"] = $"Offline bønnetider i {Model.City.Name}";
+    ViewData["OfflinePlan"] = true;
+    var danish = CultureInfo.GetCultureInfo("da-DK");
+}
+
+<section class="offline-plan" aria-labelledby="offline-heading">
+    <header class="offline-plan-heading">
+        <h1 id="offline-heading">Offline bønnetider i @Model.City.Name</h1>
+        <p class="today-context">
+            <span><time datetime="@CalendarViewModel.DayParameter(Model.Start)">@Model.Start.ToString("d. MMMM yyyy", danish)</time>
+                – <time datetime="@CalendarViewModel.DayParameter(Model.End)">@Model.End.ToString("d. MMMM yyyy", danish)</time></span>
+            <span>Asr-metode <strong>@(Model.Hanafi ? "Hanafi" : "Standard")</strong></span>
+            <span>Dansk lokal tid</span>
+        </p>
+        <a asp-route="City" asp-route-city="@Model.City.Slug">Åbn den aktuelle bønneplan, når du er online</a>
+    </header>
+    @foreach (var day in Model.Days)
+    {
+        var date = DateOnly.FromDateTime(day.Date);
+        <article class="week-day">
+            <h2><time datetime="@CalendarViewModel.DayParameter(date)">@date.ToString("dddd d. MMMM", danish)</time></h2>
+            <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true, ExplainBrightNights: true)" />
+        </article>
+    }
+</section>

@@ -19,5 +19,8 @@
                 data-catalog="@Url.Content("~/data/prayer-places.json")" data-place-base="@Url.Content("~/")"
                 hidden>Brug min placering</button>
     </div>
-    <p class="location-status" data-location-status role="status"></p>
+    <div data-location-feedback>
+        <p class="location-status" data-location-status role="status"></p>
+        <button class="button location-suggestion" type="button" data-location-suggestion hidden></button>
+    </div>
 </div>

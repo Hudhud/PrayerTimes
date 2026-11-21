@@ -1,6 +1,7 @@
 @using Web.Controllers
 @{
     var statistics = Context.Request.Cookies[HomeController.AnalyticsCookie];
+    var offlinePlan = ViewData["OfflinePlan"] is true;
 }
 <!DOCTYPE html>
 <html lang="da">
@@ -9,10 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark" />
     <title>@ViewData["Title"] · Salah Times</title>
-    <link rel="icon" href="~/favicon.ico" type="image/x-icon" sizes="16x16 32x32 48x48" asp-append-version="true" />
-    <link rel="icon" href="~/icons/favicon.svg" type="image/svg+xml" sizes="any" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @if (statistics == "yes")
+    @if (!offlinePlan)
+    {
+        <link rel="icon" href="~/favicon.ico" type="image/x-icon" sizes="16x16 32x32 48x48" asp-append-version="true" />
+    }
+    <link rel="icon" href="~/icons/favicon.svg" type="image/svg+xml" sizes="any" asp-append-version="@(!offlinePlan)" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="@(!offlinePlan)" />
+    @if (!offlinePlan && statistics == "yes")
     {
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-03RLGPN608"></script>
         <script>
@@ -29,7 +33,10 @@
             });
         </script>
     }
-    <script defer src="~/js/site.js" asp-append-version="true"></script>
+    @if (!offlinePlan)
+    {
+        <script defer src="~/js/site.js" asp-append-version="true"></script>
+    }
     @if (ViewData["PlaceDataAttribution"] is true)
     {
         <script defer src="~/js/place-picker.js" asp-append-version="true"></script>

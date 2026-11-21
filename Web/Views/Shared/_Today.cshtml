@@ -12,12 +12,13 @@
 }
 <section aria-label="Dagens bønnetider" class="today" data-current-place="@Model.City.Slug"
          data-place-name="@Model.City.Name" data-today="@date" data-correction-url="@correctionUrl"
-         data-refresh-url="@Url.RouteUrl("Today", new { city = Model.City.Slug })"
+         data-asr-method="@Model.AsrMethod" data-midnight="@Model.Midnight.ToString("o", CultureInfo.InvariantCulture)"
+         data-refresh-url="@Url.RouteUrl("Today", new { city = Model.City.Slug, asr = Model.AsrMethod })"
          data-rendered-at="@Model.Now.ToString("o", CultureInfo.InvariantCulture)"
          data-refresh-at="@Model.RefreshAt.ToString("o", CultureInfo.InvariantCulture)">
     <div class="next-prayer" data-next-prayer>
         <div>
-            <h2>Næste bøn</h2>
+            <h2 tabindex="-1">Næste bøn</h2>
             @if (next?.StartsAt is not null)
             {
                 <p>@next.Name @if (Model.NextDate is { } nextDate && nextDate != Model.Date)
@@ -28,7 +29,7 @@
             }
             else if (Model.NextAffectedByBrightNights)
             {
-                <p class="next-detail">Tidspunktet afhænger af metoden for lyse nætter.</p>
+                <p class="next-detail">Tidspunktet afhænger af <a asp-action="Method" asp-fragment="lyse-naetter">metoden for lyse nætter</a>.</p>
             }
             else
             {
@@ -41,28 +42,17 @@
         }
     </div>
     <p class="today-context">
+        <strong data-historical-times hidden>Historiske bønnetider</strong>
         <time datetime="@date">@Model.Date.ToString("dddd d. MMMM yyyy", danish)</time>
         <a asp-controller="Home" asp-action="Method">Dansk lokal tid og beregningsmetode</a>
     </p>
 
     @if (day is null)
     {
-        <div class="notice">
-            <strong>Dagens bønnetider er midlertidigt utilgængelige.</strong>
-            <p>Prøv igen om lidt.</p>
-            <p><small>Reference @Model.RequestId</small></p>
-        </div>
+        <p><small>Reference @Model.RequestId</small></p>
     }
     else
     {
-        <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true)" />
-    }
-    @if (Model.HasBrightNightTimes || Model.NextAffectedByBrightNights)
-    {
-        <p class="today-note">
-            <strong>Lyse nætter</strong>
-            Når Fajr eller Isha står med streger, kan solens vinkel for bønnen ikke nås den nat.
-            Følg bønneplanen fra din lokale moské, eller <a asp-action="Method" asp-fragment="lyse-naetter">læs om metoden</a>.
-        </p>
+        <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true, ExplainBrightNights: true)" />
     }
 </section>

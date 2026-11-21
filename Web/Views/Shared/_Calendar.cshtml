@@ -82,7 +82,7 @@
                      data-today-anchor="week-today" id="@(isToday ? "week-today" : null)" tabindex="-1">
                 <h3><time datetime="@CalendarViewModel.DayParameter(date)">@date.ToString("dddd d. MMMM", danish)</time>
                     <small data-today-label hidden="@(!isToday)">I dag</small></h3>
-                <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true)" />
+                <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true, ExplainBrightNights: true)" />
             </article>
         }
     </div>

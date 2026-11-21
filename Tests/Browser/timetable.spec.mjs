@@ -1,4 +1,7 @@
 import { expect, test } from '@playwright/test';
+import { once } from 'node:events';
+import { createServer, request as httpRequest } from 'node:http';
+import { request as httpsRequest } from 'node:https';
 
 const search = page => page.getByRole('combobox', { name: 'By eller postnummer' });
 const openPicker = page => page.getByRole('button', { name: 'Skift sted', exact: true }).click();
@@ -84,8 +87,8 @@ test('location opens and refreshes the nearby timetable, then respects a manual 
             value: {
                 getCurrentPosition: success => {
                     const coords = localStorage.getItem('mock-moved') === 'yes'
-                        ? { latitude: 55.403756, longitude: 10.40237 }
-                        : { latitude: 56.162939, longitude: 10.203921 };
+                        ? { latitude: 55.403756, longitude: 10.40237, accuracy: 30 }
+                        : { latitude: 56.162939, longitude: 10.203921, accuracy: 30 };
                     success({ coords });
                 }
             }
@@ -98,6 +101,7 @@ test('location opens and refreshes the nearby timetable, then respects a manual 
     await openPicker(page);
     await page.getByRole('button', { name: 'Brug min placering' }).click();
     await expect(page).toHaveURL(/\/aarhus$/);
+    await expect(page.getByText('Automatisk valgt', { exact: true })).toBeVisible();
     await openPicker(page);
     await expect(page.getByRole('button', { name: 'Stop automatisk placering' })).toBeVisible();
     await page.evaluate(() => {
@@ -108,13 +112,38 @@ test('location opens and refreshes the nearby timetable, then respects a manual 
     });
     await page.reload();
     await expect(page).toHaveURL(/\/odense$/);
+    await expect(page.getByText('Automatisk valgt', { exact: true })).toBeVisible();
     await openPicker(page);
     await expect(page.getByRole('button', { name: 'Stop automatisk placering' })).toBeVisible();
     await search(page).fill('6700');
     await page.getByRole('option', { name: /6700 Esbjerg/ }).click();
     await expect(page).toHaveURL(/\/post-6700$/);
+    await expect(page.getByText('Automatisk valgt', { exact: true })).toBeHidden();
     await openPicker(page);
     await expect(page.getByRole('button', { name: 'Brug min placering' })).toBeVisible();
+});
+
+test('an imprecise automatic location keeps the current place until confirmed', async ({ page }) => {
+    await page.addInitScript(() => {
+        localStorage.setItem('salahtimes-auto-location', JSON.stringify({ placeId: 'koebenhavn', checkedAt: 0 }));
+        Object.defineProperty(navigator, 'geolocation', {
+            value: { getCurrentPosition: success => success({
+                coords: { latitude: 56.162939, longitude: 10.203921, accuracy: 4500 }
+            }) }
+        });
+        Object.defineProperty(navigator, 'permissions', {
+            value: { query: async () => ({ state: 'granted' }) }
+        });
+    });
+
+    await page.goto('/koebenhavn');
+    const suggestion = page.getByRole('button', { name: 'Vælg Aarhus' });
+    await expect(suggestion).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('København');
+    await expect(page).toHaveURL(/\/koebenhavn$/);
+    await suggestion.click();
+    await expect(page).toHaveURL(/\/aarhus$/);
+    await expect(page.getByText('Automatisk valgt', { exact: true })).toBeHidden();
 });
 
 test('denied location keeps search usable', async ({ page }) => {
@@ -174,6 +203,12 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
         await expect(page.getByRole('heading', { name: /15.*21.*jun.*2026/ })).toBeVisible();
         await expect(page.getByRole('article').first()).toBeVisible();
         await expect(page.getByRole('table')).toBeHidden();
+        const brightNight = page.locator('article[data-calendar-date="2026-06-21"] .prayer-list');
+        for (const prayer of ['Fajr', 'Isha']) {
+            const entry = brightNight.locator('div').filter({ has: page.getByText(prayer, { exact: true }) });
+            await expect(entry).toContainText('Solens vinkel nås ikke.');
+            await expect(entry.getByRole('link', { name: 'Læs om lyse nætter' })).toHaveAttribute('href', '/beregning#lyse-naetter');
+        }
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize().width);
     } else {
         await expect(page.getByRole('heading', { name: 'juni 2026', exact: true })).toBeVisible();
@@ -228,9 +263,9 @@ test('live timetable refresh keeps the next prayer above today’s date and pres
             .replace(/data-refresh-at="[^"]+"/, 'data-refresh-at="2026-11-20T20:00:02Z"');
         await route.fulfill({ response, body });
     }, { times: 1 });
-    await page.route('**/koebenhavn/i-dag', async route => {
+    await page.route('**/koebenhavn/i-dag?asr=standard', async route => {
         const response = await route.fetch();
-        const body = (await response.text()).replace('Næste bøn</h2>', 'Næste bøn opdateret</h2>');
+        const body = (await response.text()).replace('>Næste bøn</h2>', '>Næste bøn opdateret</h2>');
         await route.fulfill({ response, body });
     }, { times: 1 });
 
@@ -245,4 +280,123 @@ test('live timetable refresh keeps the next prayer above today’s date and pres
     expect(card.y + card.height).toBeLessThan(date.y);
     await expect(search(page)).toBeFocused();
     await expect(search(page)).toHaveValue('Viby');
+});
+
+test('a 503 keeps today’s times and retry only accepts the selected Asr method', async ({ page }) => {
+    await page.route('**/koebenhavn', async route => {
+        const response = await route.fetch();
+        const body = (await response.text()).replace(/data-refresh-at="[^"]+"/, 'data-refresh-at="2000-01-01T00:00:00Z"');
+        await route.fulfill({ response, body });
+    });
+    let attempt = 0;
+    await page.route('**/koebenhavn/i-dag?asr=standard', async route => {
+        const response = await route.fetch();
+        const body = await response.text();
+        attempt++;
+        if (attempt === 1) {
+            await route.fulfill({ response, status: 503, body: body.replace(/<dl class="prayer-list">[\s\S]*?<\/dl>/, '') });
+        } else if (attempt === 2) {
+            await route.fulfill({ response, body: body.replace('data-asr-method="standard"', 'data-asr-method="hanafi"') });
+        } else {
+            await route.fulfill({ response, body });
+        }
+    });
+
+    await page.goto('/koebenhavn');
+    const times = page.locator('.today .prayer-list');
+    const originalTimes = await times.innerText();
+    const retry = page.getByRole('link', { name: 'Prøv igen', exact: true });
+    await expect(page.getByText(/Du ser de senest hentede tider for i dag/)).toBeVisible();
+    await expect(times).toHaveText(originalTimes);
+    const mismatch = page.waitForResponse(response => response.url().includes('/i-dag?'));
+    await retry.click();
+    await mismatch;
+    await expect(retry).not.toHaveAttribute('aria-busy');
+    await expect(times).toHaveText(originalTimes);
+    await expect(retry).toBeVisible();
+    await retry.click();
+    await expect(retry).toBeHidden();
+    await expect(times).toHaveText(originalTimes);
+    await expect(page.getByRole('heading', { name: 'Næste bøn' })).toBeVisible();
+});
+
+test('at Danish midnight the previous times are historical during a failed refresh', async ({ page }) => {
+    await page.clock.install({ time: new Date('2026-11-29T22:59:45Z') });
+    await page.route('**/koebenhavn?month=2026-11', async route => {
+        const response = await route.fetch();
+        const body = (await response.text())
+            .replace(/data-today="[^"]+"/, 'data-today="2026-11-29"')
+            .replace(/data-rendered-at="[^"]+"/, 'data-rendered-at="2026-11-29T22:59:45Z"')
+            .replace(/data-refresh-at="[^"]+"/, 'data-refresh-at="2026-11-29T22:59:46Z"')
+            .replace(/data-midnight="[^"]+"/, 'data-midnight="2026-11-29T23:00:00Z"')
+            .replace(/(<p class="today-context">[\s\S]*?<time datetime=")[^"]+"[^<]+/,
+                (_, prefix) => `${prefix}2026-11-29">søndag 29. november 2026`);
+        await route.fulfill({ response, body });
+    });
+    await page.route('**/koebenhavn/i-dag?asr=standard', route => route.fulfill({ status: 503 }));
+
+    await page.goto('/koebenhavn?month=2026-11');
+    const dates = page.locator('.today-context time');
+    await expect(dates).toHaveAttribute('datetime', '2026-11-29');
+    await page.clock.fastForward(3000);
+    await expect(page.getByText(/Du ser de senest hentede tider for i dag/)).toBeVisible();
+    await page.clock.fastForward(15000);
+    const historical = page.getByRole('region', { name: 'Historiske bønnetider' });
+    await expect(historical.getByText('Historiske bønnetider', { exact: true })).toBeVisible();
+    await expect(historical.locator('.prayer-list')).toBeVisible();
+    await expect(historical.getByRole('heading', { name: 'Næste bøn' })).toBeHidden();
+    await expect(dates).toHaveAttribute('datetime', '2026-11-29');
+    await expect(page.locator('.current-day').first()).toHaveAttribute('data-calendar-date', '2026-11-30');
+    await expect(page.getByText('Dagens bønnetider kunne ikke hentes.')).toBeVisible();
+});
+
+test('a saved seven-day plan can be reopened without a connection', async ({ page, context, baseURL }) => {
+    // WebKit's Playwright offline switch also blocks its service worker. Disconnect the test origin instead.
+    const proxy = createServer((incoming, outgoing) => {
+        const target = new URL(incoming.url, baseURL);
+        const send = target.protocol === 'https:' ? httpsRequest : httpRequest;
+        const upstream = send(target, { method: incoming.method, headers: { ...incoming.headers, host: target.host } }, response => {
+            outgoing.writeHead(response.statusCode, response.headers);
+            response.pipe(outgoing);
+        });
+        upstream.on('error', () => outgoing.destroy());
+        incoming.pipe(upstream);
+    });
+    proxy.listen(0, '127.0.0.1');
+    await once(proxy, 'listening');
+    const origin = `http://127.0.0.1:${proxy.address().port}`;
+
+    try {
+        await page.goto(`${origin}/aarhus`);
+        await page.getByRole('button', { name: 'Vis Hanafi' }).click();
+        const current = page.locator('.today');
+        const now = await current.getAttribute('data-today');
+        const asr = await current.locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time').textContent();
+        await page.getByRole('button', { name: 'Gem 7 dages tider offline' }).click();
+        const saved = page.getByRole('link', { name: 'Åbn gemt bønneplan' });
+        await expect(saved).toBeVisible();
+        const savedPath = await saved.getAttribute('href');
+        proxy.close();
+        proxy.closeAllConnections();
+
+        const reopened = await context.newPage();
+        await reopened.goto(new URL(savedPath, origin).href);
+        await expect(reopened.getByRole('heading', { name: 'Offline bønnetider i Aarhus' })).toBeVisible();
+        await expect(reopened.getByText('Asr-metode Hanafi')).toBeVisible();
+        const days = reopened.locator('.offline-plan article');
+        await expect(days).toHaveCount(7);
+        await expect(days.first().locator('h2 time')).toHaveAttribute('datetime', now);
+        await expect(days.first().locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time')).toHaveText(asr);
+        const dates = await days.locator('h2 time').evaluateAll(times => times.map(time => time.dateTime));
+        expect(dates).toEqual(Array.from({ length: 7 }, (_, index) =>
+            new Date(Date.parse(now) + index * 86400000).toISOString().slice(0, 10)));
+        await expect(reopened.locator('body')).toHaveCSS('background-color', 'rgb(18, 21, 24)');
+        await reopened.goto(`${origin}/aarhus`);
+        await expect(reopened.getByRole('heading', { name: 'Offline bønnetider i Aarhus' })).toBeVisible();
+    } finally {
+        if (proxy.listening) {
+            proxy.close();
+            proxy.closeAllConnections();
+        }
+    }
 });

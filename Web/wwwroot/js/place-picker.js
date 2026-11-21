@@ -10,7 +10,10 @@
     const spellingHeading = form.querySelector('[data-spelling-heading]');
     const searchStatus = form.querySelector('[role="status"]');
     const locationButton = picker.querySelector('[data-use-location]');
+    const locationFeedback = picker.querySelector('[data-location-feedback]');
     const locationStatus = picker.querySelector('[data-location-status]');
+    const locationSuggestion = picker.querySelector('[data-location-suggestion]');
+    const automaticPlace = document.querySelector('[data-auto-place]');
     const toggle = document.querySelector('[data-place-toggle]');
     const panel = toggle ? document.getElementById(toggle.getAttribute('aria-controls')) : null;
     const currentPlace = document.querySelector('[data-current-place]')?.dataset;
@@ -18,9 +21,11 @@
     const recentPlaces = rememberPlace();
     const locationKey = 'salahtimes-auto-location';
     const locationMaxAge = 5 * 60 * 1000;
+    const maxAutomaticAccuracy = 1000; // Geolocation reports accuracy in metres.
     let locationPreference = readLocationPreference();
     let lastLocationCheck = locationPreference?.checkedAt ?? 0;
     let locationRequest;
+    let suggestedPlace;
     let searchRequest;
     let searchTimer;
     let suggestions = [];
@@ -155,6 +160,7 @@
 
     input.addEventListener('input', () => {
         cancelLocationRequest();
+        clearLocationFeedback();
         queueSuggestions();
     });
     input.addEventListener('focus', queueSuggestions);
@@ -216,8 +222,17 @@
     }
 
     function updateLocationButton() {
-        locationButton.textContent = currentPlace && locationPreference?.placeId === currentPlace.currentPlace
-            ? 'Stop automatisk placering' : 'Brug min placering';
+        const automatic = currentPlace && locationPreference?.placeId === currentPlace.currentPlace;
+        locationButton.textContent = automatic ? 'Stop automatisk placering' : 'Brug min placering';
+        if (automaticPlace) {
+            automaticPlace.hidden = !automatic;
+        }
+    }
+
+    function clearLocationFeedback() {
+        suggestedPlace = undefined;
+        locationSuggestion.hidden = true;
+        locationStatus.textContent = '';
     }
 
     function cancelLocationRequest() {
@@ -226,12 +241,13 @@
             locationRequest = undefined;
             locationButton.disabled = false;
             locationButton.removeAttribute('aria-busy');
-            locationStatus.textContent = '';
+            clearLocationFeedback();
         }
     }
 
     function stopLocation() {
         cancelLocationRequest();
+        clearLocationFeedback();
         saveLocationPreference(null);
         updateLocationButton();
     }
@@ -259,6 +275,7 @@
     }
 
     async function useLocation(automatic = false) {
+        clearLocationFeedback();
         const request = new AbortController();
         locationRequest = request;
         lastLocationCheck = Date.now();
@@ -270,7 +287,7 @@
 
         try {
             const { coords } = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(
-                resolve, reject, { maximumAge: automatic ? locationMaxAge : 0, timeout: 10000 }));
+                resolve, reject, { enableHighAccuracy: !automatic, maximumAge: automatic ? locationMaxAge : 0, timeout: 10000 }));
             if (request.signal.aborted) {
                 return;
             }
@@ -280,11 +297,27 @@
             }
             const nearest = findNearestPlace(await response.json(), coords);
             if (request.signal.aborted ||
-                (automatic && (document.hidden || document.activeElement === input))) {
+                (automatic && (document.hidden || (panel && !panel.hidden) || document.activeElement === input))) {
                 return;
             }
             if (!nearest) {
                 locationStatus.textContent = 'Der blev ikke fundet et dansk sted i nærheden. Søg efter by eller postnummer.';
+                return;
+            }
+
+            const target = new URL(encodeURIComponent(nearest.id), new URL(locationButton.dataset.placeBase, location.href));
+            if (!Number.isFinite(coords.accuracy) || coords.accuracy <= 0 || coords.accuracy > maxAutomaticAccuracy) {
+                if (automatic) {
+                    saveLocationPreference({ placeId: currentPlace.currentPlace, checkedAt: Date.now() });
+                }
+                if (currentPlace?.currentPlace === nearest.id) {
+                    locationStatus.textContent = `Placeringen er omtrentlig. Du ser allerede bønnetiderne for ${nearest.name}.`;
+                } else {
+                    suggestedPlace = { url: target };
+                    locationStatus.textContent = 'Placeringen er omtrentlig. Bekræft det foreslåede sted.';
+                    locationSuggestion.textContent = `Vælg ${nearest.name}`;
+                    locationSuggestion.hidden = false;
+                }
                 return;
             }
 
@@ -298,7 +331,6 @@
                 return;
             }
 
-            const target = new URL(encodeURIComponent(nearest.id), new URL(locationButton.dataset.placeBase, location.href));
             if (automatic) {
                 window.location.replace(target);
             } else {
@@ -350,7 +382,7 @@
 
     if (panel) {
         // Keep location updates audible even when the search controls are collapsed.
-        panel.after(locationStatus);
+        panel.after(locationFeedback);
         toggle.addEventListener('click', event => {
             if (panel.hidden) {
                 cancelLocationRequest();
@@ -374,7 +406,6 @@
         function closePicker() {
             closeSuggestions();
             cancelLocationRequest();
-            locationStatus.textContent = '';
             panel.hidden = true;
             toggle.textContent = 'Skift sted';
             toggle.setAttribute('aria-expanded', 'false');
@@ -396,9 +427,15 @@
                 useLocation();
             }
         });
+        locationSuggestion.addEventListener('click', () => {
+            if (suggestedPlace) {
+                selectPlace(suggestedPlace);
+            }
+        });
         window.addEventListener('storage', event => {
             if (event.key === locationKey) {
                 cancelLocationRequest();
+                clearLocationFeedback();
                 locationPreference = readLocationPreference();
                 lastLocationCheck = locationPreference?.checkedAt ?? 0;
                 updateLocationButton();
