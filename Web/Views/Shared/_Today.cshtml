@@ -21,19 +21,20 @@
             <h2 tabindex="-1">Næste bøn</h2>
             @if (next?.StartsAt is not null)
             {
-                <p>@next.Name @if (Model.NextDate is { } nextDate && nextDate != Model.Date)
+                <p data-next-prayer-label>@next.Name @if (Model.NextDate is { } nextDate && nextDate != Model.Date)
                     {
                         <span class="next-date">i morgen, @nextDate.ToString("d. MMMM", danish)</span>
                     }
                 </p>
+                <p class="next-countdown" data-prayer-countdown role="timer" aria-label="Tid til næste bøn" hidden></p>
             }
             else if (Model.NextAffectedByBrightNights)
             {
-                <p class="next-detail">Tidspunktet afhænger af <a asp-action="Method" asp-fragment="lyse-naetter">metoden for lyse nætter</a>.</p>
+                <p class="next-detail" data-next-prayer-label>Tidspunktet afhænger af <a asp-action="Method" asp-fragment="lyse-naetter">metoden for lyse nætter</a>.</p>
             }
             else
             {
-                <p class="next-detail">Tidspunktet er midlertidigt utilgængeligt.</p>
+                <p class="next-detail" data-next-prayer-label>Tidspunktet er midlertidigt utilgængeligt.</p>
             }
         </div>
         @if (next?.StartsAt is { } nextStart)

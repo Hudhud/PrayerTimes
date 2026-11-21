@@ -294,6 +294,48 @@ test('live timetable refresh keeps the next prayer above today’s date and pres
     await expect(search(page)).toHaveValue('Viby');
 });
 
+test('the next prayer counts down to its start and restarts for the following prayer', async ({ page }) => {
+    await page.clock.install({ time: new Date('2026-11-29T11:59:00Z') });
+    await page.clock.pauseAt(new Date('2026-11-29T12:00:00Z'));
+
+    async function servePrayer(route, renderedAt, startsAt, name, localTime) {
+        const response = await route.fetch();
+        const body = (await response.text())
+            .replace(/data-today="[^"]+"/, 'data-today="2026-11-29"')
+            .replace(/data-rendered-at="[^"]+"/, `data-rendered-at="${renderedAt}"`)
+            .replace(/data-refresh-at="[^"]+"/, `data-refresh-at="${startsAt}"`)
+            .replace(/data-midnight="[^"]+"/, 'data-midnight="2026-11-29T23:00:00Z"')
+            .replace(/<div class="next-prayer" data-next-prayer>[\s\S]+?(?=<p class="today-context">)/, `
+                <div class="next-prayer" data-next-prayer>
+                    <div><h2 tabindex="-1">Næste bøn</h2><p data-next-prayer-label>${name}</p>
+                        <p data-prayer-countdown role="timer" aria-label="Tid til næste bøn" hidden></p></div>
+                    <time datetime="${startsAt}">${localTime}</time>
+                </div>`);
+        await route.fulfill({ response, body });
+    }
+
+    await page.route('**/koebenhavn', route =>
+        servePrayer(route, '2026-11-29T12:00:00Z', '2026-11-29T13:01:02+01:00', 'Dhuhr', '13:01'));
+    let refreshes = 0;
+    await page.route('**/koebenhavn/i-dag?asr=standard', route => {
+        refreshes++;
+        return servePrayer(route, '2026-11-29T12:01:03Z', '2026-11-29T14:05:03+01:00', 'Asr', '14:05');
+    });
+
+    await page.goto('/koebenhavn');
+    const countdown = page.getByRole('timer', { name: 'Tid til næste bøn' });
+    await expect(countdown).toHaveText('Om 1 min. 2 sek.');
+    await page.clock.fastForward(1000);
+    await expect(countdown).toHaveText('Om 1 min. 1 sek.');
+    await page.clock.fastForward(61000);
+    await expect(countdown).toHaveText('Tiden er inde');
+    expect(refreshes).toBe(0);
+    await page.clock.fastForward(1000);
+    await expect(countdown).toHaveText('Om 1 t. 4 min. 0 sek.');
+    await expect(page.locator('[data-prayer-announcement]')).toHaveText('Næste bøn Asr 14:05');
+    expect(refreshes).toBe(1);
+});
+
 test('a 503 keeps today’s times and retry only accepts the selected Asr method', async ({ page }) => {
     await page.route('**/koebenhavn', async route => {
         const response = await route.fetch();
