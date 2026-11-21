@@ -170,7 +170,7 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
 });
 
-test('live timetable refresh keeps the active search intact', async ({ page }) => {
+test('live timetable refresh keeps the next prayer above today’s date and preserves the active search', async ({ page }) => {
     await page.route('/', async route => {
         const response = await route.fetch();
         const body = (await response.text())
@@ -188,6 +188,11 @@ test('live timetable refresh keeps the active search intact', async ({ page }) =
     await openPicker(page);
     await search(page).fill('Viby');
     await expect(page.getByRole('heading', { name: 'Næste bøn opdateret' })).toBeVisible();
+    const [card, date] = await Promise.all([
+        page.locator('[data-next-prayer]').boundingBox(),
+        page.locator('.today-context time').boundingBox()
+    ]);
+    expect(card.y + card.height).toBeLessThan(date.y);
     await expect(search(page)).toBeFocused();
     await expect(search(page)).toHaveValue('Viby');
 });
