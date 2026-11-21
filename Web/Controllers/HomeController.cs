@@ -147,7 +147,7 @@ public sealed class HomeController(
         }
 
         var hanafi = UsesHanafi;
-        var days = await LoadMonthAsync(selected, monthStart, hanafi, cancellationToken);
+        var days = await LoadCalendarDaysAsync(selected, monthStart, monthStart.AddMonths(1), hanafi, cancellationToken);
         if (days.Count != DateTime.DaysInMonth(monthStart.Year, monthStart.Month))
         {
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
@@ -178,9 +178,16 @@ public sealed class HomeController(
         }
 
         var hanafi = UsesHanafi;
-        var monthRows = await LoadMonthAsync(city, monthStart, hanafi, cancellationToken);
+        var monthEnd = monthStart.AddMonths(1);
+        var weekStart = CalendarViewModel.StartOfWeek(weekDate);
+        var weekEnd = weekStart.AddDays(7);
+        var monthRows = await LoadCalendarDaysAsync(city, monthStart, monthEnd, hanafi, cancellationToken);
+        var weekRows = monthRows.Count > 0 && weekStart >= monthStart && weekEnd <= monthEnd
+            ? monthRows.Where(row =>
+                DateOnly.FromDateTime(row.Date).DayNumber - weekStart.DayNumber is >= 0 and < 7).ToArray()
+            : await LoadCalendarDaysAsync(city, weekStart, weekEnd, hanafi, cancellationToken);
         var daily = await LoadTodayAsync(city, now, hanafi, cancellationToken);
-        var calendar = new CalendarViewModel(city, today, monthStart, CalendarViewModel.StartOfWeek(weekDate), monthRows, hanafi);
+        var calendar = new CalendarViewModel(city, today, monthStart, weekStart, monthRows, weekRows, hanafi);
         return View("Index", new CityPrayerTimesViewModel(daily, calendar));
     }
 
@@ -194,22 +201,21 @@ public sealed class HomeController(
 
         month = default;
         return value.Length == 7 && DateOnly.TryParseExact($"{value}-01", "yyyy-MM-dd", CultureInfo.InvariantCulture,
-            DateTimeStyles.None, out month) && month < new DateOnly(9999, 12, 1);
+            DateTimeStyles.None, out month) && month < CalendarViewModel.MonthLimit;
     }
 
-    private async Task<IReadOnlyList<DailyPrayerTimes>> LoadMonthAsync(PrayerCity city, DateOnly month, bool hanafi,
+    private async Task<IReadOnlyList<DailyPrayerTimes>> LoadCalendarDaysAsync(PrayerCity city, DateOnly from, DateOnly until, bool hanafi,
         CancellationToken cancellationToken)
     {
         try
         {
-            var until = month.AddMonths(1);
-            var rows = await prayerTimes.GetDaysAsync(city, month, until, cancellationToken);
-            return ValidDays(rows, hanafi).Where(entry => entry.Key >= month && entry.Key < until)
+            var rows = await prayerTimes.GetDaysAsync(city, from, until, cancellationToken);
+            return ValidDays(rows, hanafi).Where(entry => entry.Key >= from && entry.Key < until)
                 .OrderBy(entry => entry.Key).Select(entry => entry.Value).ToArray();
         }
         catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
         {
-            logger.LogError(exception, "Could not load the timetable for {City}, {Month}", city.Slug, month);
+            logger.LogError(exception, "Could not load the timetable for {City} from {From} until {Until}", city.Slug, from, until);
             return [];
         }
     }

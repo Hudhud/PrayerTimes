@@ -1,0 +1,12 @@
+@model Web.ViewModels.CalendarViewModel
+@using Web.ViewModels
+@if (Model.PreviousMonth is { } previous)
+{
+    <a class="button" asp-route="City" asp-route-city="@Model.City.Slug"
+       asp-route-month="@CalendarViewModel.MonthParameter(previous)" asp-fragment="month-title">Forrige måned</a>
+}
+@if (Model.NextMonth < CalendarViewModel.MonthLimit)
+{
+    <a class="button" asp-route="City" asp-route-city="@Model.City.Slug"
+       asp-route-month="@CalendarViewModel.MonthParameter(Model.NextMonth)" asp-fragment="month-title">Næste måned</a>
+}

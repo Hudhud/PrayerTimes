@@ -56,6 +56,11 @@
         searchTimer = undefined;
         const request = new AbortController();
         searchRequest = request;
+        const waitingTimer = window.setTimeout(() => {
+            if (searchRequest === request && !request.signal.aborted && document.activeElement === input) {
+                showSearchMessage('Søger efter steder…');
+            }
+        }, 350);
         try {
             const url = new URL(form.dataset.suggestions, location.href);
             url.searchParams.set('q', query);
@@ -81,6 +86,7 @@
                 showSearchMessage('Forslag kunne ikke hentes. Tryk Søg for at prøve igen.');
             }
         } finally {
+            clearTimeout(waitingTimer);
             if (searchRequest === request) {
                 searchRequest = undefined;
             }
@@ -106,6 +112,7 @@
 
     function renderSuggestions(results, label) {
         suggestions = results;
+        searchStatus.classList.add('visually-hidden');
         list.setAttribute('aria-label', label);
         results.forEach((place, index) => {
             const option = document.createElement('li');
