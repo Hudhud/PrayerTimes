@@ -15,10 +15,6 @@
          data-refresh-url="@Url.RouteUrl("Today", new { city = Model.City.Slug })"
          data-rendered-at="@Model.Now.ToString("o", CultureInfo.InvariantCulture)"
          data-refresh-at="@Model.RefreshAt.ToString("o", CultureInfo.InvariantCulture)">
-    <p class="today-context">
-        <time datetime="@date">@Model.Date.ToString("dddd d. MMMM yyyy", danish)</time>
-        <a asp-controller="Home" asp-action="Method">Dansk lokal tid og beregningsmetode</a>
-    </p>
     <div class="next-prayer" data-next-prayer>
         <div>
             <h2>Næste bøn</h2>
@@ -44,6 +40,10 @@
             <time datetime="@nextStart.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
         }
     </div>
+    <p class="today-context">
+        <time datetime="@date">@Model.Date.ToString("dddd d. MMMM yyyy", danish)</time>
+        <a asp-controller="Home" asp-action="Method">Dansk lokal tid og beregningsmetode</a>
+    </p>
 
     @if (day is null)
     {
