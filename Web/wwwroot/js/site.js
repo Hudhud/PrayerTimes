@@ -15,6 +15,7 @@ if (timetable) {
     let refreshAt;
     let timer;
     let midnightTimer;
+    let countdownTimer;
     let calendarDate = timetable.dataset.today;
     let updating = false;
 
@@ -48,13 +49,42 @@ if (timetable) {
         }
     }
 
+    function updateCountdown(card) {
+        clearTimeout(countdownTimer);
+        const countdown = card.querySelector('[data-prayer-countdown]');
+        if (!countdown || card.hidden || document.hidden) {
+            return;
+        }
+
+        const remaining = Date.parse(card.querySelector('time')?.dateTime) - Date.now();
+        if (!Number.isFinite(remaining)) {
+            countdown.hidden = true;
+            return;
+        }
+
+        countdown.hidden = false;
+        if (remaining <= 0) {
+            countdown.textContent = 'Tiden er inde';
+            return;
+        }
+
+        const seconds = Math.ceil(remaining / 1000);
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor(seconds / 60) % 60;
+        const duration = [hours && `${hours} t.`, (hours || minutes) && `${minutes} min.`, `${seconds % 60} sek.`];
+        countdown.textContent = `Om ${duration.filter(Boolean).join(' ')}`;
+        countdownTimer = window.setTimeout(() => updateCountdown(card), remaining % 1000 || 1000);
+    }
+
     function updateDisplayedDate() {
         const today = danishDate.format(new Date());
         const hasTimes = Boolean(timetable.querySelector('.prayer-list'));
         const historical = timetable.dataset.today < today;
         timetable.hidden = historical && !hasTimes;
         timetable.querySelector('[data-historical-times]').hidden = !historical;
-        timetable.querySelector('[data-next-prayer]').hidden = historical || (!refreshError.hidden && hasTimes);
+        const card = timetable.querySelector('[data-next-prayer]');
+        card.hidden = historical || (!refreshError.hidden && hasTimes);
+        updateCountdown(card);
         timetable.setAttribute('aria-label', historical ? 'Historiske bønnetider' : 'Dagens bønnetider');
         if (calendarDate !== today) {
             updateCalendar(today);
@@ -104,10 +134,13 @@ if (timetable) {
             }
             const previousNext = timetable.querySelector('[data-next-prayer]');
             const next = incoming.querySelector('[data-next-prayer]');
-            if (next.textContent.trim() !== previousNext.textContent.trim() ||
-                next.querySelector('time')?.dateTime !== previousNext.querySelector('time')?.dateTime) {
+            const nextLabel = next.querySelector('[data-next-prayer-label]').textContent.trim();
+            const nextTime = next.querySelector('time');
+            if (nextLabel !== previousNext.querySelector('[data-next-prayer-label]').textContent.trim() ||
+                nextTime?.dateTime !== previousNext.querySelector('time')?.dateTime) {
                 next.classList.add('prayer-updated');
-                announcement.textContent = next.textContent.trim().replace(/\s+/g, ' ');
+                announcement.textContent = [next.querySelector('h2').textContent, nextLabel, nextTime?.textContent]
+                    .filter(Boolean).join(' ').replace(/\s+/g, ' ');
             }
             if (correctionLink && incoming.dataset.correctionUrl) {
                 correctionLink.href = incoming.dataset.correctionUrl;

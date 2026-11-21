@@ -137,6 +137,7 @@ h2 { font-size: 1.22rem; line-height: 1.25; }
 .next-prayer > div { flex: 1 1 7rem; min-width: 0; }
 .next-prayer h2 { color: var(--accent); font-size: .875rem; }
 .next-prayer p { font-size: 1.12rem; font-weight: 650; }
+.next-prayer .next-countdown { margin-top: .15rem; color: var(--muted); font-size: .875rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .next-prayer time { margin-inline-start: auto; font-size: clamp(1.6rem, 7vw, 2.35rem); font-weight: 750; color: var(--accent); }
 .next-date { color: var(--muted); font-weight: 500; font-size: .83rem; display: inline-block; }
 time, table { font-variant-numeric: tabular-nums; }
@@ -189,7 +190,7 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 .current-day small { color: inherit; }
 
 .site-footer { margin-top: 2rem; padding-block: 1rem 1.6rem; border-top: 1px solid var(--border); font-size: .9rem; }
-.correction { margin-block-end: .75rem; }
+.footer-links { display: grid; justify-items: start; gap: .5rem; margin-block-end: .75rem; }
 .statistics { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-block: .75rem; }
 .statistics > div { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
 .statistics h2 { font-size: 1rem; }
@@ -249,7 +250,6 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 .place-picker-panel .place-picker { margin-block: .75rem 0; }
 .today-context { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; color: var(--muted); }
 .today-context time:first-letter { text-transform: uppercase; }
-.today-context a { font-size: .875rem; }
 .today .next-prayer { margin-top: .55rem; }
 .next-prayer .next-detail { font-size: .94rem; font-weight: 500; }
 .calendar-note {
