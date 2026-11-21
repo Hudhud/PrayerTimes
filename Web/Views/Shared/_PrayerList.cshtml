@@ -18,6 +18,11 @@
                         <small>Næste døgn</small>
                     }
                 }
+                else if (Model.ExplainBrightNights)
+                {
+                    <span aria-hidden="true">- -</span>
+                    <small class="bright-night-explanation">Solens vinkel nås ikke. <a asp-action="Method" asp-fragment="lyse-naetter">Læs om lyse nætter</a>.</small>
+                }
                 else
                 {
                     <partial name="_BrightNightTime" />

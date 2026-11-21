@@ -8,7 +8,10 @@
 
 <header class="place-heading">
     <div class="place-heading-row">
-        <h1><span class="place-heading-label">Bønnetider i </span>@city.Name</h1>
+        <div class="place-title">
+            <h1><span class="place-heading-label">Bønnetider i </span>@city.Name</h1>
+            <small data-auto-place hidden>Automatisk valgt</small>
+        </div>
         <a class="button" asp-controller="Home" asp-action="Places" data-place-fallback>Skift sted</a>
         <button class="button" type="button" aria-controls="place-picker-panel" aria-expanded="false"
                 data-place-toggle hidden>Skift sted</button>
@@ -18,7 +21,10 @@
     </div>
 </header>
 <p class="visually-hidden" data-prayer-announcement role="status"></p>
-<p class="notice" data-prayer-refresh-error hidden>Tiderne kunne ikke opdateres. Siden prøver igen.</p>
+<div class="notice" data-prayer-refresh-error hidden="@(Model.Daily.Day is not null)">
+    <p data-prayer-refresh-message role="status">Dagens bønnetider kunne ikke hentes.</p>
+    <a href="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" data-prayer-retry>Prøv igen</a>
+</div>
 <partial name="_Today" model="Model.Daily" />
 
 <form method="post" asp-action="Asr" class="asr-control">
@@ -29,6 +35,14 @@
         @(Model.Daily.Hanafi ? "Vis standard" : "Vis Hanafi")
     </button>
 </form>
+
+<div class="offline-controls" data-offline-controls hidden
+     data-offline-plan="@Url.RouteUrl("OfflinePlan", new { city = city.Slug, asr = Model.Daily.AsrMethod })"
+     data-worker="@Url.Content("~/offline-worker.js")">
+    <button class="button" type="button" data-save-offline>Gem 7 dages tider offline</button>
+    <a href="~/offline" data-open-offline hidden>Åbn gemt bønneplan</a>
+    <p class="offline-status" data-offline-status role="status"></p>
+</div>
 
 <partial name="_Calendar" model="Model.Calendar" />
 

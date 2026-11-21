@@ -6,12 +6,15 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
+  schedule:
+    - cron: '17 */4 * * *'
 
 permissions:
   contents: read
 
 jobs:
   verify:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -62,6 +65,7 @@ jobs:
           target-delete: false
 
   smoke:
+    if: always() && (needs.deploy.result == 'success' || github.event_name == 'schedule')
     needs: deploy
     runs-on: ubuntu-latest
     steps:

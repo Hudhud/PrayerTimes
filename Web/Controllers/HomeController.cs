@@ -103,7 +103,7 @@ public sealed class HomeController(
     }
 
     [HttpGet("/{city}/i-dag", Name = "Today")]
-    public async Task<IActionResult> Today(string city, CancellationToken cancellationToken)
+    public async Task<IActionResult> Today(string city, string? asr, CancellationToken cancellationToken)
     {
         var selected = places.Find(city);
         if (selected is null)
@@ -111,9 +111,41 @@ public sealed class HomeController(
             return NotFound();
         }
 
-        var daily = await LoadTodayAsync(selected, clock.Now, UsesHanafi, cancellationToken);
+        if (asr is not (null or "standard" or "hanafi"))
+        {
+            return BadRequest();
+        }
+
+        var daily = await LoadTodayAsync(selected, clock.Now, asr is null ? UsesHanafi : asr == "hanafi", cancellationToken);
         return PartialView("_Today", daily);
     }
+
+    [HttpGet("/{city}/offline", Name = "OfflinePlan")]
+    public async Task<IActionResult> OfflinePlan(string city, string? asr, CancellationToken cancellationToken)
+    {
+        var selected = places.Find(city);
+        if (selected is null)
+        {
+            return NotFound();
+        }
+        if (asr is not ("standard" or "hanafi"))
+        {
+            return BadRequest();
+        }
+
+        var hanafi = asr == "hanafi";
+        var start = DateOnly.FromDateTime(clock.Now.Date);
+        var days = await LoadCalendarDaysAsync(selected, start, start.AddDays(7), hanafi, cancellationToken);
+        if (days.Count != 7)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable);
+        }
+
+        return View(new OfflinePrayerTimesViewModel(selected, start, days, hanafi));
+    }
+
+    [HttpGet("/offline")]
+    public IActionResult Offline() => RedirectToAction(nameof(Index));
 
     [HttpGet("/beregning")]
     public IActionResult Method() => View("Method");

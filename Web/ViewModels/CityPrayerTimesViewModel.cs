@@ -18,13 +18,14 @@ public sealed record DailyPrayerTimesViewModel(
 {
     public DateOnly Date => DateOnly.FromDateTime(Now.Date);
     public DateOnly? NextDate => Next?.StartsAt is { } start ? DateOnly.FromDateTime(start.Date) : null;
-    public bool HasBrightNightTimes => Day is not null && (Day.FajrTimeUnavailable || Day.IshaTimeUnavailable);
+    public DateTimeOffset Midnight => DanishTime.At(Date.AddDays(1), TimeOnly.MinValue);
+    public string AsrMethod => Hanafi ? "hanafi" : "standard";
 
     public DateTimeOffset RefreshAt
     {
         get
         {
-            var midnight = DanishTime.At(Date.AddDays(1), TimeOnly.MinValue);
+            var midnight = Midnight;
             if (Day is null)
             {
                 var retry = Now.AddMinutes(2);
@@ -67,4 +68,11 @@ public sealed record CityPrayerTimesViewModel(
     DailyPrayerTimesViewModel Daily,
     CalendarViewModel Calendar);
 
-public sealed record PrayerListViewModel(DailyPrayerTimes Day, bool Hanafi, bool ShowSunrise = false);
+public sealed record PrayerListViewModel(
+    DailyPrayerTimes Day, bool Hanafi, bool ShowSunrise = false, bool ExplainBrightNights = false);
+
+public sealed record OfflinePrayerTimesViewModel(
+    PrayerCity City, DateOnly Start, IReadOnlyList<DailyPrayerTimes> Days, bool Hanafi)
+{
+    public DateOnly End => Start.AddDays(6);
+}
