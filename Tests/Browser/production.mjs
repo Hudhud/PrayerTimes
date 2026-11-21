@@ -27,7 +27,11 @@ try {
     expect(catalog.ok).toBeTruthy();
     expect(catalog.transferred).toBeGreaterThan(0);
     expect(catalog.transferred).toBeLessThan(catalog.decoded);
-    console.log('Verified prayer times, postcode navigation, calculation method and catalog compression.');
+    await page.setViewportSize({ width: 360, height: 720 });
+    await page.goto(new URL('/koebenhavn?month=2026-11&week=2026-11-30#month-title', origin).href);
+    await expect(page.getByRole('heading', { name: 'tirsdag 1. december' })).toBeVisible();
+    await expect(page.locator('.week-day')).toHaveCount(7);
+    console.log('Verified prayer times, postcode navigation, calculation method, catalog compression and week navigation.');
 } finally {
     await browser.close();
 }

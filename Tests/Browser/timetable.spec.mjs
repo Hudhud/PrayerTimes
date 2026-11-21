@@ -131,6 +131,31 @@ test('denied location keeps search usable', async ({ page }) => {
     await expect(page.getByRole('option', { name: /Viby Aarhus Kommune/ })).toBeVisible();
 });
 
+test('a slow place search announces its status and keeps keyboard focus', async ({ page }) => {
+    let releaseResponse;
+    const pendingResponse = new Promise(resolve => { releaseResponse = resolve; });
+    await page.route('**/steder/forslag?*', async route => {
+        await pendingResponse;
+        await route.continue();
+    });
+
+    await page.goto('/');
+    await openPicker(page);
+    await search(page).fill('Viby');
+    const status = page.locator('.place-search-status');
+    try {
+        await expect(status).toHaveText('Søger efter steder…');
+        await expect(status).not.toHaveClass(/visually-hidden/);
+        await expect(search(page)).toBeFocused();
+    } finally {
+        releaseResponse();
+    }
+
+    await expect(page.getByRole('option', { name: /Viby Aarhus Kommune/ })).toBeVisible();
+    await expect(status).toHaveClass(/visually-hidden/);
+    await expect(search(page)).toBeFocused();
+});
+
 test('the public location catalog is compressed and keeps its entries', async ({ request }) => {
     const response = await request.get('/data/prayer-places.json', {
         headers: { 'accept-encoding': 'gzip' }
@@ -145,16 +170,19 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
         await page.setViewportSize({ width: 320, height: 720 });
     }
     await page.goto('/koebenhavn?month=2026-06&week=2026-06-21');
-    await expect(page.getByRole('heading', { name: 'juni 2026', exact: true })).toBeVisible();
     if (isMobile) {
+        await expect(page.getByRole('heading', { name: /15.*21.*jun.*2026/ })).toBeVisible();
         await expect(page.getByRole('article').first()).toBeVisible();
         await expect(page.getByRole('table')).toBeHidden();
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize().width);
     } else {
+        await expect(page.getByRole('heading', { name: 'juni 2026', exact: true })).toBeVisible();
         await expect(page.getByRole('table')).toBeVisible();
     }
     await page.getByRole('button', { name: 'Vis Hanafi' }).click();
     await expect(page.getByRole('button', { name: 'Vis standard' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Hent kalenderfil' })).toBeHidden();
+    await page.getByText('Måned og eksport', { exact: true }).click();
     const url = await page.getByRole('link', { name: 'Hent kalenderfil' }).getAttribute('href');
     const exported = await page.request.get(url);
     expect(exported.ok()).toBeTruthy();
@@ -168,6 +196,28 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await page.emulateMedia({ media: 'screen' });
     await page.getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
+});
+
+test('mobile week navigation crosses month and year boundaries', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.goto('/koebenhavn?month=2026-11&week=2026-11-30#month-title');
+    const days = page.locator('.week-day');
+    await expect(page.getByRole('heading', { name: /30.*nov.*6.*dec.*2026/ })).toBeVisible();
+    await expect(days).toHaveCount(7);
+    const firstOfDecember = days.filter({ has: page.getByRole('heading', { name: 'tirsdag 1. december' }) });
+    await expect(firstOfDecember.locator('dl > div').filter({ hasText: 'Fajr' })).toContainText(/\d\d:\d\d/);
+    await expect(page.getByRole('link', { name: 'Næste måned' })).toBeHidden();
+    await page.getByRole('link', { name: 'Næste uge' }).click();
+    await expect(page).toHaveURL(/month=2026-12&week=2026-12-07#month-title$/);
+    await page.getByRole('link', { name: 'Forrige uge' }).click();
+    await expect(page).toHaveURL(/month=2026-11&week=2026-11-30#month-title$/);
+
+    await page.goto('/koebenhavn?month=2026-12&week=2026-12-31#month-title');
+    await expect(page.getByRole('heading', { name: /28.*dec.*2026.*3.*jan.*2027/ })).toBeVisible();
+    await expect(days).toHaveCount(7);
+    await expect(days.filter({ has: page.getByRole('heading', { name: 'fredag 1. januar' }) })).toBeVisible();
+    await page.getByRole('link', { name: 'Næste uge' }).click();
+    await expect(page).toHaveURL(/month=2027-01&week=2027-01-04#month-title$/);
 });
 
 test('live timetable refresh keeps the next prayer above today’s date and preserves the active search', async ({ page }) => {
