@@ -45,21 +45,16 @@ public sealed record CalendarViewModel(
     PrayerCity City,
     DateOnly Today,
     DateOnly Month,
-    DateOnly WeekStart,
+    DateOnly? SelectedDate,
     IReadOnlyList<DailyPrayerTimes> Days,
-    IReadOnlyList<DailyPrayerTimes> WeekDays,
     bool Hanafi)
 {
     public static readonly DateOnly MonthLimit = new(9999, 12, 1);
     public DateOnly NextMonth => Month.AddMonths(1);
     public DateOnly? PreviousMonth => Month == DateOnly.MinValue ? null : Month.AddMonths(-1);
-    public DateOnly WeekEnd => WeekStart.AddDays(6);
-    public DateOnly? PreviousWeek => WeekStart.DayNumber >= 7 ? WeekStart.AddDays(-7) : null;
-    public DateOnly? NextWeek => WeekStart.DayNumber + 7 < MonthLimit.DayNumber ? WeekStart.AddDays(7) : null;
     public bool HasBrightNightTimes =>
-        Days.Concat(WeekDays).Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
+        Days.Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
 
-    public static DateOnly StartOfWeek(DateOnly date) => date.AddDays(-(((int)date.DayOfWeek + 6) % 7));
     public static string MonthParameter(DateOnly date) => date.ToString("yyyy-MM", CultureInfo.InvariantCulture);
     public static string DayParameter(DateOnly date) => date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 }

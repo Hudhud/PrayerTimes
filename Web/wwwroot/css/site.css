@@ -267,11 +267,12 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 .offline-status { flex-basis: 100%; color: var(--muted); }
 .offline-status:empty { display: none; }
 .offline-plan .week-day h2 { font-size: 1rem; }
-.asr-control, .calendar-actions, .calendar-nav, .week-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .65rem; }
+.asr-control, .calendar-actions, .calendar-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .65rem; }
 .asr-control { margin-top: .85rem; font-size: .875rem; color: var(--muted); }
 .asr-control strong { color: var(--text); }
-.calendar-nav, .week-nav { margin-block: .4rem; }
-.calendar-actions, .calendar-nav, .week-nav { font-size: .875rem; }
+.calendar-nav { margin-block: .55rem .25rem; }
+.calendar-actions, .calendar-nav { font-size: .875rem; }
+#calendar-month-heading::first-letter { text-transform: uppercase; }
 .calendar-options { margin-block: .25rem .5rem; }
 .calendar-options summary {
     width: fit-content;
@@ -284,18 +285,40 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     cursor: pointer;
 }
 .calendar-options summary:hover { color: var(--text); }
-.calendar-options-panel {
-    padding: .6rem .75rem;
-    border: 1px solid var(--border);
-    border-radius: .55rem;
-    background: var(--surface);
-}
-.calendar-options-panel .calendar-month-name { font-weight: 650; }
+.calendar-actions { margin-block-end: .75rem; }
 .mobile-calendar { display: none; }
-.jump-today { min-height: 2.75rem; align-content: center; padding-inline: .2rem; }
+.month-days { border: 1px solid var(--border); border-radius: .75rem; overflow: hidden; background: var(--surface); }
+.month-day + .month-day { border-top: 1px solid var(--border); }
+.month-day > summary {
+    display: flex;
+    align-items: center;
+    gap: .4rem .55rem;
+    min-height: 2.75rem;
+    padding: .6rem .85rem;
+    outline-offset: -3px;
+    list-style: none;
+    cursor: pointer;
+    font-size: .94rem;
+    font-weight: 600;
+}
+.month-day > summary::-webkit-details-marker { display: none; }
+.month-day > summary time::first-letter { text-transform: uppercase; }
+.month-day > summary:hover { background: var(--surface-raised); }
+.month-day > summary::after {
+    content: "";
+    flex: 0 0 .49rem;
+    height: .49rem;
+    margin-inline-start: auto;
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    transform: rotate(45deg);
+}
+.month-day[open] > summary::after { transform: rotate(225deg); }
+.month-day-times { padding: 0 .75rem .7rem; color: var(--text); }
+.month-day .prayer-list { margin-block: 0 .35rem; }
+.month-day [data-today-label] { border: 1px solid currentColor; border-radius: 1rem; padding: 0 .4rem; white-space: nowrap; }
 .week-day { padding: .6rem .75rem; border: 1px solid var(--border); border-radius: .65rem; }
 .week-day + .week-day { margin-top: .5rem; }
-.week-day h3 { margin: 0; font-size: .97rem; }
 .week-day .prayer-list { margin-block: .35rem; }
 .week-day .prayer-list > div { padding-inline: .6rem; }
 .week-day .prayer-list dd { color: var(--text); }
@@ -329,9 +352,11 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     .place-search-status:not(.visually-hidden) { margin-top: .3rem; }
     .mobile-calendar { display: block; }
     .desktop-calendar { display: none; }
-    .week-day .prayer-list { grid-template-columns: 1fr; }
-    .week-day .prayer-list > div { display: flex; justify-content: space-between; padding-block: .2rem; }
-    .week-day .prayer-list > div + div { border-inline-start: 0; border-top: 1px solid var(--border); }
+    .calendar-nav .button { flex: 1 0 auto; padding-inline: .55rem; }
+    .calendar-nav .mobile-calendar { display: inline-flex; }
+    .month-day .prayer-list, .week-day .prayer-list { grid-template-columns: 1fr; }
+    .month-day .prayer-list > div, .week-day .prayer-list > div { display: flex; justify-content: space-between; padding-block: .2rem; }
+    .month-day .prayer-list > div + div, .week-day .prayer-list > div + div { border-inline-start: 0; border-top: 1px solid var(--border); }
 }
 
 @media print {
