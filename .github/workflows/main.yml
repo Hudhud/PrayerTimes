@@ -65,7 +65,7 @@ jobs:
           target-delete: false
 
   smoke:
-    if: always() && (needs.deploy.result == 'success' || github.event_name == 'schedule')
+    if: always() && (needs.deploy.result == 'success' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     needs: deploy
     runs-on: ubuntu-latest
     steps:
