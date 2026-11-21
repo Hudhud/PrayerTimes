@@ -1,4 +1,7 @@
 import { expect, test } from '@playwright/test';
+import { once } from 'node:events';
+import { createServer, request as httpRequest } from 'node:http';
+import { request as httpsRequest } from 'node:https';
 
 const search = page => page.getByRole('combobox', { name: 'By eller postnummer' });
 const openPicker = page => page.getByRole('button', { name: 'Skift sted', exact: true }).click();
@@ -347,29 +350,53 @@ test('at Danish midnight the previous times are historical during a failed refre
     await expect(page.getByText('Dagens bønnetider kunne ikke hentes.')).toBeVisible();
 });
 
-test('a saved seven-day plan can be reopened without a connection', async ({ page, context }) => {
-    await page.goto('/aarhus');
-    await page.getByRole('button', { name: 'Vis Hanafi' }).click();
-    const current = page.locator('.today');
-    const now = await current.getAttribute('data-today');
-    const asr = await current.locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time').textContent();
-    await page.getByRole('button', { name: 'Gem 7 dages tider offline' }).click();
-    const saved = page.getByRole('link', { name: 'Åbn gemt bønneplan' });
-    await expect(saved).toBeVisible();
-    const savedPath = await saved.getAttribute('href');
-    await context.setOffline(true);
-    const reopened = await context.newPage();
-    await reopened.goto(new URL(savedPath, page.url()).href);
-    await expect(reopened.getByRole('heading', { name: 'Offline bønnetider i Aarhus' })).toBeVisible();
-    await expect(reopened.getByText('Asr-metode Hanafi')).toBeVisible();
-    const days = reopened.locator('.offline-plan article');
-    await expect(days).toHaveCount(7);
-    await expect(days.first().locator('h2 time')).toHaveAttribute('datetime', now);
-    await expect(days.first().locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time')).toHaveText(asr);
-    const dates = await days.locator('h2 time').evaluateAll(times => times.map(time => time.dateTime));
-    expect(dates).toEqual(Array.from({ length: 7 }, (_, index) =>
-        new Date(Date.parse(now) + index * 86400000).toISOString().slice(0, 10)));
-    await expect(reopened.locator('body')).toHaveCSS('background-color', 'rgb(18, 21, 24)');
-    await reopened.goto(new URL('/aarhus', page.url()).href);
-    await expect(reopened.getByRole('heading', { name: 'Offline bønnetider i Aarhus' })).toBeVisible();
+test('a saved seven-day plan can be reopened without a connection', async ({ page, context, baseURL }) => {
+    // WebKit's Playwright offline switch also blocks its service worker. Disconnect the test origin instead.
+    const proxy = createServer((incoming, outgoing) => {
+        const target = new URL(incoming.url, baseURL);
+        const send = target.protocol === 'https:' ? httpsRequest : httpRequest;
+        const upstream = send(target, { method: incoming.method, headers: { ...incoming.headers, host: target.host } }, response => {
+            outgoing.writeHead(response.statusCode, response.headers);
+            response.pipe(outgoing);
+        });
+        upstream.on('error', () => outgoing.destroy());
+        incoming.pipe(upstream);
+    });
+    proxy.listen(0, '127.0.0.1');
+    await once(proxy, 'listening');
+    const origin = `http://127.0.0.1:${proxy.address().port}`;
+
+    try {
+        await page.goto(`${origin}/aarhus`);
+        await page.getByRole('button', { name: 'Vis Hanafi' }).click();
+        const current = page.locator('.today');
+        const now = await current.getAttribute('data-today');
+        const asr = await current.locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time').textContent();
+        await page.getByRole('button', { name: 'Gem 7 dages tider offline' }).click();
+        const saved = page.getByRole('link', { name: 'Åbn gemt bønneplan' });
+        await expect(saved).toBeVisible();
+        const savedPath = await saved.getAttribute('href');
+        proxy.close();
+        proxy.closeAllConnections();
+
+        const reopened = await context.newPage();
+        await reopened.goto(new URL(savedPath, origin).href);
+        await expect(reopened.getByRole('heading', { name: 'Offline bønnetider i Aarhus' })).toBeVisible();
+        await expect(reopened.getByText('Asr-metode Hanafi')).toBeVisible();
+        const days = reopened.locator('.offline-plan article');
+        await expect(days).toHaveCount(7);
+        await expect(days.first().locator('h2 time')).toHaveAttribute('datetime', now);
+        await expect(days.first().locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time')).toHaveText(asr);
+        const dates = await days.locator('h2 time').evaluateAll(times => times.map(time => time.dateTime));
+        expect(dates).toEqual(Array.from({ length: 7 }, (_, index) =>
+            new Date(Date.parse(now) + index * 86400000).toISOString().slice(0, 10)));
+        await expect(reopened.locator('body')).toHaveCSS('background-color', 'rgb(18, 21, 24)');
+        await reopened.goto(`${origin}/aarhus`);
+        await expect(reopened.getByRole('heading', { name: 'Offline bønnetider i Aarhus' })).toBeVisible();
+    } finally {
+        if (proxy.listening) {
+            proxy.close();
+            proxy.closeAllConnections();
+        }
+    }
 });
