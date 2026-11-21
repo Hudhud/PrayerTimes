@@ -2,11 +2,15 @@
 @using Web.ViewModels
 @if (Model.PreviousMonth is { } previous)
 {
-    <a class="button" asp-route="City" asp-route-city="@Model.City.Slug"
-       asp-route-month="@CalendarViewModel.MonthParameter(previous)" asp-fragment="month-title">Forrige måned</a>
+    <a class="button" asp-route="City" asp-route-city="@Model.City.Slug" aria-label="Forrige måned"
+       asp-route-month="@CalendarViewModel.MonthParameter(previous)" asp-fragment="month-title">Forrige</a>
 }
+<a class="button mobile-calendar" asp-route="City" asp-route-city="@Model.City.Slug"
+   asp-fragment="week-today" aria-label="Hop til i dag" data-open-calendar-today="true">I dag</a>
+<a class="button desktop-calendar" asp-route="City" asp-route-city="@Model.City.Slug"
+   asp-fragment="calendar-today" aria-label="Hop til i dag">I dag</a>
 @if (Model.NextMonth < CalendarViewModel.MonthLimit)
 {
-    <a class="button" asp-route="City" asp-route-city="@Model.City.Slug"
-       asp-route-month="@CalendarViewModel.MonthParameter(Model.NextMonth)" asp-fragment="month-title">Næste måned</a>
+    <a class="button" asp-route="City" asp-route-city="@Model.City.Slug" aria-label="Næste måned"
+       asp-route-month="@CalendarViewModel.MonthParameter(Model.NextMonth)" asp-fragment="month-title">Næste</a>
 }

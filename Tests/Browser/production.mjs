@@ -53,19 +53,26 @@ try {
     expect(catalog.transferred).toBeGreaterThan(0);
     expect(catalog.transferred).toBeLessThan(catalog.decoded);
     await page.setViewportSize({ width: 360, height: 720 });
-    const referencePage = await page.goto(new URL('/koebenhavn?month=2026-11&week=2026-11-30#month-title', origin).href);
+    const referencePage = await page.goto(new URL('/koebenhavn?month=2026-11#month-title', origin).href);
     expect(referencePage?.ok()).toBeTruthy();
     await expect(page.getByRole('heading', { level: 1 })).toContainText('København');
-    await expect(page.getByRole('heading', { name: 'tirsdag 1. december' })).toBeVisible();
-    await expect(page.locator('.week-day')).toHaveCount(7);
+    await expect(page.getByRole('heading', { name: 'november 2026', exact: true })).toBeVisible();
+    await expect(page.locator('.month-day')).toHaveCount(30);
+    await page.getByRole('link', { name: 'Næste måned' }).click();
+    await expect(page.getByRole('heading', { name: 'december 2026', exact: true })).toBeVisible();
+    await expect(page.locator('.month-day')).toHaveCount(31);
     const expected = fixture.find(day => day.city === 'koebenhavn' && day.date === '2026-12-01');
-    const referenceDay = page.locator(`article[data-calendar-date="${expected.date}"]`);
-    await expect(referenceDay.locator('h3 time')).toHaveAttribute('datetime', expected.date);
+    const referenceDay = page.locator(`details[data-calendar-date="${expected.date}"]`);
+    await expect(referenceDay.locator('summary time')).toHaveText('tirsdag 1. december');
+    if (!await referenceDay.locator('.prayer-list').isVisible()) {
+        await referenceDay.locator('summary').click();
+    }
+    await expect(referenceDay.locator('.prayer-list')).toBeVisible();
     await expect(referenceDay.locator('.prayer-list time')).toHaveText([
         expected.fajr, expected.dhuhr, expected.asr, expected.maghrib, expected.isha
     ]);
     await expect(referenceDay.locator('.sunrise time')).toHaveText(expected.sunrise);
-    console.log('Verified current place and Danish date, prayer times against calendar and reference data, postcode navigation, calculation method, catalog compression and week navigation.');
+    console.log('Verified current place and Danish date, prayer times against calendar and reference data, postcode navigation, calculation method, catalog compression and the mobile month calendar.');
 } finally {
     await browser.close();
 }

@@ -201,25 +201,23 @@ public sealed class HomeController(
             return BadRequest();
         }
 
-        var weekDate = today.Year == monthStart.Year && today.Month == monthStart.Month ? today : monthStart;
-        if (week is not null and not "i-dag" &&
-            (!DateOnly.TryParseExact(week, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out weekDate)
-                || weekDate < monthStart || weekDate >= monthStart.AddMonths(1)))
+        var monthEnd = monthStart.AddMonths(1);
+        DateOnly? selectedDate = today >= monthStart && today < monthEnd ? today : null;
+        // Open the date from links shared before the switch to a monthly calendar.
+        if (week is not null and not "i-dag")
         {
-            return BadRequest();
+            if (!DateOnly.TryParseExact(week, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)
+                || date < monthStart || date >= monthEnd)
+            {
+                return BadRequest();
+            }
+            selectedDate = date;
         }
 
         var hanafi = UsesHanafi;
-        var monthEnd = monthStart.AddMonths(1);
-        var weekStart = CalendarViewModel.StartOfWeek(weekDate);
-        var weekEnd = weekStart.AddDays(7);
         var monthRows = await LoadCalendarDaysAsync(city, monthStart, monthEnd, hanafi, cancellationToken);
-        var weekRows = monthRows.Count > 0 && weekStart >= monthStart && weekEnd <= monthEnd
-            ? monthRows.Where(row =>
-                DateOnly.FromDateTime(row.Date).DayNumber - weekStart.DayNumber is >= 0 and < 7).ToArray()
-            : await LoadCalendarDaysAsync(city, weekStart, weekEnd, hanafi, cancellationToken);
         var daily = await LoadTodayAsync(city, now, hanafi, cancellationToken);
-        var calendar = new CalendarViewModel(city, today, monthStart, weekStart, monthRows, weekRows, hanafi);
+        var calendar = new CalendarViewModel(city, today, monthStart, selectedDate, monthRows, hanafi);
         return View("Index", new CityPrayerTimesViewModel(daily, calendar));
     }
 

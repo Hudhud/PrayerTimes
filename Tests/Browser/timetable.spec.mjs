@@ -199,11 +199,11 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
         await page.setViewportSize({ width: 320, height: 720 });
     }
     await page.goto('/koebenhavn?month=2026-06&week=2026-06-21');
+    await expect(page.getByRole('heading', { name: 'juni 2026', exact: true })).toBeVisible();
     if (isMobile) {
-        await expect(page.getByRole('heading', { name: /15.*21.*jun.*2026/ })).toBeVisible();
-        await expect(page.getByRole('article').first()).toBeVisible();
         await expect(page.getByRole('table')).toBeHidden();
-        const brightNight = page.locator('article[data-calendar-date="2026-06-21"] .prayer-list');
+        const brightNight = page.locator('details[data-calendar-date="2026-06-21"] .prayer-list');
+        await expect(brightNight).toBeVisible();
         for (const prayer of ['Fajr', 'Isha']) {
             const entry = brightNight.locator('div').filter({ has: page.getByText(prayer, { exact: true }) });
             await expect(entry).toContainText('Solens vinkel nås ikke.');
@@ -211,13 +211,12 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
         }
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize().width);
     } else {
-        await expect(page.getByRole('heading', { name: 'juni 2026', exact: true })).toBeVisible();
         await expect(page.getByRole('table')).toBeVisible();
     }
     await page.getByRole('button', { name: 'Vis Hanafi' }).click();
     await expect(page.getByRole('button', { name: 'Vis standard' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Hent kalenderfil' })).toBeHidden();
-    await page.getByText('Måned og eksport', { exact: true }).click();
+    await page.getByText('Udskriv og eksportér', { exact: true }).click();
     const url = await page.getByRole('link', { name: 'Hent kalenderfil' }).getAttribute('href');
     const exported = await page.request.get(url);
     expect(exported.ok()).toBeTruthy();
@@ -233,26 +232,39 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
 });
 
-test('mobile week navigation crosses month and year boundaries', async ({ page }) => {
+test('on a narrow screen, the whole month is browsable and today is one tap away', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 720 });
-    await page.goto('/koebenhavn?month=2026-11&week=2026-11-30#month-title');
-    const days = page.locator('.week-day');
-    await expect(page.getByRole('heading', { name: /30.*nov.*6.*dec.*2026/ })).toBeVisible();
-    await expect(days).toHaveCount(7);
-    const firstOfDecember = days.filter({ has: page.getByRole('heading', { name: 'tirsdag 1. december' }) });
-    await expect(firstOfDecember.locator('dl > div').filter({ hasText: 'Fajr' })).toContainText(/\d\d:\d\d/);
-    await expect(page.getByRole('link', { name: 'Næste måned' })).toBeHidden();
-    await page.getByRole('link', { name: 'Næste uge' }).click();
-    await expect(page).toHaveURL(/month=2026-12&week=2026-12-07#month-title$/);
-    await page.getByRole('link', { name: 'Forrige uge' }).click();
-    await expect(page).toHaveURL(/month=2026-11&week=2026-11-30#month-title$/);
+    await page.goto('/koebenhavn?month=2025-12#month-title');
+    const days = page.locator('.month-day');
+    await expect(page.getByRole('heading', { name: 'december 2025', exact: true })).toBeVisible();
+    await expect(days).toHaveCount(31);
+    const first = days.first();
+    const last = days.last();
+    await expect(first.locator('summary time')).toHaveAttribute('datetime', '2025-12-01');
+    await expect(last.locator('summary time')).toHaveAttribute('datetime', '2025-12-31');
+    await expect(first.locator('.prayer-list')).toBeHidden();
+    await first.locator('summary').press('Enter');
+    await expect(first.locator('.prayer-list time')).toHaveCount(5);
+    await expect(first.locator('.sunrise time')).toBeVisible();
+    await last.locator('summary').click();
+    await expect(last.locator('.prayer-list')).toBeVisible();
+    await expect(first.locator('.prayer-list')).toBeHidden();
 
-    await page.goto('/koebenhavn?month=2026-12&week=2026-12-31#month-title');
-    await expect(page.getByRole('heading', { name: /28.*dec.*2026.*3.*jan.*2027/ })).toBeVisible();
-    await expect(days).toHaveCount(7);
-    await expect(days.filter({ has: page.getByRole('heading', { name: 'fredag 1. januar' }) })).toBeVisible();
-    await page.getByRole('link', { name: 'Næste uge' }).click();
-    await expect(page).toHaveURL(/month=2027-01&week=2027-01-04#month-title$/);
+    await page.getByRole('link', { name: 'Næste måned' }).click();
+    await expect(page).toHaveURL(/month=2026-01#month-title$/);
+    await expect(page.getByRole('heading', { name: 'januar 2026', exact: true })).toBeVisible();
+    await page.getByRole('link', { name: 'Forrige måned' }).click();
+    await expect(page).toHaveURL(/month=2025-12#month-title$/);
+    await page.getByRole('link', { name: 'Hop til i dag' }).click();
+    await expect(page).toHaveURL(/\/koebenhavn#week-today$/);
+    const date = await page.locator('.today').getAttribute('data-today');
+    const current = days.filter({ has: page.locator(`summary time[datetime="${date}"]`) });
+    await expect(current.locator('[data-today-label]')).toBeVisible();
+    await expect(current.locator('.prayer-list')).toBeVisible();
+    await current.locator('summary').click();
+    await expect(current.locator('.prayer-list')).toBeHidden();
+    await page.getByRole('link', { name: 'Hop til i dag' }).click();
+    await expect(current.locator('.prayer-list')).toBeVisible();
 });
 
 test('live timetable refresh keeps the next prayer above today’s date and preserves the active search', async ({ page }) => {

@@ -136,6 +136,12 @@ if (timetable) {
         event.preventDefault();
         refreshTimetable(true);
     });
+    document.querySelector('[data-open-calendar-today]')?.addEventListener('click', event => {
+        const day = document.getElementById(event.currentTarget.hash.slice(1));
+        if (day) {
+            day.open = true;
+        }
+    });
     document.addEventListener('visibilitychange', () => refreshTimetable());
     window.addEventListener('pageshow', () => refreshTimetable());
     window.addEventListener('online', () => {
