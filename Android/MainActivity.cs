@@ -8,7 +8,6 @@ using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using Application.Calendars;
-using Calculation;
 using Domain.Models;
 using Color = Android.Graphics.Color;
 using ColorStateList = Android.Content.Res.ColorStateList;
@@ -31,8 +30,7 @@ public sealed partial class MainActivity : Activity
     private static readonly Color AccentOutline = Color.ParseColor("#685536");
 
     private readonly DanishTime clock = new(TimeProvider.System);
-    private readonly DanishPrayerTimeCalculator calculator = new();
-    private readonly Dictionary<DateOnly, DailyPrayerTimes> days = new();
+    private LocalPrayerSchedule schedule = null!;
     private readonly Handler handler = new(Looper.MainLooper!);
     private Java.Lang.Runnable tick = null!;
     private ISharedPreferences preferences = null!;
@@ -53,11 +51,11 @@ public sealed partial class MainActivity : Activity
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
-        using var catalog = Assets!.Open("prayer-places.json");
-        places = new PrayerPlaceDirectory(catalog);
-        preferences = GetSharedPreferences("salah-times", FileCreationMode.Private)!;
-        place = places.Find(preferences.GetString("place", null)) ?? PrayerCities.Default;
-        hanafi = preferences.GetBoolean("hanafi", false);
+        places = PrayerPreferences.Places(this);
+        preferences = PrayerPreferences.Open(this);
+        place = PrayerPreferences.SelectedPlace(this, preferences);
+        hanafi = preferences.GetBoolean(PrayerPreferences.HanafiKey, false);
+        schedule = new LocalPrayerSchedule(place);
         var today = DateOnly.FromDateTime(clock.Now.Date);
         month = MonthOf(today);
         selectedDate = today;
@@ -246,17 +244,7 @@ public sealed partial class MainActivity : Activity
         handler.PostDelayed(tick, 1000 - now.Millisecond);
     }
 
-    private DailyPrayerTimes Day(DateOnly date)
-    {
-        if (!days.TryGetValue(date, out var day))
-        {
-            var latitude = double.Parse(place.Latitude, CultureInfo.InvariantCulture);
-            var longitude = double.Parse(place.Longitude, CultureInfo.InvariantCulture);
-            day = calculator.Calculate(date, latitude, longitude);
-            days.Add(date, day);
-        }
-        return day;
-    }
+    private DailyPrayerTimes Day(DateOnly date) => schedule.Day(date);
 
     private void OpenPlaces()
     {

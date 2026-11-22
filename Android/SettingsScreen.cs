@@ -22,11 +22,23 @@ public sealed partial class MainActivity
         content.AddView(methods, MatchWidth());
         content.AddView(Label("Standard lægger én genstandslængde til middagsskyggen. Hanafi lægger to til.", 14, Muted), MatchWidth(top: 8));
 
+        AddSectionTitle("Startskærm");
+        content.AddView(ActionButton("Tilføj 2 × 4-widget", AddHomeWidget), MatchWidth());
+
         AddSectionTitle("Om appen");
         content.AddView(Label("Tiderne beregnes på telefonen og vises altid i dansk lokal tid.", 14, Muted), MatchWidth(bottom: 10));
         content.AddView(ActionButton("Dansk lokal tid og beregningsmetode", OpenMethod), MatchWidth(bottom: 8));
         content.AddView(ActionButton("Steddata fra GeoNames", () => OpenUrl("https://www.geonames.org/")), MatchWidth(bottom: 8));
         content.AddView(ActionButton("CC BY 4.0-licens", () => OpenUrl("https://creativecommons.org/licenses/by/4.0/")), MatchWidth());
+    }
+
+    private void AddHomeWidget()
+    {
+        if (!PrayerWidgetProvider.RequestPin(this))
+        {
+            Toast.MakeText(this, "Hold fingeren nede på startskærmen, og vælg Widgets → Salah Times 2 × 4.",
+                ToastLength.Long)?.Show();
+        }
     }
 
     private void ChooseAsr(bool choice)
@@ -35,7 +47,8 @@ public sealed partial class MainActivity
         {
             hanafi = choice;
             using var change = preferences.Edit();
-            change?.PutBoolean("hanafi", choice)?.Apply();
+            change?.PutBoolean(PrayerPreferences.HanafiKey, choice)?.Apply();
+            PrayerWidgetProvider.Refresh(this);
             Show(Screen.Settings);
         }
     }
@@ -128,11 +141,12 @@ public sealed partial class MainActivity
         if (selection.Slug != place.Slug)
         {
             place = selection;
-            days.Clear();
+            schedule = new LocalPrayerSchedule(selection);
         }
         var recent = RecentPlaceIds().Where(id => id != selection.Slug).Prepend(selection.Slug).Take(5);
         using var change = preferences.Edit();
-        change?.PutString("place", selection.Slug)?.PutString("recent-places", string.Join('|', recent))?.Apply();
+        change?.PutString(PrayerPreferences.PlaceKey, selection.Slug)?.PutString("recent-places", string.Join('|', recent))?.Apply();
+        PrayerWidgetProvider.Refresh(this);
         HideKeyboard();
         Show(returnScreen);
     }

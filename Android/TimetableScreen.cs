@@ -50,30 +50,11 @@ public sealed partial class MainActivity
 
     private void RefreshNextPrayer(DateTimeOffset now)
     {
-        var date = DateOnly.FromDateTime(now.Date);
-        var today = Day(date);
-        var tomorrow = Day(date.AddDays(1));
-        var dates = new Dictionary<DateOnly, DailyPrayerTimes>
-        {
-            [date.AddDays(-1)] = Day(date.AddDays(-1)),
-            [date] = today,
-            [date.AddDays(1)] = tomorrow
-        };
-        nextPrayer = PrayerDay.FindNextPrayer(dates, date, now, hanafi);
+        (nextPrayer, refreshPrayerAt) = schedule.Next(now, hanafi);
         nextName.Text = nextPrayer?.Name ?? "Tidspunktet afhænger af lyse nætter";
         nextName.TextSize = nextPrayer is null ? 18 : 25;
         nextTime.Text = nextPrayer?.Time;
         nextTime.Visibility = nextPrayer is null ? ViewStates.Gone : ViewStates.Visible;
-        refreshPrayerAt = DanishTime.At(date.AddDays(1), TimeOnly.MinValue);
-        var sunrise = PrayerDay.Sunrise(today);
-        if (nextPrayer?.StartsAt is { } startsAt && startsAt < refreshPrayerAt)
-        {
-            refreshPrayerAt = startsAt;
-        }
-        else if (nextPrayer is null && now < sunrise)
-        {
-            refreshPrayerAt = sunrise;
-        }
     }
 
     private void RenderCountdown(DateTimeOffset now)
