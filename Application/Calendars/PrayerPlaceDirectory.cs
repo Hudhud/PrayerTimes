@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using Application.Calendars;
+using System.Text.Json.Serialization;
 
-namespace Web.Services;
+namespace Application.Calendars;
 
 public sealed record PrayerPlace(string Id, string Name, string Area, double Latitude, double Longitude,
     string? PostalCode = null)
@@ -24,10 +24,15 @@ public sealed class PrayerPlaceDirectory
     private static readonly StringComparer DanishComparer = StringComparer.Create(CultureInfo.GetCultureInfo("da-DK"), true);
     private readonly (PrayerPlace Place, string Label, string FoldedLabel, string Area)[] searchable;
 
-    public PrayerPlaceDirectory(string path)
+    public static PrayerPlaceDirectory Load(string path)
     {
         using var data = File.OpenRead(path);
-        var locations = JsonSerializer.Deserialize<PrayerPlace[]>(data, JsonSerializerOptions.Web);
+        return new PrayerPlaceDirectory(data);
+    }
+
+    public PrayerPlaceDirectory(Stream data)
+    {
+        var locations = JsonSerializer.Deserialize(data, PrayerPlaceJsonContext.Default.PrayerPlaceArray);
         if (locations is not { Length: > 0 })
         {
             throw new InvalidDataException("The Danish place index is empty.");
@@ -165,3 +170,7 @@ public sealed class PrayerPlaceDirectory
             CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark));
     }
 }
+
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, PropertyNameCaseInsensitive = true)]
+[JsonSerializable(typeof(PrayerPlace[]))]
+internal partial class PrayerPlaceJsonContext : JsonSerializerContext;

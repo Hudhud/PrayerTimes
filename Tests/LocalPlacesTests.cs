@@ -7,7 +7,7 @@ namespace PrayerTimes.Tests;
 
 public sealed class LocalPlacesTests
 {
-    private readonly PrayerPlaceDirectory places = new(Path.Combine(AppContext.BaseDirectory, "prayer-places.json"));
+    private readonly PrayerPlaceDirectory places = PrayerPlaceDirectory.Load(Path.Combine(AppContext.BaseDirectory, "prayer-places.json"));
 
     [Theory]
     [InlineData("Esbjerg", "sted-2622447", "Esbjerg")]

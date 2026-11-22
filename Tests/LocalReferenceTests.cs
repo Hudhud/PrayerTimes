@@ -2,7 +2,6 @@ using System.Text;
 using System.Text.Json;
 using Application.Calendars;
 using Calculation;
-using Web.Controllers;
 using Web.Services;
 using Xunit;
 
@@ -64,8 +63,8 @@ public sealed class LocalReferenceTests
         var days = new Dictionary<DateOnly, Domain.Models.DailyPrayerTimes> { [date] = day };
         var now = DanishTime.At(date, new TimeOnly(18, 0));
 
-        Assert.Equal("Maghrib", HomeController.FindNextPrayer(days, date, now)?.Name);
-        var hanafi = HomeController.FindNextPrayer(days, date, now, hanafi: true);
+        Assert.Equal("Maghrib", PrayerDay.FindNextPrayer(days, date, now)?.Name);
+        var hanafi = PrayerDay.FindNextPrayer(days, date, now, hanafi: true);
         Assert.Equal("Asr", hanafi?.Name);
         Assert.Equal("18:24", hanafi?.Time);
     }
