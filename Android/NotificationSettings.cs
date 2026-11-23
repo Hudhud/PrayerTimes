@@ -19,9 +19,9 @@ public sealed partial class MainActivity
         var options = Panel(Surface, Outline);
         AddNotificationSwitch(options, "Påmindelse 30 min. før bøn", PrayerNotificationReceiver.ReminderKey);
         options.AddView(Divider());
-        AddNotificationSwitch(options, "Lydløs adhan ved bønnetid", PrayerNotificationReceiver.AdhanKey);
+        AddNotificationSwitch(options, "Adhan ved bønnetid", PrayerNotificationReceiver.AdhanKey);
         content.AddView(options, MatchWidth());
-        content.AddView(Label("Beskeder vises uden lyd eller vibration.", 14, Muted), MatchWidth(top: 8));
+        content.AddView(Label("Begge beskeder vibrerer uden lyd.", 14, Muted), MatchWidth(top: 8));
 
         if (!PrayerNotificationReceiver.Enabled(preferences))
         {

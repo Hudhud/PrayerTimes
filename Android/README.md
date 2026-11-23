@@ -8,7 +8,7 @@ Med automatisk placering kan du slå **Opdatér sted i baggrunden** til under **
 
 Vælg **Indstillinger → Tilføj 4 × 2-widget**, eller find **Salah Times 4 × 2** i Androids widgetmenu på startskærmen. Widgetten viser dagens tider, solopgang og næste bøn, følger sted og Asr-metode fra appen og åbner appen ved tryk.
 
-Under **Indstillinger → Notifikationer** kan du slå en lydløs påmindelse 30 minutter før hver bøn og en lydløs adhan ved bønnetid til hver for sig. Hvis Android beder om det, kan du give adgang til notifikationer og præcise alarmer. Uden adgang til præcise alarmer kan Android forsinke leveringen.
+Under **Indstillinger → Notifikationer** kan du slå en påmindelse 30 minutter før hver bøn og en adhan-besked ved bønnetid til hver for sig. Begge vibrerer uden lyd. Hvis Android beder om det, kan du give adgang til notifikationer og præcise alarmer. Uden adgang til præcise alarmer kan Android forsinke leveringen.
 
 Hvis du har den tidligere smalle widget på startskærmen, skal du fjerne den og tilføje widgetten igen efter opdateringen for at få størrelsen 4 × 2.
 

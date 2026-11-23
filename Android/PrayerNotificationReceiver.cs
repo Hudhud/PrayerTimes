@@ -19,8 +19,10 @@ public sealed class PrayerNotificationReceiver : BroadcastReceiver
     internal const string AdhanKey = "silent-adhan";
     private const string DueAction = "dk.salahtimes.android.PRAYER_NOTICE";
     private const string DueExtra = "due-at";
-    private const string ReminderChannel = "prayer-reminders-silent";
-    private const string AdhanChannel = "adhan-silent";
+    private const string ReminderChannel = "prayer-reminders-vibration";
+    private const string AdhanChannel = "adhan-vibration";
+    private const string PreviousReminderChannel = "prayer-reminders-silent";
+    private const string PreviousAdhanChannel = "adhan-silent";
     private static readonly TimeSpan ReminderLead = TimeSpan.FromMinutes(30);
     private static readonly TimeSpan AdhanGrace = TimeSpan.FromMinutes(10);
 
@@ -80,8 +82,8 @@ public sealed class PrayerNotificationReceiver : BroadcastReceiver
 
         try
         {
-            CreateChannel(notifications, ReminderChannel, "30 minutter før bøn");
-            CreateChannel(notifications, AdhanChannel, "Lydløs adhan");
+            CreateChannel(notifications, ReminderChannel, PreviousReminderChannel, "Påmindelse med vibration");
+            CreateChannel(notifications, AdhanChannel, PreviousAdhanChannel, "Adhan med vibration");
 
             var place = PrayerPreferences.SelectedPlace(context, settings);
             var hanafi = settings.GetBoolean(PrayerPreferences.HanafiKey, false);
@@ -165,11 +167,21 @@ public sealed class PrayerNotificationReceiver : BroadcastReceiver
         }
     }
 
-    private static void CreateChannel(NotificationManager manager, string id, string name)
+    private static void CreateChannel(NotificationManager manager, string id, string previousId, string name)
     {
-        using var channel = new NotificationChannel(id, name, NotificationImportance.Low);
+        using var existing = manager.GetNotificationChannel(id);
+        if (existing is not null)
+        {
+            return;
+        }
+
+        // Android keeps a channel's alert settings after creation. Keep an existing user block when moving to a new channel.
+        using var previous = manager.GetNotificationChannel(previousId);
+        var importance = previous?.Importance == NotificationImportance.None ? NotificationImportance.None : NotificationImportance.Default;
+        using var channel = new NotificationChannel(id, name, importance);
         channel.SetSound(null, null);
-        channel.EnableVibration(false);
+        channel.SetVibrationPattern([0L, 200L]);
+        channel.EnableVibration(true);
         channel.EnableLights(false);
         manager.CreateNotificationChannel(channel);
     }
@@ -178,7 +190,8 @@ public sealed class PrayerNotificationReceiver : BroadcastReceiver
         Notice notice, string place, DateTimeOffset now)
     {
         var channel = notice.Reminder ? ReminderChannel : AdhanChannel;
-        var sentKey = $"last-{channel}";
+        var deliveryTag = notice.Reminder ? PreviousReminderChannel : PreviousAdhanChannel;
+        var sentKey = $"last-{deliveryTag}";
         var due = notice.Due.ToUnixTimeMilliseconds();
         if (settings.GetLong(sentKey, 0) >= due)
         {
@@ -201,7 +214,7 @@ public sealed class PrayerNotificationReceiver : BroadcastReceiver
             .SetOnlyAlertOnce(true)
             .SetShowWhen(false)
             .Build();
-        manager.Notify(channel, (int)(due / 60_000), notification);
+        manager.Notify(deliveryTag, (int)(due / 60_000), notification);
         using var edit = settings.Edit();
         edit?.PutLong(sentKey, due)?.Apply();
         return true;
