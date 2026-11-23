@@ -128,12 +128,20 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
             var place = PrayerPreferences.SelectedPlace(context, preferences);
             var hanafi = preferences.GetBoolean(PrayerPreferences.HanafiKey, false);
             var now = new DanishTime(TimeProvider.System).Now;
+            var elapsed = SystemClock.ElapsedRealtime();
             var date = DateOnly.FromDateTime(now.Date);
             var schedule = new LocalPrayerSchedule(place);
             var day = schedule.Day(date);
             var (next, refreshAt) = schedule.Next(now, hanafi);
             var times = PrayerDay.Events(day, hanafi).ToList();
             times.Insert(1, new PrayerEvent("Solopgang", PrayerDay.Sunrise(day)));
+            var remaining = next?.StartsAt - now;
+            var countdownLabel = "Lyse nætter";
+            if (next is not null)
+            {
+                countdownLabel = times.Contains(next) ? "Næste bøn om" :
+                    next.StartsAt?.Date > day.Date ? $"{next.Name} i morgen om" : $"{next.Name} om";
+            }
 
             var notes = new List<string>(2);
             if (day.FajrTimeUnavailable || day.IshaTimeUnavailable)
@@ -154,16 +162,15 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
                 views.SetViewPadding(Resource.Id.widget_card, horizontal, vertical, horizontal, vertical);
                 views.SetInt(Resource.Id.widget_place, "setMaxLines", compact ? 1 : 2);
                 views.SetTextViewTextSize(Resource.Id.widget_place, (int)ComplexUnitType.Sp, compact ? 15 : 18);
-                views.SetTextViewTextSize(Resource.Id.widget_next_time, (int)ComplexUnitType.Sp, compact ? 16 : 19);
+                views.SetTextViewTextSize(Resource.Id.widget_countdown, (int)ComplexUnitType.Sp, compact ? 16 : 19);
 
                 views.SetTextViewText(Resource.Id.widget_place, place.Name);
                 views.SetTextViewText(Resource.Id.widget_date, $"{date.ToString("d. MMM", Danish)} · {(hanafi ? "Hanafi" : "Standard")}");
                 views.SetViewVisibility(Resource.Id.widget_next, ViewStates.Visible);
-                views.SetTextViewText(Resource.Id.widget_next_label,
-                    next?.StartsAt?.Date > day.Date ? "Næste bøn i morgen" : "Næste bøn");
-                views.SetTextViewText(Resource.Id.widget_next_prayer, next?.Name ?? "Lyse nætter");
-                views.SetTextViewText(Resource.Id.widget_next_time, next?.Time);
-                views.SetViewVisibility(Resource.Id.widget_next_time, next is null ? ViewStates.Gone : ViewStates.Visible);
+                views.SetTextViewText(Resource.Id.widget_next_label, countdownLabel);
+                var deadline = elapsed + (long)(remaining?.TotalMilliseconds ?? 0);
+                views.SetChronometer(Resource.Id.widget_countdown, deadline, null, remaining.HasValue);
+                views.SetViewVisibility(Resource.Id.widget_countdown, remaining.HasValue ? ViewStates.Visible : ViewStates.Gone);
                 views.SetTextViewText(Resource.Id.widget_note, string.Join(" · ", notes));
                 views.SetViewVisibility(Resource.Id.widget_note, notes.Count > 0 ? ViewStates.Visible : ViewStates.Gone);
                 views.RemoveAllViews(Resource.Id.widget_times);
@@ -187,7 +194,14 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
 
             if (context.GetSystemService(Context.AlarmService) is AlarmManager alarms && RefreshIntent(context) is { } pending)
             {
-                alarms.SetAndAllowWhileIdle(AlarmType.Rtc, refreshAt.ToUnixTimeMilliseconds(), pending);
+                if (OperatingSystem.IsAndroidVersionAtLeast(31))
+                {
+                    alarms.SetAndAllowWhileIdle(AlarmType.Rtc, refreshAt.ToUnixTimeMilliseconds(), pending);
+                }
+                else
+                {
+                    alarms.SetExactAndAllowWhileIdle(AlarmType.Rtc, refreshAt.ToUnixTimeMilliseconds(), pending);
+                }
             }
         }
         catch (Exception error) when (error is IOException or InvalidDataException or TimeZoneNotFoundException or Java.IO.IOException)
