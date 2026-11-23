@@ -5,6 +5,7 @@
     var danish = CultureInfo.GetCultureInfo("da-DK");
     var day = Model.Day;
     var next = Model.Next;
+    var current = Model.Current;
     var date = CalendarViewModel.DayParameter(Model.Date);
     var correctionUrl = Url.Action("Correction", "Home", new {
         city = Model.City.Slug, date = CalendarViewModel.DayParameter(Model.NextDate ?? Model.Date), prayer = next?.Name
@@ -45,6 +46,10 @@
     <p class="today-context">
         <strong data-historical-times hidden>Historiske bønnetider</strong>
         <time datetime="@date">@Model.Date.ToString("dddd d. MMMM yyyy", danish)</time>
+        @if (current?.StartsAt?.Date < Model.Date.ToDateTime(TimeOnly.MinValue))
+        {
+            <span class="prayer-stage prayer-stage-current" data-live-stage>Nu · @current.Name</span>
+        }
     </p>
 
     @if (day is null)
@@ -53,6 +58,6 @@
     }
     else
     {
-        <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true, ExplainBrightNights: true)" />
+        <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true, ExplainBrightNights: true, InlineSunrise: true, Current: current, Next: next)" />
     }
 </section>

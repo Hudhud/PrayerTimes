@@ -263,7 +263,8 @@ public sealed class HomeController(
             {
                 var next = PrayerDay.FindNextPrayer(days, today, now, hanafi);
                 var brightNights = next is null && days.Values.Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
-                return new DailyPrayerTimesViewModel(city, now, todayRow, next, brightNights, null, hanafi);
+                var current = PrayerDay.FindCurrentPrayer(days, today, now, hanafi);
+                return new DailyPrayerTimesViewModel(city, now, todayRow, current, next, brightNights, null, hanafi);
             }
 
             logger.LogWarning("No valid prayer times for {City}, {Date}. Request {RequestId}", city.Slug, today, requestId);
@@ -275,7 +276,7 @@ public sealed class HomeController(
         }
 
         Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
-        return new DailyPrayerTimesViewModel(city, now, null, null, false, requestId, hanafi);
+        return new DailyPrayerTimesViewModel(city, now, null, null, null, false, requestId, hanafi);
     }
 
     private static Dictionary<DateOnly, DailyPrayerTimes> ValidDays(IEnumerable<DailyPrayerTimes> rows, bool hanafi) =>

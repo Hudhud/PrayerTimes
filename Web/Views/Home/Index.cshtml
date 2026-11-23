@@ -4,6 +4,7 @@
     var city = Model.Daily.City;
     ViewData["Title"] = $"Bønnetider i {city.Name}";
     ViewData["PlaceDataAttribution"] = true;
+    ViewData["TimetableNavigation"] = true;
 }
 
 <header class="place-heading">
@@ -27,21 +28,23 @@
 </div>
 <partial name="_Today" model="Model.Daily" />
 
-<form method="post" asp-action="Asr" class="asr-control">
-    <input type="hidden" name="returnUrl"
-           value="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" />
-    <span>Asr-metode <strong>@(Model.Daily.Hanafi ? "Hanafi" : "Standard")</strong></span>
-    <button class="button" name="choice" value="@(Model.Daily.Hanafi ? "standard" : "hanafi")">
-        @(Model.Daily.Hanafi ? "Vis standard" : "Vis Hanafi")
-    </button>
-</form>
+<div class="day-actions">
+    <form method="post" asp-action="Asr" class="asr-control">
+        <input type="hidden" name="returnUrl"
+               value="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" />
+        <span>Asr-metode <strong>@(Model.Daily.Hanafi ? "Hanafi" : "Standard")</strong></span>
+        <button class="button" name="choice" value="@(Model.Daily.Hanafi ? "standard" : "hanafi")">
+            @(Model.Daily.Hanafi ? "Vis standard" : "Vis Hanafi")
+        </button>
+    </form>
 
-<div class="offline-controls" data-offline-controls hidden
-     data-offline-plan="@Url.RouteUrl("OfflinePlan", new { city = city.Slug, asr = Model.Daily.AsrMethod })"
-     data-worker="@Url.Content("~/offline-worker.js")">
-    <button class="button" type="button" data-save-offline>Gem 7 dages tider offline</button>
-    <a href="~/offline" data-open-offline hidden>Åbn gemt bønneplan</a>
-    <p class="offline-status" data-offline-status role="status"></p>
+    <div class="offline-controls" data-offline-controls hidden
+         data-offline-plan="@Url.RouteUrl("OfflinePlan", new { city = city.Slug, asr = Model.Daily.AsrMethod })"
+         data-worker="@Url.Content("~/offline-worker.js")">
+        <button class="button" type="button" data-save-offline>Gem 7 dages tider offline</button>
+        <a href="~/offline" data-open-offline hidden>Åbn gemt bønneplan</a>
+        <p class="offline-status" data-offline-status role="status"></p>
+    </div>
 </div>
 
 <partial name="_Calendar" model="Model.Calendar" />
