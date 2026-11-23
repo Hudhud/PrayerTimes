@@ -4,7 +4,9 @@ Android-appen viser dagens bønnetider, en live nedtælling og en månedskalende
 
 Appen bruger de samme bønneberegninger og den samme stedliste som salahtimes.dk. Tiderne beregnes på telefonen og vises i dansk lokal tid. Appen gemmer senest valgte steder og Asr-metoden lokalt. Stedlisten er baseret på GeoNames og deles under CC BY 4.0.
 
-Vælg **Indstillinger → Tilføj 2 × 4-widget**, eller find **Salah Times 2 × 4** i Androids widgetmenu på startskærmen. Widgetten viser dagens tider, solopgang og næste bøn, følger sted og Asr-metode fra appen og åbner appen ved tryk.
+Vælg **Indstillinger → Tilføj 4 × 2-widget**, eller find **Salah Times 4 × 2** i Androids widgetmenu på startskærmen. Widgetten viser dagens tider, solopgang og næste bøn, følger sted og Asr-metode fra appen og åbner appen ved tryk.
+
+Hvis du har den tidligere smalle widget på startskærmen, skal du fjerne den og tilføje widgetten igen efter opdateringen for at få størrelsen 4 × 2.
 
 ## Byg APK’en
 

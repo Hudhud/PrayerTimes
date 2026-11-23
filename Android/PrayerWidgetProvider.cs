@@ -9,7 +9,7 @@ using Application.Calendars;
 
 namespace SalahTimes.AndroidApp;
 
-[BroadcastReceiver(Exported = false, Label = "Salah Times 2 × 4")]
+[BroadcastReceiver(Exported = false, Label = "Salah Times 4 × 2")]
 [IntentFilter(new[]
 {
     AppWidgetManager.ActionAppwidgetUpdate,
@@ -115,12 +115,12 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
             {
                 if (prayer.Name == "Dhuhr")
                 {
-                    AddRow(context, views, "Solopgang", day.SunriseTime, sunrise: true);
+                    AddCell(context, views, "Solopgang", day.SunriseTime, sunrise: true);
                 }
 
                 var overnight = prayer.StartsAt?.Date > day.Date;
                 var highlight = next is not null && next.Name == prayer.Name && next.StartsAt == prayer.StartsAt;
-                AddRow(context, views, prayer.Name, prayer.Time, overnight: overnight, highlight: highlight);
+                AddCell(context, views, prayer.Name, prayer.Time, overnight: overnight, highlight: highlight);
             }
 
             var notes = new List<string>(2);
@@ -132,7 +132,7 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
             {
                 notes.Add("⁺ Næste døgn");
             }
-            views.SetTextViewText(Resource.Id.widget_note, string.Join('\n', notes));
+            views.SetTextViewText(Resource.Id.widget_note, string.Join(" · ", notes));
             views.SetViewVisibility(Resource.Id.widget_note, notes.Count > 0 ? ViewStates.Visible : ViewStates.Gone);
 
             if (context.GetSystemService(Context.AlarmService) is AlarmManager alarms && RefreshIntent(context) is { } pending)
@@ -154,20 +154,20 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
         return PendingIntent.GetBroadcast(context, 0, intent, PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable);
     }
 
-    private static void AddRow(Context context, RemoteViews views, string name, string? time,
+    private static void AddCell(Context context, RemoteViews views, string name, string? time,
         bool sunrise = false, bool overnight = false, bool highlight = false)
     {
-        var row = new RemoteViews(context.PackageName, Resource.Layout.prayer_widget_row);
-        row.SetTextViewText(Resource.Id.widget_prayer_name, name);
-        row.SetTextViewText(Resource.Id.widget_prayer_time, overnight ? $"{time}⁺" : time ?? "—");
+        var cell = new RemoteViews(context.PackageName, Resource.Layout.prayer_widget_cell);
+        cell.SetTextViewText(Resource.Id.widget_prayer_name, name);
+        cell.SetTextViewText(Resource.Id.widget_prayer_time, overnight ? $"{time}⁺" : time ?? "—");
         var spoken = time is null ? "Lyse nætter" : $"{time}{(overnight ? ", næste døgn" : "")}";
-        row.SetContentDescription(Resource.Id.widget_prayer_row, $"{name}, {spoken}");
+        cell.SetContentDescription(Resource.Id.widget_prayer_cell, $"{name}, {spoken}");
         if (sunrise || highlight)
         {
             var color = highlight ? Accent : Muted;
-            row.SetTextColor(Resource.Id.widget_prayer_name, color);
-            row.SetTextColor(Resource.Id.widget_prayer_time, color);
+            cell.SetTextColor(Resource.Id.widget_prayer_name, color);
+            cell.SetTextColor(Resource.Id.widget_prayer_time, color);
         }
-        views.AddView(Resource.Id.widget_times, row);
+        views.AddView(Resource.Id.widget_times, cell);
     }
 }

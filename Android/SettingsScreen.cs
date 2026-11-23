@@ -23,7 +23,7 @@ public sealed partial class MainActivity
         content.AddView(Label("Standard lægger én genstandslængde til middagsskyggen. Hanafi lægger to til.", 14, Muted), MatchWidth(top: 8));
 
         AddSectionTitle("Startskærm");
-        content.AddView(ActionButton("Tilføj 2 × 4-widget", AddHomeWidget), MatchWidth());
+        content.AddView(ActionButton("Tilføj 4 × 2-widget", AddHomeWidget), MatchWidth());
 
         AddSectionTitle("Om appen");
         content.AddView(Label("Tiderne beregnes på telefonen og vises altid i dansk lokal tid.", 14, Muted), MatchWidth(bottom: 10));
@@ -36,7 +36,7 @@ public sealed partial class MainActivity
     {
         if (!PrayerWidgetProvider.RequestPin(this))
         {
-            Toast.MakeText(this, "Hold fingeren nede på startskærmen, og vælg Widgets → Salah Times 2 × 4.",
+            Toast.MakeText(this, "Hold fingeren nede på startskærmen, og vælg Widgets → Salah Times 4 × 2.",
                 ToastLength.Long)?.Show();
         }
     }

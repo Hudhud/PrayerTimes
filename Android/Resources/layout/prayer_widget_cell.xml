@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widget_prayer_row"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:id="@+id/widget_prayer_cell"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     android:layout_weight="1"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:gravity="center"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/widget_prayer_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
         android:includeFontPadding="false"
         android:importantForAccessibility="no"
         android:maxLines="1"
         android:textColor="#F6F0E7"
-        android:textSize="11sp" />
+        android:textSize="10sp" />
 
     <TextView
         android:id="@+id/widget_prayer_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
+        android:layout_marginTop="3dp"
         android:fontFeatureSettings="tnum"
+        android:gravity="center"
         android:includeFontPadding="false"
         android:importantForAccessibility="no"
+        android:maxLines="1"
         android:textColor="#F6F0E7"
         android:textSize="13sp"
         android:textStyle="bold" />
