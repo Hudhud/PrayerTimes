@@ -30,10 +30,9 @@ try {
     await expect(row).toHaveCount(6);
     const dailyTimes = await today.locator('.prayer-list > div').evaluateAll(prayers =>
         prayers.map(prayer => prayer.querySelector('time')?.textContent ?? '- -'));
-    expect(dailyTimes).toHaveLength(5);
-    const sunrise = await today.locator('.sunrise time').textContent();
-    const [fajr, dhuhr, asr, maghrib, isha] = dailyTimes;
-    for (const [index, time] of [fajr, sunrise, dhuhr, asr, maghrib, isha].entries()) {
+    expect(dailyTimes).toHaveLength(6);
+    const [, sunrise, dhuhr, asr, maghrib] = dailyTimes;
+    for (const [index, time] of dailyTimes.entries()) {
         expect((await row.nth(index).textContent()).trim().startsWith(time)).toBeTruthy();
     }
     for (const time of [sunrise, dhuhr, asr, maghrib]) {
