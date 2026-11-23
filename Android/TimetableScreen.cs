@@ -1,4 +1,5 @@
 using Android.Graphics;
+using Android.Graphics.Drawables;
 using Android.Views;
 using Android.Widget;
 using Application.Calendars;
@@ -11,6 +12,8 @@ public sealed partial class MainActivity
     private TextView nextName = null!;
     private TextView nextTime = null!;
     private TextView countdown = null!;
+    private TextView todayStatus = null!;
+    private LinearLayout todayTimes = null!;
     private PrayerEvent? nextPrayer;
     private DateTimeOffset refreshPrayerAt;
 
@@ -37,35 +40,83 @@ public sealed partial class MainActivity
         AddLocationPanel();
 
         var hero = Panel(AccentSurface, AccentOutline, 22);
-        hero.SetPadding(Dp(16), Dp(13), Dp(16), Dp(14));
-        hero.AddView(Label("Næste bøn", 15, Accent, bold: true, heading: true), MatchWidth());
+        var heroBackground = new GradientDrawable(GradientDrawable.Orientation.TlBr,
+            [Color.ParseColor("#244337").ToArgb(), Color.ParseColor("#25271B").ToArgb()]);
+        heroBackground.SetCornerRadius(Dp(22));
+        heroBackground.SetStroke(Dp(1), AccentOutline);
+        hero.Background = heroBackground;
+        hero.SetPadding(Dp(16), Dp(14), Dp(16), Dp(15));
+        hero.AddView(Label("Næste bøn", 14, Accent, bold: true, heading: true), MatchWidth());
         var headingRow = new LinearLayout(this);
         headingRow.SetGravity(GravityFlags.CenterVertical);
-        nextName = Label("", 25, Text, bold: true);
+        nextName = Label("", 29, Text, bold: true);
         headingRow.AddView(nextName, new LinearLayout.LayoutParams(0, -2, 1));
-        nextTime = Label("", 32, Accent, bold: true);
+        nextTime = Label("", 36, Accent, bold: true);
         nextTime.FontFeatureSettings = "tnum";
         headingRow.AddView(nextTime, new LinearLayout.LayoutParams(-2, -2) { LeftMargin = Dp(8) });
         hero.AddView(headingRow, MatchWidth(top: 2));
-        countdown = Label("", 14, Muted);
+        countdown = Label("", 14, Text);
         countdown.FontFeatureSettings = "tnum";
         hero.AddView(countdown, MatchWidth(top: 2));
         content.AddView(hero, MatchWidth(top: 2));
-        RefreshNextPrayer(now);
-        RenderCountdown(now);
-
         AddSectionTitle("Dagens tider");
-        content.AddView(BuildPrayerTimes(Day(date)), MatchWidth());
+        todayStatus = Label("", 13, CurrentAccent, bold: true);
+        content.AddView(todayStatus, MatchWidth(bottom: 6));
+        todayTimes = new LinearLayout(this) { Orientation = Orientation.Vertical };
+        content.AddView(todayTimes, MatchWidth());
+        RefreshTodayTimes(now);
+        RenderCountdown(now);
+        content.AddView(ActionButton("Se månedskalenderen", OpenTodayInCalendar), MatchWidth(top: 12));
         content.AddView(Label($"Dansk lokal tid   ·   Asr {AsrMethod}", 13, Muted), MatchWidth(top: 10));
     }
 
-    private void RefreshNextPrayer(DateTimeOffset now)
+    private void RefreshTodayTimes(DateTimeOffset now)
     {
-        (_, nextPrayer, refreshPrayerAt) = schedule.Status(now, hanafi);
+        var (current, next, refreshAt) = schedule.Status(now, hanafi);
+        nextPrayer = next;
+        refreshPrayerAt = refreshAt;
         nextName.Text = nextPrayer?.Name ?? "Tidspunktet afhænger af lyse nætter";
-        nextName.TextSize = nextPrayer is null ? 18 : 25;
+        nextName.TextSize = nextPrayer is null ? 18 : 29;
         nextTime.Text = nextPrayer?.Time;
         nextTime.Visibility = nextPrayer is null ? ViewStates.Gone : ViewStates.Visible;
+
+        var day = Day(DateOnly.FromDateTime(now.Date));
+        var times = PrayerDay.Events(day, hanafi).ToList();
+        times.Insert(1, new PrayerEvent("Solopgang", PrayerDay.Sunrise(day)));
+        todayStatus.Text = current is not null && !times.Contains(current) ? $"Nu · {current.Name}" : "";
+        todayStatus.Visibility = string.IsNullOrEmpty(todayStatus.Text) ? ViewStates.Gone : ViewStates.Visible;
+
+        todayTimes.RemoveAllViews();
+        foreach (var rowTimes in times.Chunk(3))
+        {
+            var row = new LinearLayout(this) { BaselineAligned = false };
+            foreach (var prayer in rowTimes)
+            {
+                var isCurrent = prayer == current;
+                var isNext = prayer == next;
+                var tile = Panel(isCurrent ? CurrentSurface : isNext ? AccentSurface : Surface,
+                    isCurrent ? CurrentOutline : isNext ? AccentOutline : Outline, 12);
+                tile.SetMinimumHeight(Dp(79));
+                tile.SetPadding(Dp(8), Dp(7), Dp(8), Dp(6));
+                var caption = isCurrent ? "Nu" : isNext ? "Næste" : prayer.Time is null ? "Lyse nætter" :
+                    prayer.StartsAt?.Date > day.Date ? "Næste døgn" : null;
+                var tint = isCurrent ? CurrentAccent : isNext ? Accent : Muted;
+                tile.AddView(Label(prayer.Name, 13, tint, bold: isCurrent || isNext), MatchWidth());
+                var time = Label(prayer.Time ?? "—", 22, prayer.Name == "Solopgang" ? Muted : Text, bold: true);
+                time.FontFeatureSettings = "tnum";
+                tile.AddView(time, MatchWidth());
+                if (caption is not null)
+                {
+                    tile.AddView(Label(caption, 10, tint, bold: isCurrent || isNext), MatchWidth());
+                }
+                row.AddView(tile, new LinearLayout.LayoutParams(0, -1, 1) { RightMargin = Dp(prayer == rowTimes[^1] ? 0 : 6) });
+            }
+            todayTimes.AddView(row, MatchWidth(bottom: 6));
+        }
+        if (day.FajrTimeUnavailable || day.IshaTimeUnavailable)
+        {
+            todayTimes.AddView(ActionButton("Læs om lyse nætter", OpenMethod), MatchWidth());
+        }
     }
 
     private void RenderCountdown(DateTimeOffset now)

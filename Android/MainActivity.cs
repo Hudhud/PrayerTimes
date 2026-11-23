@@ -20,14 +20,17 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
     private enum Screen { Today, Calendar, Settings, Places, Method }
 
     private static readonly CultureInfo Danish = CultureInfo.GetCultureInfo("da-DK");
-    private static readonly Color Background = Color.ParseColor("#14181C");
-    private static readonly Color Surface = Color.ParseColor("#1D2328");
-    private static readonly Color Outline = Color.ParseColor("#364049");
+    private static readonly Color Background = Color.ParseColor("#101917");
+    private static readonly Color Surface = Color.ParseColor("#182622");
+    private static readonly Color Outline = Color.ParseColor("#35483F");
     private static readonly Color Text = Color.ParseColor("#F6F0E7");
-    private static readonly Color Muted = Color.ParseColor("#BEC5C9");
-    private static readonly Color Accent = Color.ParseColor("#F5CE78");
-    private static readonly Color AccentSurface = Color.ParseColor("#2B2417");
-    private static readonly Color AccentOutline = Color.ParseColor("#685536");
+    private static readonly Color Muted = Color.ParseColor("#B0C2B8");
+    private static readonly Color Accent = Color.ParseColor("#FFDA87");
+    private static readonly Color AccentSurface = Color.ParseColor("#362E20");
+    private static readonly Color AccentOutline = Color.ParseColor("#8D7447");
+    private static readonly Color CurrentAccent = Color.ParseColor("#A7E5CE");
+    private static readonly Color CurrentSurface = Color.ParseColor("#224337");
+    private static readonly Color CurrentOutline = Color.ParseColor("#598D79");
 
     private readonly DanishTime clock = new(TimeProvider.System);
     private LocalPrayerSchedule schedule = null!;
@@ -256,7 +259,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         {
             if (now >= refreshPrayerAt)
             {
-                RefreshNextPrayer(now);
+                RefreshTodayTimes(now);
             }
             RenderCountdown(now);
         }
