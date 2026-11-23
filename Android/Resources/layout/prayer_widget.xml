@@ -43,6 +43,19 @@
                 android:text="Vælg dit sted i appen"
                 android:textColor="@color/widget_secondary"
                 android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/widget_current"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:textColor="@color/widget_current"
+                android:textSize="12sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -62,6 +75,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textColor="@color/widget_accent"
                 android:textSize="11sp" />
 

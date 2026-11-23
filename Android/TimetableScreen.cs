@@ -61,7 +61,7 @@ public sealed partial class MainActivity
 
     private void RefreshNextPrayer(DateTimeOffset now)
     {
-        (nextPrayer, refreshPrayerAt) = schedule.Next(now, hanafi);
+        (_, nextPrayer, refreshPrayerAt) = schedule.Status(now, hanafi);
         nextName.Text = nextPrayer?.Name ?? "Tidspunktet afhænger af lyse nætter";
         nextName.TextSize = nextPrayer is null ? 18 : 25;
         nextTime.Text = nextPrayer?.Time;

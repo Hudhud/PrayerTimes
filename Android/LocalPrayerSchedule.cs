@@ -65,7 +65,7 @@ internal sealed class LocalPrayerSchedule(PrayerCity place)
         return day;
     }
 
-    public (PrayerEvent? Prayer, DateTimeOffset RefreshAt) Next(DateTimeOffset now, bool hanafi)
+    public (PrayerEvent? Current, PrayerEvent? Next, DateTimeOffset RefreshAt) Status(DateTimeOffset now, bool hanafi)
     {
         var date = DateOnly.FromDateTime(now.Date);
         var today = Day(date);
@@ -75,11 +75,15 @@ internal sealed class LocalPrayerSchedule(PrayerCity place)
             [date] = today,
             [date.AddDays(1)] = Day(date.AddDays(1))
         };
+        var current = PrayerDay.FindCurrentPrayer(dates, date, now, hanafi);
         var next = PrayerDay.FindNextPrayer(dates, date, now, hanafi);
         var midnight = DanishTime.At(date.AddDays(1), TimeOnly.MinValue);
         var sunrise = PrayerDay.Sunrise(today);
-        var refresh = next?.StartsAt is { } start && start < midnight ? start :
-            next is null && now < sunrise ? sunrise : midnight;
-        return (next, refresh);
+        var refresh = next?.StartsAt is { } start && start < midnight ? start : midnight;
+        if (now < sunrise && sunrise < refresh && (current?.Name == "Fajr" || next is null))
+        {
+            refresh = sunrise;
+        }
+        return (current, next, refresh);
     }
 }

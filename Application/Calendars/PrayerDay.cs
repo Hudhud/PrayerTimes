@@ -80,6 +80,32 @@ public static class PrayerDay
         return null;
     }
 
+    public static PrayerEvent? FindCurrentPrayer(
+        IReadOnlyDictionary<DateOnly, DailyPrayerTimes> days,
+        DateOnly today, DateTimeOffset now, bool hanafi = false)
+    {
+        if (!days.TryGetValue(today, out var day))
+        {
+            return null;
+        }
+
+        var prayers = Events(day, hanafi);
+        if (now >= Sunrise(day) && now < prayers[1].StartsAt)
+        {
+            return null;
+        }
+
+        var current = prayers.LastOrDefault(prayer => prayer.StartsAt <= now);
+        if (current is null && days.TryGetValue(today.AddDays(-1), out var yesterday))
+        {
+            current = Events(yesterday, hanafi).LastOrDefault(prayer => prayer.StartsAt <= now);
+        }
+
+        // Unknown summer times leave the end of the previous prayer interval unspecified.
+        return (current?.Name is "Maghrib" or "Isha") && FindNextPrayer(days, today, now, hanafi) is null
+            ? null : current;
+    }
+
     public static DateTimeOffset Sunrise(DailyPrayerTimes day) =>
         DanishTime.At(DateOnly.FromDateTime(day.Date), Read(day.SunriseTime));
 
