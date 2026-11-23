@@ -107,6 +107,12 @@ public sealed partial class MainActivity
     public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
     {
         base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PrayerNotificationPermissionRequest)
+        {
+            RefreshPrayerNotificationSettings();
+            PrayerWidgetProvider.Refresh(this);
+            return;
+        }
         if (requestCode != LocationPermissionRequest)
         {
             return;

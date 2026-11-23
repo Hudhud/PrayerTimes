@@ -194,13 +194,19 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
 
             if (context.GetSystemService(Context.AlarmService) is AlarmManager alarms && RefreshIntent(context) is { } pending)
             {
-                if (OperatingSystem.IsAndroidVersionAtLeast(31))
+                var trigger = refreshAt.ToUnixTimeMilliseconds();
+                if (next?.StartsAt == refreshAt && PrayerNotificationReceiver.HandlesPrayerRefresh(context, preferences))
                 {
-                    alarms.SetAndAllowWhileIdle(AlarmType.Rtc, refreshAt.ToUnixTimeMilliseconds(), pending);
+                    // The adhan alarm refreshes the widget while idle. Keep a non-wakeup fallback.
+                    alarms.Set(AlarmType.Rtc, trigger, pending);
+                }
+                else if (OperatingSystem.IsAndroidVersionAtLeast(31))
+                {
+                    alarms.SetAndAllowWhileIdle(AlarmType.Rtc, trigger, pending);
                 }
                 else
                 {
-                    alarms.SetExactAndAllowWhileIdle(AlarmType.Rtc, refreshAt.ToUnixTimeMilliseconds(), pending);
+                    alarms.SetExactAndAllowWhileIdle(AlarmType.Rtc, trigger, pending);
                 }
             }
         }

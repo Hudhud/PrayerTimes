@@ -24,6 +24,8 @@ public sealed partial class MainActivity
         content.AddView(methods, MatchWidth());
         content.AddView(Label("Standard lægger én genstandslængde til middagsskyggen. Hanafi lægger to til.", 14, Muted), MatchWidth(top: 8));
 
+        AddPrayerNotificationSettings();
+
         AddSectionTitle("Startskærm");
         content.AddView(ActionButton("Tilføj 4 × 2-widget", AddHomeWidget), MatchWidth());
 
@@ -50,6 +52,7 @@ public sealed partial class MainActivity
             hanafi = choice;
             using var change = preferences.Edit();
             change?.PutBoolean(PrayerPreferences.HanafiKey, choice)?.Apply();
+            PrayerNotificationReceiver.Reschedule(this);
             PrayerWidgetProvider.Refresh(this);
             Show(Screen.Settings);
         }
@@ -163,6 +166,7 @@ public sealed partial class MainActivity
             .PutBoolean(PrayerPreferences.ManualLocationKey, !fromDevice)?
             .PutBoolean(PrayerPreferences.FoundByLocationKey, fromDevice)?
             .PutString("recent-places", string.Join('|', recent))?.Apply();
+        PrayerNotificationReceiver.Reschedule(this);
         PrayerWidgetProvider.Refresh(this);
         HideKeyboard();
         Show(screen == Screen.Places ? returnScreen : screen);

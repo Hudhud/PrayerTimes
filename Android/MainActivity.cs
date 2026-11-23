@@ -94,6 +94,7 @@ public sealed partial class MainActivity : Activity
     protected override void OnResume()
     {
         base.OnResume();
+        RefreshPrayerNotificationSettings();
         TryAutomaticLocation();
     }
 
