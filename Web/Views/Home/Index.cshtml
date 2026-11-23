@@ -5,18 +5,27 @@
     ViewData["Title"] = $"Bønnetider i {city.Name}";
     ViewData["PlaceDataAttribution"] = true;
     ViewData["TimetableNavigation"] = true;
+    ViewData["CalendarHasToday"] = Model.Calendar.Days.Any(day => DateOnly.FromDateTime(day.Date) == Model.Calendar.Today);
 }
 
 <header class="place-heading">
     <div class="place-heading-row">
         <div class="place-title">
             <h1><span class="place-heading-label">Bønnetider i </span>@city.Name</h1>
+            @if (Model.IsDefaultPlace)
+            {
+                <small class="default-place" data-default-place>Standardsted</small>
+            }
             <small data-auto-place hidden>Automatisk valgt</small>
         </div>
         <a class="button" asp-controller="Home" asp-action="Places" data-place-fallback>Skift sted</a>
         <button class="button" type="button" aria-controls="place-picker-panel" aria-expanded="false"
                 data-place-toggle hidden>Skift sted</button>
     </div>
+    @if (Model.IsDefaultPlace)
+    {
+        <button class="button" type="button" aria-controls="place-picker-panel" data-location-shortcut hidden>Brug min placering</button>
+    }
     <div id="place-picker-panel" class="place-picker-panel" hidden>
         <partial name="_PlacePicker" model="string.Empty" />
     </div>

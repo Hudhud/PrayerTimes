@@ -59,7 +59,8 @@ public sealed record CalendarViewModel(
 
 public sealed record CityPrayerTimesViewModel(
     DailyPrayerTimesViewModel Daily,
-    CalendarViewModel Calendar);
+    CalendarViewModel Calendar,
+    bool IsDefaultPlace);
 
 public sealed record PrayerListViewModel(
     DailyPrayerTimes Day, bool Hanafi, bool ShowSunrise = false, bool ExplainBrightNights = false,

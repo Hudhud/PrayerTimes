@@ -53,7 +53,15 @@
             </a>
             @if (ViewData["TimetableNavigation"] is true)
             {
-                <a class="header-link" href="#month-title">Kalender <span aria-hidden="true">↓</span></a>
+                if (ViewData["CalendarHasToday"] is true)
+                {
+                    <a class="header-link mobile-calendar" href="#week-today" data-open-calendar-today>Kalender <span aria-hidden="true">↓</span></a>
+                    <a class="header-link desktop-calendar" href="#month-title">Kalender <span aria-hidden="true">↓</span></a>
+                }
+                else
+                {
+                    <a class="header-link" href="#month-title">Kalender <span aria-hidden="true">↓</span></a>
+                }
             }
         </div>
     </header>

@@ -10,10 +10,13 @@
     var completeMonth = Model.Days.Count == DateTime.DaysInMonth(Model.Month.Year, Model.Month.Month);
 }
 <section class="month" id="month-title" aria-label="Bønnekalender">
-    <h2 id="calendar-month-heading">@monthName</h2>
-    <nav class="calendar-nav" aria-label="Vælg måned">
-        <partial name="_CalendarMonthLinks" model="Model" />
-    </nav>
+    <header class="calendar-header">
+        <h2 id="calendar-month-heading">@monthName</h2>
+        <p class="calendar-place mobile-calendar">@Model.City.Name</p>
+        <nav class="calendar-nav" aria-label="Vælg måned">
+            <partial name="_CalendarMonthLinks" model="Model" />
+        </nav>
+    </header>
     <p class="print-city">@Model.City.Name · Dansk lokal tid · Asr @(Model.Hanafi ? "Hanafi" : "standard")</p>
     @if (!hasMonth)
     {

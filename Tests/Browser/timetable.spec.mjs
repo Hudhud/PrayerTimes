@@ -15,6 +15,8 @@ test('compact place picker opens with focus and closes with Escape', async ({ pa
     const toggle = page.getByRole('button', { name: 'Skift sted', exact: true });
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(search(page)).toBeHidden();
+    await expect(page.getByText('Standardsted', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Brug min placering', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Næste bøn', exact: true })).toBeInViewport();
     if (isMobile) {
         await toggle.tap();
@@ -46,6 +48,8 @@ test('search by postcode and return to a recent place', async ({ page }) => {
     await search(page).press('Enter');
     await expect(page).toHaveURL(/\/post-8000$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('8000 Aarhus C');
+    await expect(page.getByText('Standardsted', { exact: true })).toBeHidden();
+    await expect(page.getByRole('button', { name: 'Brug min placering', exact: true })).toBeHidden();
 
     await openPicker(page);
     await search(page).focus();
@@ -146,14 +150,13 @@ test('an imprecise automatic location keeps the current place until confirmed', 
     await expect(page.getByText('Automatisk valgt', { exact: true })).toBeHidden();
 });
 
-test('denied location keeps search usable', async ({ page }) => {
+test('the first-visit location shortcut keeps search usable when permission is denied', async ({ page }) => {
     await page.addInitScript(() => {
         Object.defineProperty(navigator, 'geolocation', {
             value: { getCurrentPosition: (success, failure) => failure({ code: 1 }) }
         });
     });
     await page.goto('/');
-    await openPicker(page);
     await page.getByRole('button', { name: 'Brug min placering' }).click();
     await expect(page.getByText(/Browseren giver ikke adgang/)).toBeVisible();
     await search(page).fill('Viby Aarhus');
@@ -230,6 +233,27 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await page.emulateMedia({ media: 'screen' });
     await page.getByRole('contentinfo').getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
+});
+
+test('the mobile calendar link opens today and keeps the location and month controls in view', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'The desktop calendar uses a month table.');
+    await page.setViewportSize({ width: 320, height: 720 });
+    await page.goto('/aarhus');
+    const calendar = page.getByRole('region', { name: 'Bønnekalender' });
+    const today = calendar.locator('.month-day.current-day');
+
+    await today.locator('summary').click();
+    await expect(today.locator('.prayer-list')).toBeHidden();
+    await page.getByRole('link', { name: 'Kalender' }).click();
+
+    await expect(page).toHaveURL(/\/aarhus#week-today$/);
+    await expect(today.locator('.prayer-list')).toBeInViewport();
+    await expect(calendar.locator('.calendar-place')).toHaveText('Aarhus');
+    await expect(calendar.locator('.calendar-place')).toBeInViewport();
+    await expect(calendar.getByRole('link', { name: 'Næste måned' })).toBeInViewport();
+    await expect.poll(() => page.evaluate(() =>
+        document.querySelector('.month-day.current-day').getBoundingClientRect().top >=
+        document.querySelector('.calendar-header').getBoundingClientRect().bottom)).toBeTruthy();
 });
 
 test('on a narrow screen, the whole month is browsable and today is one tap away', async ({ page }) => {
@@ -357,8 +381,9 @@ test('a 503 keeps today’s times and retry only accepts the selected Asr method
     });
 
     await page.goto('/koebenhavn');
-    const times = page.locator('.today .prayer-list');
-    const originalTimes = await times.innerText();
+    const times = page.locator('.today .prayer-list time');
+    const originalTimes = await times.allTextContents();
+    expect(originalTimes.length).toBeGreaterThan(0);
     const retry = page.getByRole('link', { name: 'Prøv igen', exact: true });
     await expect(page.getByText(/Du ser de senest hentede tider for i dag/)).toBeVisible();
     await expect(times).toHaveText(originalTimes);

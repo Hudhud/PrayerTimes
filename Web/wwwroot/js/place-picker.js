@@ -14,6 +14,8 @@
     const locationStatus = picker.querySelector('[data-location-status]');
     const locationSuggestion = picker.querySelector('[data-location-suggestion]');
     const automaticPlace = document.querySelector('[data-auto-place]');
+    const defaultPlace = document.querySelector('[data-default-place]');
+    const locationShortcut = document.querySelector('[data-location-shortcut]');
     const toggle = document.querySelector('[data-place-toggle]');
     const panel = toggle ? document.getElementById(toggle.getAttribute('aria-controls')) : null;
     const currentPlace = document.querySelector('[data-current-place]')?.dataset;
@@ -227,6 +229,10 @@
         if (automaticPlace) {
             automaticPlace.hidden = !automatic;
         }
+        if (defaultPlace) {
+            defaultPlace.hidden = automatic;
+            locationShortcut.hidden = automatic || !panel.hidden;
+        }
     }
 
     function clearLocationFeedback() {
@@ -323,7 +329,7 @@
 
             locationStatus.textContent = '';
             saveLocationPreference({ placeId: nearest.id, checkedAt: Date.now() });
-            if (currentPlace?.currentPlace === nearest.id) {
+            if (currentPlace?.currentPlace === nearest.id && (!defaultPlace || automatic)) {
                 updateLocationButton();
                 if (!automatic) {
                     locationStatus.textContent = `Du ser allerede bønnetiderne for ${nearest.name}.`;
@@ -385,10 +391,7 @@
         panel.after(locationFeedback);
         toggle.addEventListener('click', event => {
             if (panel.hidden) {
-                cancelLocationRequest();
-                toggle.textContent = 'Luk stedvælger';
-                toggle.setAttribute('aria-expanded', 'true');
-                panel.hidden = false;
+                openPicker();
                 if (event.detail === 0 || !window.matchMedia('(pointer: coarse)').matches) {
                     input.focus();
                 }
@@ -403,15 +406,33 @@
             }
         });
 
+        function openPicker() {
+            cancelLocationRequest();
+            panel.hidden = false;
+            toggle.textContent = 'Luk stedvælger';
+            toggle.setAttribute('aria-expanded', 'true');
+            if (locationShortcut) {
+                locationShortcut.hidden = true;
+            }
+        }
+
         function closePicker() {
             closeSuggestions();
             cancelLocationRequest();
             panel.hidden = true;
             toggle.textContent = 'Skift sted';
             toggle.setAttribute('aria-expanded', 'false');
+            if (!locationButton.hidden) {
+                updateLocationButton();
+            }
             toggle.focus();
         }
 
+        locationShortcut?.addEventListener('click', () => {
+            openPicker();
+            toggle.focus();
+            useLocation();
+        });
         document.querySelector('[data-place-fallback]').hidden = true;
         toggle.hidden = false;
     }
