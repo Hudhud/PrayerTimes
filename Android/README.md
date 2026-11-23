@@ -1,6 +1,6 @@
 # Salah Times til Android
 
-Android-appen viser dagens bønnetider, en live nedtælling og en månedskalender, hvor dagene kan foldes ud. Søg efter en by eller et postnummer under **Skift sted**. Under **Indstillinger** kan du vælge standard- eller Hanafi-metoden og læse beregningsvejledningen.
+Android-appen viser dagens bønnetider, en live nedtælling og en månedskalender, hvor dagene kan foldes ud. Appen bruger telefonens placering til at vælge en nærliggende dansk by. Ved en omtrentlig placering kan du bekræfte den foreslåede by. Du kan også søge efter en by eller et postnummer under **Skift sted**. Appen beholder et manuelt valgt sted, indtil du vælger **Brug min placering** og appen finder et sted. Under **Indstillinger** kan du vælge standard- eller Hanafi-metoden og læse beregningsvejledningen.
 
 Appen bruger de samme bønneberegninger og den samme stedliste som salahtimes.dk. Tiderne beregnes på telefonen og vises i dansk lokal tid. Appen gemmer senest valgte steder og Asr-metoden lokalt. Stedlisten er baseret på GeoNames og deles under CC BY 4.0.
 

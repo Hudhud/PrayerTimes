@@ -95,6 +95,15 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
         try
         {
             var preferences = PrayerPreferences.Open(context);
+            if (!preferences.Contains(PrayerPreferences.PlaceKey))
+            {
+                views.SetTextViewText(Resource.Id.widget_date, "Vælg dit sted i appen");
+                views.RemoveAllViews(Resource.Id.widget_times);
+                views.SetViewVisibility(Resource.Id.widget_note, ViewStates.Gone);
+                manager.UpdateAppWidget(ids, views);
+                return;
+            }
+
             var place = PrayerPreferences.SelectedPlace(context, preferences);
             var hanafi = preferences.GetBoolean(PrayerPreferences.HanafiKey, false);
             var now = new DanishTime(TimeProvider.System).Now;

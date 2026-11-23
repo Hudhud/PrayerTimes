@@ -50,6 +50,42 @@ public sealed class PrayerPlaceDirectory
             : null);
     }
 
+    public PrayerCity? FindNearestCity(double latitude, double longitude)
+    {
+        if (!double.IsFinite(latitude) || latitude is < -90 or > 90 ||
+            !double.IsFinite(longitude) || longitude is < -180 or > 180)
+        {
+            return null;
+        }
+
+        const double radians = Math.PI / 180;
+        const double earthRadiusKm = 6371;
+        const double maxDistanceKm = 30;
+        var radius = Math.Sin(maxDistanceKm / (2 * earthRadiusKm));
+        var nearestDistance = radius * radius;
+        var latitudeCosine = Math.Cos(latitude * radians);
+        PrayerPlace? nearest = null;
+        foreach (var candidate in places.Values)
+        {
+            if (candidate.PostalCode is not null)
+            {
+                continue;
+            }
+
+            var latitudeSine = Math.Sin((candidate.Latitude - latitude) * radians / 2);
+            var longitudeSine = Math.Sin((candidate.Longitude - longitude) * radians / 2);
+            var distance = latitudeSine * latitudeSine +
+                latitudeCosine * Math.Cos(candidate.Latitude * radians) * longitudeSine * longitudeSine;
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearest = candidate;
+            }
+        }
+
+        return nearest is null ? null : Find(nearest.Id);
+    }
+
     public IReadOnlyList<PrayerPlace> Search(string query)
     {
         var input = query.Trim();

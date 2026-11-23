@@ -10,6 +10,8 @@ internal static class PrayerPreferences
 {
     public const string PlaceKey = "place";
     public const string HanafiKey = "hanafi";
+    public const string ManualLocationKey = "manual-location";
+    public const string FoundByLocationKey = "found-by-location";
 
     private static PrayerPlaceDirectory? directory;
 

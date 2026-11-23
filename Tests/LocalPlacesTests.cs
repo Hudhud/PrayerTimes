@@ -25,6 +25,29 @@ public sealed class LocalPlacesTests
         Assert.Equal(label, places.Find(slug)?.Name);
     }
 
+    [Fact]
+    public void FindsTheNearestNamedPlaceIgnoringPostalCentres()
+    {
+        using var catalog = new MemoryStream("""
+            [
+              { "id": "post-9000", "name": "Aalborg", "area": "Aalborg Kommune", "latitude": 57, "longitude": 10, "postalCode": "9000" },
+              { "id": "naer-by", "name": "Nær by", "area": "Aalborg Kommune", "latitude": 57, "longitude": 10.01 },
+              { "id": "fjernere-by", "name": "Fjernere by", "area": "Aalborg Kommune", "latitude": 57.02, "longitude": 10 }
+            ]
+            """u8.ToArray());
+        var directory = new PrayerPlaceDirectory(catalog);
+
+        Assert.Equal("naer-by", directory.FindNearestCity(57, 10)?.Slug);
+    }
+
+    [Theory]
+    [InlineData(48.86, 2.35)]
+    [InlineData(double.NaN, 10)]
+    public void DoesNotGuessAPlaceForDistantOrInvalidCoordinates(double latitude, double longitude)
+    {
+        Assert.Null(places.FindNearestCity(latitude, longitude));
+    }
+
     [Theory]
     [InlineData("Købenahvn")]
     [InlineData("Koebenahvn")]

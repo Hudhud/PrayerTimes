@@ -13,7 +13,9 @@ public sealed partial class MainActivity
     {
         AddHeading("Indstillinger", "Vælg sted og Asr-metode");
         AddSectionTitle("Sted", top: 0);
-        content.AddView(ActionButton(place.Name, OpenPlaces, description: $"Skift sted, nu {place.Name}"), MatchWidth());
+        content.AddView(HasSelectedPlace
+            ? ActionButton(place.Name, OpenPlaces, description: $"Skift sted, nu {place.Name}")
+            : ActionButton("Vælg sted", OpenPlaces), MatchWidth());
 
         AddSectionTitle("Asr-metode");
         var methods = new LinearLayout(this);
@@ -55,7 +57,9 @@ public sealed partial class MainActivity
 
     private void RenderPlaces()
     {
-        AddHeading("Skift sted", "Søg efter en dansk by eller et postnummer");
+        AddHeading("Vælg sted");
+        AddLocationPanel();
+        AddSectionTitle("Søg efter by eller postnummer", top: 8);
         var input = new EditText(this)
         {
             Hint = "By eller postnummer", TextSize = 16,
@@ -113,7 +117,14 @@ public sealed partial class MainActivity
             }
         }
 
-        input.TextChanged += (_, _) => Search();
+        input.TextChanged += (_, _) =>
+        {
+            if (!string.IsNullOrWhiteSpace(input.Text))
+            {
+                CancelLocationLookup();
+            }
+            Search();
+        };
         input.EditorAction += (_, args) =>
         {
             if (args.ActionId == ImeAction.Search && matches.Count == 1)
@@ -136,8 +147,11 @@ public sealed partial class MainActivity
     private string[] RecentPlaceIds() =>
         (preferences.GetString("recent-places", "") ?? "").Split('|', StringSplitOptions.RemoveEmptyEntries);
 
-    private void ChoosePlace(PrayerCity selection)
+    private void ChoosePlace(PrayerCity selection, bool fromDevice = false)
     {
+        CancelLocationLookup();
+        locationStatus = null;
+        locationSuggestion = null;
         if (selection.Slug != place.Slug)
         {
             place = selection;
@@ -145,10 +159,13 @@ public sealed partial class MainActivity
         }
         var recent = RecentPlaceIds().Where(id => id != selection.Slug).Prepend(selection.Slug).Take(5);
         using var change = preferences.Edit();
-        change?.PutString(PrayerPreferences.PlaceKey, selection.Slug)?.PutString("recent-places", string.Join('|', recent))?.Apply();
+        change?.PutString(PrayerPreferences.PlaceKey, selection.Slug)?
+            .PutBoolean(PrayerPreferences.ManualLocationKey, !fromDevice)?
+            .PutBoolean(PrayerPreferences.FoundByLocationKey, fromDevice)?
+            .PutString("recent-places", string.Join('|', recent))?.Apply();
         PrayerWidgetProvider.Refresh(this);
         HideKeyboard();
-        Show(returnScreen);
+        Show(screen == Screen.Places ? returnScreen : screen);
     }
 
     private void RenderMethod()

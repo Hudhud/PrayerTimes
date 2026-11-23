@@ -21,9 +21,20 @@ public sealed partial class MainActivity
 
     private void RenderToday()
     {
+        if (!HasSelectedPlace)
+        {
+            RenderLocationRequired();
+            return;
+        }
+
         var now = clock.Now;
         var date = DateOnly.FromDateTime(now.Date);
         AddHeading(place.Name, Capitalize(date.ToString("dddd d. MMMM yyyy", Danish)));
+        if (preferences.GetBoolean(PrayerPreferences.FoundByLocationKey, false))
+        {
+            content.AddView(Label("Valgt via placering", 12, Accent), MatchWidth(bottom: 8));
+        }
+        AddLocationPanel();
 
         var hero = Panel(AccentSurface, AccentOutline, 22);
         hero.SetPadding(Dp(16), Dp(13), Dp(16), Dp(14));
@@ -125,7 +136,14 @@ public sealed partial class MainActivity
 
     private void RenderCalendar(bool jumpToSelected)
     {
+        if (!HasSelectedPlace)
+        {
+            RenderLocationRequired();
+            return;
+        }
+
         AddHeading(Capitalize(month.ToString("MMMM yyyy", Danish)), $"{place.Name}   ·   Asr {AsrMethod}");
+        AddLocationPanel();
         var navigation = new LinearLayout(this);
         navigation.AddView(ActionButton("‹ Forrige", () => ChangeMonth(-1), description: "Forrige måned"), new LinearLayout.LayoutParams(0, -2, 1));
         navigation.AddView(ActionButton("I dag", OpenTodayInCalendar), new LinearLayout.LayoutParams(0, -2, 1) { LeftMargin = Dp(6), RightMargin = Dp(6) });

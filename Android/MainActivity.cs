@@ -62,6 +62,7 @@ public sealed partial class MainActivity : Activity
         if (savedInstanceState is not null)
         {
             screen = (Screen)savedInstanceState.GetInt("screen");
+            locationPermissionPending = savedInstanceState.GetBoolean("location-permission-pending");
             if (DateOnly.TryParseExact(savedInstanceState.GetString("month"), "yyyy-MM-dd",
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out var savedMonth))
             {
@@ -90,10 +91,17 @@ public sealed partial class MainActivity : Activity
         UpdateClock();
     }
 
+    protected override void OnResume()
+    {
+        base.OnResume();
+        TryAutomaticLocation();
+    }
+
     protected override void OnStop()
     {
         foreground = false;
         handler.RemoveCallbacks(tick);
+        PauseLocationLookup();
         base.OnStop();
     }
 
@@ -101,6 +109,7 @@ public sealed partial class MainActivity : Activity
     {
         var primary = screen is Screen.Places or Screen.Method ? returnScreen : screen;
         outState.PutInt("screen", (int)primary);
+        outState.PutBoolean("location-permission-pending", locationPermissionPending);
         outState.PutString("month", month.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
         outState.PutString("day", selectedDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
         base.OnSaveInstanceState(outState);
@@ -110,6 +119,10 @@ public sealed partial class MainActivity : Activity
     {
         if (screen is Screen.Places or Screen.Method)
         {
+            if (screen == Screen.Places)
+            {
+                CancelLocationLookup();
+            }
             HideKeyboard();
             Show(returnScreen);
         }
@@ -126,6 +139,7 @@ public sealed partial class MainActivity : Activity
     private void Show(Screen target, bool jumpToSelected = false)
     {
         screen = target;
+        locationPanel = null;
         root.RemoveAllViews();
         root.AddView(BuildHeader(), MatchWidth());
         scroll = new ScrollView(this) { FillViewport = true };
@@ -232,7 +246,7 @@ public sealed partial class MainActivity : Activity
             var currentScroll = scroll;
             currentScroll.Post(() => currentScroll.ScrollTo(0, position));
         }
-        else if (screen == Screen.Today)
+        else if (screen == Screen.Today && HasSelectedPlace)
         {
             if (now >= refreshPrayerAt)
             {
@@ -248,6 +262,7 @@ public sealed partial class MainActivity : Activity
 
     private void OpenPlaces()
     {
+        CancelLocationLookup();
         returnScreen = screen;
         Show(Screen.Places);
     }
