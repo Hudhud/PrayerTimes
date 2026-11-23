@@ -1,13 +1,18 @@
 :root {
     color-scheme: dark;
-    --background: #121518;
-    --surface: #1a1e22;
-    --surface-raised: #20262b;
-    --text: #f5f2e9;
-    --muted: #bac1c1;
-    --border: #383f44;
-    --accent: #ffdc54;
+    --background: #101917;
+    --surface: #182622;
+    --surface-raised: #20342d;
+    --text: #f6f3e8;
+    --muted: #b0c2b8;
+    --border: #35483f;
+    --accent: #ffda87;
     --on-accent: #201b0c;
+    --current: #a7e5ce;
+    --current-surface: #224337;
+    --current-border: #598d79;
+    --next-surface: #362e20;
+    --next-border: #8d7447;
     font-family: system-ui, sans-serif;
     line-height: 1.5;
 }
@@ -22,10 +27,11 @@ button, select, input { font: inherit; }
 [hidden] { display: none !important; }
 
 .site-width { width: min(100% - 2rem, 58rem); margin-inline: auto; }
-.site-header { border-bottom: 1px solid var(--border); }
-.site-header .site-width { min-height: 3.25rem; display: flex; align-items: center; }
+.site-header { border-bottom: 1px solid var(--border); background: #14211e; }
+.site-header .site-width { min-height: 3.5rem; display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .brand {
     display: inline-flex;
+    min-width: 0;
     align-items: center;
     gap: .55rem;
     color: var(--text);
@@ -33,6 +39,9 @@ button, select, input { font: inherit; }
     font-weight: 700;
     text-decoration: none;
 }
+.header-link { display: inline-flex; gap: .5rem; min-height: 2.75rem; min-width: 0; overflow-wrap: anywhere; align-items: center; color: var(--muted); font-size: .875rem; font-weight: 650; text-decoration: none; }
+.header-link:hover { color: var(--text); }
+.header-link span { color: var(--accent); }
 .skip-link {
     position: absolute;
     top: .5rem;
@@ -325,6 +334,84 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 [data-today-anchor] { scroll-margin-top: 1rem; }
 .prayer-updated { border-color: var(--accent); }
 
+.place-heading { margin-block: clamp(1.3rem, 4vw, 2.4rem) 1rem; }
+.place-heading-label {
+    display: block;
+    margin-bottom: .3rem;
+    color: var(--muted);
+    font-size: .875rem;
+    font-weight: 650;
+    letter-spacing: 0;
+}
+.place-heading h1 { font-size: clamp(2rem, 5vw, 3.15rem); }
+.today { container-type: inline-size; }
+.place-heading-row .button { border-color: #59766a; padding-inline: 1rem; }
+.today .next-prayer {
+    position: relative;
+    overflow: hidden;
+    gap: .5rem;
+    padding: clamp(1rem, 3vw, 1.65rem);
+    border-color: #7d704c;
+    border-radius: 1.2rem;
+    background: radial-gradient(ellipse at 100% 0, #75633b45, transparent 65%), linear-gradient(130deg, #244337, #25271b 73%);
+    margin-block: 0 .9rem;
+    min-height: 8.5rem;
+}
+.today .next-prayer > * { position: relative; z-index: 1; }
+.today .next-prayer::after {
+    content: "";
+    position: absolute;
+    inset-block: -2rem;
+    inset-inline: 56% 0;
+    pointer-events: none;
+    background: repeating-radial-gradient(ellipse at 100% 10%, transparent 0 1.5rem, #f4d88d10 calc(1.5rem + 1px) calc(1.5rem + 2px));
+}
+.today .next-prayer [data-next-prayer-label]:not(.next-detail) {
+    margin-block: .06rem;
+    font-size: clamp(1.6rem, 4.8vw, 2.4rem);
+    line-height: 1.12;
+    letter-spacing: -.04em;
+    font-weight: 750;
+}
+.today .next-prayer > time { font-size: clamp(1.9rem, 8vw, 3.35rem); letter-spacing: -.04em; line-height: 1; }
+.today .next-prayer .next-countdown { margin-top: .35rem; color: var(--text); }
+.today-context { color: var(--muted); font-size: .92rem; }
+.today-context time { display: inline-block; }
+.today > .prayer-list {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: .5rem;
+    margin: .65rem 0 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+.today > .prayer-list > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: .2rem;
+    padding: .7rem .75rem;
+    min-height: 4.4rem;
+    border: 1px solid var(--border);
+    border-radius: .75rem;
+    background: var(--surface);
+    overflow-wrap: anywhere;
+}
+.today > .prayer-list dt { font-size: .85rem; }
+.today > .prayer-list dd { text-align: start; font-size: clamp(1.15rem, 3vw, 1.65rem); line-height: 1.15; }
+.today > .prayer-list .sunrise-tile dd { color: var(--muted); }
+.today > .prayer-list .bright-night-explanation { margin-inline: 0; font-size: .72rem; }
+.prayer-stage { font-size: .7rem; font-weight: 700; }
+.today > .prayer-list .prayer-stage { display: block; margin: .25rem 0 0; }
+.prayer-stage-current { color: var(--current); }
+.prayer-stage-next { color: var(--accent); }
+.today:not([data-stale]) [data-prayer-stage="current"] { background: var(--current-surface); border-color: var(--current-border); }
+.today:not([data-stale]) [data-prayer-stage="next"] { background: var(--next-surface); border-color: var(--next-border); }
+.today[data-stale] [data-live-stage] { display: none; }
+.day-actions { display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: .6rem 1rem; margin-top: .8rem; }
+.day-actions .asr-control, .day-actions .offline-controls { margin: 0; }
+.day-actions .asr-control .button, .day-actions .offline-controls .button { font-size: .82rem; }
+
 [data-use-location][aria-busy="true"]::before {
     content: "";
     width: .82rem;
@@ -345,7 +432,9 @@ tbody tr:nth-child(even) th { background: var(--surface); }
 }
 
 @media screen and (max-width: 39rem) {
-    .place-heading-label { display: block; color: var(--muted); font-size: .55em; letter-spacing: normal; margin-bottom: .14em; }
+    .today > .prayer-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .today > .prayer-list > div { padding-inline: clamp(.4rem, 2vw, .75rem); }
+    .today > .prayer-list dd { font-size: clamp(1.15rem, 5.8vw, 1.6rem); }
     .place-suggestions { position: static; }
     .place-suggestion-heading:not([hidden]),
     .place-suggestion-heading[hidden] + ul:not([hidden]),
@@ -357,6 +446,13 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     .month-day .prayer-list, .week-day .prayer-list { grid-template-columns: 1fr; }
     .month-day .prayer-list > div, .week-day .prayer-list > div { display: flex; justify-content: space-between; padding-block: .2rem; }
     .month-day .prayer-list > div + div, .week-day .prayer-list > div + div { border-inline-start: 0; border-top: 1px solid var(--border); }
+}
+
+@container (max-width: 12rem) {
+    .today > .prayer-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (max-width: 10rem) {
+    .today > .prayer-list { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media print {

@@ -11,6 +11,7 @@ public sealed record DailyPrayerTimesViewModel(
     PrayerCity City,
     DateTimeOffset Now,
     DailyPrayerTimes? Day,
+    PrayerEvent? Current,
     PrayerEvent? Next,
     bool NextAffectedByBrightNights,
     string? RequestId,
@@ -31,12 +32,9 @@ public sealed record DailyPrayerTimesViewModel(
                 var retry = Now.AddMinutes(2);
                 return retry < midnight ? retry : midnight;
             }
-            if (Next?.StartsAt is { } next && next < midnight)
-            {
-                return next;
-            }
             var sunrise = PrayerDay.Sunrise(Day);
-            return Next is null && Now < sunrise ? sunrise : midnight;
+            var refresh = Next?.StartsAt is { } next && next < midnight ? next : midnight;
+            return Now < sunrise && sunrise < refresh && (Current?.Name == "Fajr" || Next is null) ? sunrise : refresh;
         }
     }
 }
@@ -64,7 +62,8 @@ public sealed record CityPrayerTimesViewModel(
     CalendarViewModel Calendar);
 
 public sealed record PrayerListViewModel(
-    DailyPrayerTimes Day, bool Hanafi, bool ShowSunrise = false, bool ExplainBrightNights = false);
+    DailyPrayerTimes Day, bool Hanafi, bool ShowSunrise = false, bool ExplainBrightNights = false,
+    bool InlineSunrise = false, PrayerEvent? Current = null, PrayerEvent? Next = null);
 
 public sealed record OfflinePrayerTimesViewModel(
     PrayerCity City, DateOnly Start, IReadOnlyList<DailyPrayerTimes> Days, bool Hanafi)

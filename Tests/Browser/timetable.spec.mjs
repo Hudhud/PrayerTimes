@@ -426,6 +426,7 @@ test('a saved seven-day plan can be reopened without a connection', async ({ pag
         const current = page.locator('.today');
         const now = await current.getAttribute('data-today');
         const asr = await current.locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time').textContent();
+        const background = await page.locator('body').evaluate(body => getComputedStyle(body).backgroundColor);
         await page.getByRole('button', { name: 'Gem 7 dages tider offline' }).click();
         const saved = page.getByRole('link', { name: 'Åbn gemt bønneplan' });
         await expect(saved).toBeVisible();
@@ -444,7 +445,7 @@ test('a saved seven-day plan can be reopened without a connection', async ({ pag
         const dates = await days.locator('h2 time').evaluateAll(times => times.map(time => time.dateTime));
         expect(dates).toEqual(Array.from({ length: 7 }, (_, index) =>
             new Date(Date.parse(now) + index * 86400000).toISOString().slice(0, 10)));
-        await expect(reopened.locator('body')).toHaveCSS('background-color', 'rgb(18, 21, 24)');
+        await expect(reopened.locator('body')).toHaveCSS('background-color', background);
         await reopened.goto(`${origin}/aarhus`);
         await expect(reopened.getByRole('heading', { name: 'Offline bønnetider i Aarhus' })).toBeVisible();
     } finally {

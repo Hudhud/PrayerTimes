@@ -81,6 +81,7 @@ if (timetable) {
         const hasTimes = Boolean(timetable.querySelector('.prayer-list'));
         const historical = timetable.dataset.today < today;
         timetable.hidden = historical && !hasTimes;
+        timetable.toggleAttribute('data-stale', historical || !refreshError.hidden);
         timetable.querySelector('[data-historical-times]').hidden = !historical;
         const card = timetable.querySelector('[data-next-prayer]');
         card.hidden = historical || (!refreshError.hidden && hasTimes);

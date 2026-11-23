@@ -261,9 +261,10 @@ public sealed class HomeController(
             var days = ValidDays(rows, hanafi);
             if (days.TryGetValue(today, out var todayRow))
             {
-                var next = FindNextPrayer(days, today, now, hanafi);
+                var next = PrayerDay.FindNextPrayer(days, today, now, hanafi);
                 var brightNights = next is null && days.Values.Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
-                return new DailyPrayerTimesViewModel(city, now, todayRow, next, brightNights, null, hanafi);
+                var current = PrayerDay.FindCurrentPrayer(days, today, now, hanafi);
+                return new DailyPrayerTimesViewModel(city, now, todayRow, current, next, brightNights, null, hanafi);
             }
 
             logger.LogWarning("No valid prayer times for {City}, {Date}. Request {RequestId}", city.Slug, today, requestId);
@@ -275,54 +276,13 @@ public sealed class HomeController(
         }
 
         Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
-        return new DailyPrayerTimesViewModel(city, now, null, null, false, requestId, hanafi);
+        return new DailyPrayerTimesViewModel(city, now, null, null, null, false, requestId, hanafi);
     }
 
     private static Dictionary<DateOnly, DailyPrayerTimes> ValidDays(IEnumerable<DailyPrayerTimes> rows, bool hanafi) =>
         rows.GroupBy(row => DateOnly.FromDateTime(row.Date))
             .Where(group => group.Count() == 1 && PrayerDay.IsUsable(group.Single(), hanafi))
             .ToDictionary(group => group.Key, group => group.Single());
-
-    internal static PrayerEvent? FindNextPrayer(
-        IReadOnlyDictionary<DateOnly, DailyPrayerTimes> days,
-        DateOnly today, DateTimeOffset now, bool hanafi = false)
-    {
-        if (!days.TryGetValue(today, out var currentDay))
-        {
-            return null;
-        }
-
-        var previousIsha = days.TryGetValue(today.AddDays(-1), out var previousDay)
-            ? PrayerDay.Events(previousDay, hanafi)[^1]
-            : null;
-        var prayers = PrayerDay.Events(currentDay, hanafi);
-
-        // Leave the next prayer unspecified while an overnight prayer may still be due.
-        if (now < (prayers[0].StartsAt ?? PrayerDay.Sunrise(currentDay))
-            && (prayers[0].StartsAt is null || previousIsha is { StartsAt: null }))
-        {
-            return null;
-        }
-
-        if (previousIsha?.StartsAt > now)
-        {
-            return previousIsha;
-        }
-
-        var next = prayers.FirstOrDefault(prayer => prayer.StartsAt > now);
-        if (next is not null || prayers[^1].StartsAt is null)
-        {
-            return next;
-        }
-
-        if (days.TryGetValue(today.AddDays(1), out var tomorrow))
-        {
-            var tomorrowFajr = PrayerDay.Events(tomorrow, hanafi)[0];
-            return tomorrowFajr.StartsAt > now ? tomorrowFajr : null;
-        }
-
-        return null;
-    }
 
     [HttpGet("/privatliv")]
     public IActionResult Privacy() => View();

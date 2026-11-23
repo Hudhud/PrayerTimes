@@ -3,11 +3,17 @@
 @using System.Globalization
 @{
     var date = DateOnly.FromDateTime(Model.Day.Date);
+    var prayers = PrayerDay.Events(Model.Day, Model.Hanafi).ToList();
+    if (Model.ShowSunrise && Model.InlineSunrise)
+    {
+        prayers.Insert(1, new PrayerEvent("Solopgang", PrayerDay.Sunrise(Model.Day)));
+    }
 }
 <dl class="prayer-list">
-    @foreach (var prayer in PrayerDay.Events(Model.Day, Model.Hanafi))
+    @foreach (var prayer in prayers)
     {
-        <div>
+        var stage = prayer == Model.Current ? "current" : prayer == Model.Next ? "next" : null;
+        <div data-prayer-stage="@stage" class="@(prayer.Name == "Solopgang" ? "sunrise-tile" : null)">
             <dt>@prayer.Name</dt>
             <dd>
                 @if (prayer.StartsAt is { } start)
@@ -18,6 +24,11 @@
                         <small>Næste døgn</small>
                     }
                 }
+                else if (Model.InlineSunrise)
+                {
+                    <span aria-hidden="true">—</span>
+                    <small class="bright-night-explanation"><a asp-action="Method" asp-fragment="lyse-naetter">Lyse nætter</a></small>
+                }
                 else if (Model.ExplainBrightNights)
                 {
                     <span aria-hidden="true">- -</span>
@@ -27,11 +38,15 @@
                 {
                     <partial name="_BrightNightTime" />
                 }
+                @if (stage is not null)
+                {
+                    <small class="prayer-stage prayer-stage-@stage" data-live-stage>@(stage == "current" ? "Nu" : "Næste")</small>
+                }
             </dd>
         </div>
     }
 </dl>
-@if (Model.ShowSunrise)
+@if (Model.ShowSunrise && !Model.InlineSunrise)
 {
     <p class="sunrise">Solopgang (Shuruk) <time datetime="@Model.Day.SunriseTime">@Model.Day.SunriseTime</time></p>
 }

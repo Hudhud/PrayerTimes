@@ -2,7 +2,6 @@ using System.Globalization;
 using Application.Calendars;
 using Calculation;
 using Domain.Models;
-using Web.Controllers;
 using Xunit;
 
 namespace PrayerTimes.Tests;
@@ -30,10 +29,10 @@ public sealed class PrayerCalendarTests
         var date = new DateOnly(2026, 7, 1);
         var days = Around(date);
 
-        Assert.Null(HomeController.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(0, 15))));
-        Assert.Equal("Dhuhr", HomeController.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(8, 0)))?.Name);
-        Assert.Equal("Maghrib", HomeController.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(18, 0)))?.Name);
-        Assert.Null(HomeController.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(23, 0))));
+        Assert.Null(PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(0, 15))));
+        Assert.Equal("Dhuhr", PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(8, 0)))?.Name);
+        Assert.Equal("Maghrib", PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(18, 0)))?.Name);
+        Assert.Null(PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(23, 0))));
     }
 
     [Fact]
@@ -42,11 +41,11 @@ public sealed class PrayerCalendarTests
         var date = new DateOnly(2026, 5, 4);
         var days = Around(date);
 
-        var isha = HomeController.FindNextPrayer(days, date, DanishTime.At(date, TimeOnly.MinValue));
+        var isha = PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, TimeOnly.MinValue));
         Assert.Equal("Isha", isha?.Name);
         Assert.Equal(DanishTime.At(date, new TimeOnly(0, 1)), isha?.StartsAt);
 
-        var fajr = HomeController.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(0, 2)));
+        var fajr = PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(0, 2)));
         Assert.Equal("Fajr", fajr?.Name);
     }
 
@@ -56,10 +55,44 @@ public sealed class PrayerCalendarTests
         var date = new DateOnly(2026, 11, 30);
         var days = Around(date);
 
-        var next = HomeController.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(23, 0)));
+        var next = PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(23, 0)));
 
         Assert.Equal("Fajr", next?.Name);
         Assert.Equal(new DateOnly(2026, 12, 1), DateOnly.FromDateTime(next!.StartsAt!.Value.Date));
+    }
+
+    [Fact]
+    public void CurrentPrayerEndsFajrAtSunriseAndFollowsTheAsrMethod()
+    {
+        var date = new DateOnly(2026, 11, 23);
+        var days = Around(date);
+        var prayers = PrayerDay.Events(days[date]);
+
+        Assert.Equal("Fajr", PrayerDay.FindCurrentPrayer(days, date, prayers[0].StartsAt!.Value)?.Name);
+        Assert.Null(PrayerDay.FindCurrentPrayer(days, date, PrayerDay.Sunrise(days[date])));
+
+        var standardAsr = prayers[2].StartsAt!.Value;
+        Assert.Equal("Asr", PrayerDay.FindCurrentPrayer(days, date, standardAsr)?.Name);
+        Assert.Equal("Dhuhr", PrayerDay.FindCurrentPrayer(days, date, standardAsr, hanafi: true)?.Name);
+    }
+
+    [Fact]
+    public void CurrentPrayerUsesThePreviousTimetableForOvernightIsha()
+    {
+        var date = new DateOnly(2026, 5, 4);
+        var days = Around(date);
+
+        Assert.Equal("Maghrib", PrayerDay.FindCurrentPrayer(days, date, DanishTime.At(date, TimeOnly.MinValue))?.Name);
+        Assert.Equal("Isha", PrayerDay.FindCurrentPrayer(days, date, DanishTime.At(date, new TimeOnly(0, 1)))?.Name);
+    }
+
+    [Fact]
+    public void CurrentPrayerDoesNotExtendMaghribAcrossAnUnknownIsha()
+    {
+        var date = new DateOnly(2026, 7, 1);
+        var days = Around(date);
+
+        Assert.Null(PrayerDay.FindCurrentPrayer(days, date, DanishTime.At(date, new TimeOnly(23, 0))));
     }
 
     private Dictionary<DateOnly, DailyPrayerTimes> Around(DateOnly date) => new[] { date.AddDays(-1), date, date.AddDays(1) }

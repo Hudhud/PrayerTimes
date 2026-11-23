@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using Application.Calendars;
+using System.Text.Json.Serialization;
 
-namespace Web.Services;
+namespace Application.Calendars;
 
 public sealed record PrayerPlace(string Id, string Name, string Area, double Latitude, double Longitude,
     string? PostalCode = null)
@@ -24,10 +24,15 @@ public sealed class PrayerPlaceDirectory
     private static readonly StringComparer DanishComparer = StringComparer.Create(CultureInfo.GetCultureInfo("da-DK"), true);
     private readonly (PrayerPlace Place, string Label, string FoldedLabel, string Area)[] searchable;
 
-    public PrayerPlaceDirectory(string path)
+    public static PrayerPlaceDirectory Load(string path)
     {
         using var data = File.OpenRead(path);
-        var locations = JsonSerializer.Deserialize<PrayerPlace[]>(data, JsonSerializerOptions.Web);
+        return new PrayerPlaceDirectory(data);
+    }
+
+    public PrayerPlaceDirectory(Stream data)
+    {
+        var locations = JsonSerializer.Deserialize(data, PrayerPlaceJsonContext.Default.PrayerPlaceArray);
         if (locations is not { Length: > 0 })
         {
             throw new InvalidDataException("The Danish place index is empty.");
@@ -43,6 +48,42 @@ public sealed class PrayerPlaceDirectory
         return established ?? (slug is not null && places.TryGetValue(slug, out var place)
             ? place.ToPrayerCity()
             : null);
+    }
+
+    public PrayerCity? FindNearestCity(double latitude, double longitude)
+    {
+        if (!double.IsFinite(latitude) || latitude is < -90 or > 90 ||
+            !double.IsFinite(longitude) || longitude is < -180 or > 180)
+        {
+            return null;
+        }
+
+        const double radians = Math.PI / 180;
+        const double earthRadiusKm = 6371;
+        const double maxDistanceKm = 30;
+        var radius = Math.Sin(maxDistanceKm / (2 * earthRadiusKm));
+        var nearestDistance = radius * radius;
+        var latitudeCosine = Math.Cos(latitude * radians);
+        PrayerPlace? nearest = null;
+        foreach (var candidate in places.Values)
+        {
+            if (candidate.PostalCode is not null)
+            {
+                continue;
+            }
+
+            var latitudeSine = Math.Sin((candidate.Latitude - latitude) * radians / 2);
+            var longitudeSine = Math.Sin((candidate.Longitude - longitude) * radians / 2);
+            var distance = latitudeSine * latitudeSine +
+                latitudeCosine * Math.Cos(candidate.Latitude * radians) * longitudeSine * longitudeSine;
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearest = candidate;
+            }
+        }
+
+        return nearest is null ? null : Find(nearest.Id);
     }
 
     public IReadOnlyList<PrayerPlace> Search(string query)
@@ -165,3 +206,7 @@ public sealed class PrayerPlaceDirectory
             CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark));
     }
 }
+
+[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, PropertyNameCaseInsensitive = true)]
+[JsonSerializable(typeof(PrayerPlace[]))]
+internal partial class PrayerPlaceJsonContext : JsonSerializerContext;

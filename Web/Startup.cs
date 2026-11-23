@@ -20,7 +20,7 @@ public sealed class Startup
         services.AddResponseCompression(options => options.EnableForHttps = true);
         services.AddSingleton(TimeProvider.System);
         services.AddSingleton<DanishTime>();
-        services.AddSingleton(provider => new PrayerPlaceDirectory(
+        services.AddSingleton(provider => PrayerPlaceDirectory.Load(
             Path.Combine(provider.GetRequiredService<IWebHostEnvironment>().WebRootPath, "data", "prayer-places.json")));
         services.AddSingleton<DanishPrayerTimeCalculator>();
         services.AddSingleton<IPrayerTimeService, LocalPrayerTimeService>();
