@@ -15,7 +15,7 @@ using ColorStateList = Android.Content.Res.ColorStateList;
 namespace SalahTimes.AndroidApp;
 
 [Activity(Exported = true, MainLauncher = true)]
-public sealed partial class MainActivity : Activity
+public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedPreferenceChangeListener
 {
     private enum Screen { Today, Calendar, Settings, Places, Method }
 
@@ -53,6 +53,7 @@ public sealed partial class MainActivity : Activity
         base.OnCreate(savedInstanceState);
         places = PrayerPreferences.Places(this);
         preferences = PrayerPreferences.Open(this);
+        loadedPlaceId = preferences.GetString(PrayerPreferences.PlaceKey, null);
         place = PrayerPreferences.SelectedPlace(this, preferences);
         hanafi = preferences.GetBoolean(PrayerPreferences.HanafiKey, false);
         schedule = new LocalPrayerSchedule(place);
@@ -88,12 +89,15 @@ public sealed partial class MainActivity : Activity
     {
         base.OnStart();
         foreground = true;
+        preferences.RegisterOnSharedPreferenceChangeListener(this);
+        LoadBackgroundPlace();
         UpdateClock();
     }
 
     protected override void OnResume()
     {
         base.OnResume();
+        PrayerLocationReceiver.Sync(this);
         RefreshPrayerNotificationSettings();
         TryAutomaticLocation();
     }
@@ -101,6 +105,7 @@ public sealed partial class MainActivity : Activity
     protected override void OnStop()
     {
         foreground = false;
+        preferences.UnregisterOnSharedPreferenceChangeListener(this);
         handler.RemoveCallbacks(tick);
         PauseLocationLookup();
         base.OnStop();

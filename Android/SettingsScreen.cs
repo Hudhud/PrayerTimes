@@ -16,6 +16,7 @@ public sealed partial class MainActivity
         content.AddView(HasSelectedPlace
             ? ActionButton(place.Name, OpenPlaces, description: $"Skift sted, nu {place.Name}")
             : ActionButton("Vælg sted", OpenPlaces), MatchWidth());
+        AddBackgroundLocationSetting();
 
         AddSectionTitle("Asr-metode");
         var methods = new LinearLayout(this);
@@ -155,17 +156,10 @@ public sealed partial class MainActivity
         CancelLocationLookup();
         locationStatus = null;
         locationSuggestion = null;
-        if (selection.Slug != place.Slug)
-        {
-            place = selection;
-            schedule = new LocalPrayerSchedule(selection);
-        }
+        SetSchedulePlace(selection, selection.Slug);
         var recent = RecentPlaceIds().Where(id => id != selection.Slug).Prepend(selection.Slug).Take(5);
-        using var change = preferences.Edit();
-        change?.PutString(PrayerPreferences.PlaceKey, selection.Slug)?
-            .PutBoolean(PrayerPreferences.ManualLocationKey, !fromDevice)?
-            .PutBoolean(PrayerPreferences.FoundByLocationKey, fromDevice)?
-            .PutString("recent-places", string.Join('|', recent))?.Apply();
+        PrayerPreferences.SavePlace(preferences, selection, fromDevice, string.Join('|', recent));
+        PrayerLocationReceiver.Sync(this);
         PrayerNotificationReceiver.Reschedule(this);
         PrayerWidgetProvider.Refresh(this);
         HideKeyboard();

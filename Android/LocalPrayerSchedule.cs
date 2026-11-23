@@ -34,6 +34,18 @@ internal static class PrayerPreferences
         return slug is null ? PrayerCities.Default :
             PrayerCities.Find(slug) ?? Places(context).Find(slug) ?? PrayerCities.Default;
     }
+
+    public static void SavePlace(ISharedPreferences preferences, PrayerCity place, bool fromDevice, string? recent = null)
+    {
+        using var edit = preferences.Edit();
+        edit?.PutString(PlaceKey, place.Slug)?.PutBoolean(ManualLocationKey, !fromDevice)?
+            .PutBoolean(FoundByLocationKey, fromDevice);
+        if (recent is not null)
+        {
+            edit?.PutString("recent-places", recent);
+        }
+        edit?.Apply();
+    }
 }
 
 internal sealed class LocalPrayerSchedule(PrayerCity place)

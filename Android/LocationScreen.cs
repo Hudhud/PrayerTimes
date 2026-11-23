@@ -14,7 +14,6 @@ public sealed partial class MainActivity
 {
     private const int LocationPermissionRequest = 21;
     private const string LocationPermissionAskedKey = "location-permission-asked";
-    private const float AutomaticAccuracyMetres = 1_000;
     private const long LocationTimeoutMilliseconds = 20_000;
     private const long RetryIntervalMilliseconds = 120_000;
     private const long MaximumCachedFixAgeNanoseconds = 60_000_000_000L;
@@ -60,7 +59,7 @@ public sealed partial class MainActivity
         }
 
         if (screen is Screen.Places or Screen.Method || positionListener is not null || locationPermissionPending ||
-            preferences.GetBoolean(PrayerPreferences.ManualLocationKey, false) ||
+            !PrayerLocationReceiver.UsesAutomaticLocation(preferences) ||
             (lastLocationAttempt is { } previous && SystemClock.ElapsedRealtime() - previous < RetryIntervalMilliseconds))
         {
             return;
@@ -200,10 +199,9 @@ public sealed partial class MainActivity
         }
 
         positionReceived = true;
-        var accuracy = fix.HasAccuracy && float.IsFinite(fix.Accuracy) && fix.Accuracy > 0
-            ? fix.Accuracy : float.PositiveInfinity;
+        var accuracy = PrayerLocationReceiver.AccuracyInMetres(fix);
         var nearest = places.FindNearestCity(fix.Latitude, fix.Longitude);
-        if (PreciseLocationAllowed && accuracy <= AutomaticAccuracyMetres)
+        if (PreciseLocationAllowed && accuracy <= PrayerLocationReceiver.AutomaticAccuracyMetres)
         {
             CancelLocationLookup();
             if (nearest is null)
