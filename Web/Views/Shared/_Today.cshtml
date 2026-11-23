@@ -27,7 +27,6 @@
                         <span class="next-date">i morgen, @nextDate.ToString("d. MMMM", danish)</span>
                     }
                 </p>
-                <p class="next-countdown" data-prayer-countdown role="timer" aria-label="Tid til næste bøn" hidden></p>
             }
             else if (Model.NextAffectedByBrightNights)
             {
@@ -40,7 +39,10 @@
         </div>
         @if (next?.StartsAt is { } nextStart)
         {
-            <time datetime="@nextStart.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
+            <div class="next-prayer-timing">
+                <p class="next-countdown" data-prayer-countdown role="timer" aria-label="Tid til næste bøn" hidden></p>
+                <time datetime="@nextStart.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
+            </div>
         }
     </div>
     <p class="today-context">

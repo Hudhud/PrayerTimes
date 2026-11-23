@@ -132,10 +132,8 @@ h2 { font-size: 1.22rem; line-height: 1.25; }
 .calendar-month-name:first-letter { text-transform: uppercase; }
 
 .next-prayer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    align-content: center;
     gap: .6rem;
     padding: .7rem .9rem;
     margin-block: 1rem .65rem;
@@ -143,11 +141,9 @@ h2 { font-size: 1.22rem; line-height: 1.25; }
     border-radius: .75rem;
     background: #2a2417;
 }
-.next-prayer > div { flex: 1 1 7rem; min-width: 0; }
+.next-prayer > div { min-width: 0; overflow-wrap: anywhere; }
 .next-prayer h2 { color: var(--accent); font-size: .875rem; }
 .next-prayer p { font-size: 1.12rem; font-weight: 650; }
-.next-prayer .next-countdown { margin-top: .15rem; color: var(--muted); font-size: .875rem; font-weight: 600; font-variant-numeric: tabular-nums; }
-.next-prayer time { margin-inline-start: auto; font-size: clamp(1.6rem, 7vw, 2.35rem); font-weight: 750; color: var(--accent); }
 .next-date { color: var(--muted); font-weight: 500; font-size: .83rem; display: inline-block; }
 time, table { font-variant-numeric: tabular-nums; }
 
@@ -344,6 +340,8 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     letter-spacing: 0;
 }
 .place-heading h1 { font-size: clamp(2rem, 5vw, 3.15rem); }
+.default-place { color: var(--muted); }
+.place-heading [data-location-shortcut] { margin-block-start: .5rem; font-size: .875rem; }
 .today { container-type: inline-size; }
 .place-heading-row .button { border-color: #59766a; padding-inline: 1rem; }
 .today .next-prayer {
@@ -373,8 +371,16 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     letter-spacing: -.04em;
     font-weight: 750;
 }
-.today .next-prayer > time { font-size: clamp(1.9rem, 8vw, 3.35rem); letter-spacing: -.04em; line-height: 1; }
-.today .next-prayer .next-countdown { margin-top: .35rem; color: var(--text); }
+.next-prayer-timing { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .2rem .75rem; }
+.next-prayer .next-countdown,
+.next-countdown[hidden] + time {
+    color: var(--accent);
+    font-size: clamp(1.2rem, 5.4vw, 2rem);
+    font-weight: 750;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+}
+.next-prayer-timing time { color: var(--muted); font-size: 1rem; font-weight: 650; }
 .today-context { color: var(--muted); font-size: .92rem; }
 .today-context time { display: inline-block; }
 .today > .prayer-list {
@@ -441,11 +447,27 @@ tbody tr:nth-child(even) th { background: var(--surface); }
     .place-search-status:not(.visually-hidden) { margin-top: .3rem; }
     .mobile-calendar { display: block; }
     .desktop-calendar { display: none; }
+    .header-link.mobile-calendar { display: inline-flex; }
+    .calendar-place { color: var(--muted); font-size: .875rem; overflow-wrap: anywhere; }
     .calendar-nav .button { flex: 1 0 auto; padding-inline: .55rem; }
     .calendar-nav .mobile-calendar { display: inline-flex; }
     .month-day .prayer-list, .week-day .prayer-list { grid-template-columns: 1fr; }
     .month-day .prayer-list > div, .week-day .prayer-list > div { display: flex; justify-content: space-between; padding-block: .2rem; }
     .month-day .prayer-list > div + div, .week-day .prayer-list > div + div { border-inline-start: 0; border-top: 1px solid var(--border); }
+}
+
+@media screen and (max-width: 39rem) and (min-height: 28rem) {
+    .calendar-header {
+        position: sticky;
+        z-index: 2;
+        inset-block-start: 0;
+        background: var(--background);
+        padding-block: .5rem;
+        border-block-end: 1px solid var(--border);
+    }
+    .month-day, .month-day > summary {
+        scroll-margin-block-start: calc(var(--calendar-header-height, 7.5rem) + .5rem);
+    }
 }
 
 @container (max-width: 12rem) {

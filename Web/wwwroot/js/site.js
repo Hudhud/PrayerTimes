@@ -4,6 +4,25 @@ if (printButton) {
     printButton.addEventListener('click', () => window.print());
 }
 
+const calendarHeader = document.querySelector('.calendar-header');
+if (calendarHeader && 'ResizeObserver' in window) {
+    const calendar = calendarHeader.parentElement;
+    new ResizeObserver(() => {
+        calendar.style.setProperty('--calendar-header-height', `${calendarHeader.offsetHeight}px`);
+    }).observe(calendarHeader);
+}
+
+for (const link of document.querySelectorAll('[data-open-calendar-today]')) {
+    link.addEventListener('click', () => {
+        const day = document.getElementById(link.hash.slice(1));
+        if (day) {
+            day.open = true;
+        } else if (link.getAttribute('href') === '#week-today') {
+            link.href = calendarHeader.querySelector('[data-open-calendar-today]').href;
+        }
+    });
+}
+
 let timetable = document.querySelector('[data-refresh-url]');
 if (timetable) {
     const announcement = document.querySelector('[data-prayer-announcement]');
@@ -169,12 +188,6 @@ if (timetable) {
     retry.addEventListener('click', event => {
         event.preventDefault();
         refreshTimetable(true);
-    });
-    document.querySelector('[data-open-calendar-today]')?.addEventListener('click', event => {
-        const day = document.getElementById(event.currentTarget.hash.slice(1));
-        if (day) {
-            day.open = true;
-        }
     });
     document.addEventListener('visibilitychange', () => refreshTimetable());
     window.addEventListener('pageshow', () => refreshTimetable());

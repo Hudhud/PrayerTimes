@@ -35,7 +35,7 @@ public sealed class HomeController(
     {
         var rememberedCity = places.Find(Request.Cookies[CityCookie]);
         return rememberedCity is null || rememberedCity == PrayerCities.Default
-            ? ShowCityAsync(PrayerCities.Default, month, week, cancellationToken)
+            ? ShowCityAsync(PrayerCities.Default, month, week, cancellationToken, isDefaultPlace: rememberedCity is null)
             : Task.FromResult<IActionResult>(RedirectToRoute("City", new { city = rememberedCity.Slug, month, week }));
     }
 
@@ -192,7 +192,7 @@ public sealed class HomeController(
     private bool UsesHanafi => Request.Cookies[AsrCookie] == "hanafi";
 
     private async Task<IActionResult> ShowCityAsync(PrayerCity city, string? month, string? week,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, bool isDefaultPlace = false)
     {
         var now = clock.Now;
         var today = DateOnly.FromDateTime(now.Date);
@@ -218,7 +218,7 @@ public sealed class HomeController(
         var monthRows = await LoadCalendarDaysAsync(city, monthStart, monthEnd, hanafi, cancellationToken);
         var daily = await LoadTodayAsync(city, now, hanafi, cancellationToken);
         var calendar = new CalendarViewModel(city, today, monthStart, selectedDate, monthRows, hanafi);
-        return View("Index", new CityPrayerTimesViewModel(daily, calendar));
+        return View("Index", new CityPrayerTimesViewModel(daily, calendar, isDefaultPlace));
     }
 
     private static bool TryReadMonth(string? value, DateOnly today, out DateOnly month)
