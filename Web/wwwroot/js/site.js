@@ -7,6 +7,7 @@ if (printButton) {
 const calendarHeader = document.querySelector('.calendar-header');
 if (calendarHeader) {
     const calendar = calendarHeader.parentElement;
+    const selectionId = 'calendar-selection';
     const updateHeaderHeight = () => {
         calendar.style.setProperty('--calendar-header-height', `${calendarHeader.offsetHeight}px`);
     };
@@ -22,22 +23,23 @@ if (calendarHeader) {
         }
     });
 
-    window.addEventListener('pageshow', event => {
-        if (event.persisted || location.hash !== '#month-title') {
-            return;
-        }
+    if (location.hash === `#${selectionId}`) {
         const date = new URLSearchParams(location.search).get('week');
         const day = Array.from(calendar.querySelectorAll('[data-calendar-date]')).find(row =>
             row.dataset.calendarDate === date && row.getClientRects().length);
         if (day) {
-            // Let the browser finish scrolling to the month fragment before positioning the row.
-            requestAnimationFrame(() => {
-                const summary = day.querySelector('summary');
-                (summary ?? day).focus({ preventScroll: true });
-                day.scrollIntoView({ block: summary ? 'start' : 'center' });
+            const summary = day.querySelector('summary');
+            const anchor = summary ?? day.querySelector('th');
+            // Point native fragment scrolling at the same day in either layout.
+            anchor.id = selectionId;
+            window.addEventListener('pageshow', event => {
+                if (!event.persisted) {
+                    (summary ?? day).focus({ preventScroll: true });
+                    anchor.scrollIntoView({ block: 'start' });
+                }
             });
         }
-    });
+    }
 
     const picker = calendar.querySelector('#calendar-date-picker');
     if (typeof picker.showModal === 'function') {
@@ -76,7 +78,7 @@ if (calendarHeader) {
             const selectedMonth = monthParameter();
             url.searchParams.set('month', selectedMonth);
             url.searchParams.set('week', `${selectedMonth}-${day.value.padStart(2, '0')}`);
-            url.hash = 'month-title';
+            url.hash = selectionId;
             location.assign(url.href);
         });
     }

@@ -256,7 +256,7 @@ test('the month heading opens a date picker and jumps directly to the chosen day
     await dialog.getByLabel('Dag').selectOption('21');
     await dialog.getByRole('button', { name: 'Vis bønnetider' }).click();
 
-    await expect(page).toHaveURL(/\/post-5000\?month=2027-06&week=2027-06-21#month-title$/);
+    await expect(page).toHaveURL(/\/post-5000\?month=2027-06&week=2027-06-21#calendar-selection$/);
     await expect(page.getByRole('heading', { name: 'juni 2027', exact: true })).toBeVisible();
     if (isMobile) {
         const day = page.locator('details[data-calendar-date="2027-06-21"]');
@@ -278,7 +278,7 @@ test('the month heading opens a date picker and jumps directly to the chosen day
 test('opening the next day keeps its date below the sticky calendar controls', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'The desktop calendar uses a month table.');
     await page.setViewportSize({ width: 388, height: 800 });
-    await page.goto('/post-5000?month=2026-11&week=2026-11-24#month-title');
+    await page.goto('/post-5000?month=2026-11&week=2026-11-24#calendar-selection');
     const day = page.locator('details[data-calendar-date="2026-11-25"]');
     const summary = day.locator('summary');
     await summary.evaluate(element => element.scrollIntoView({ block: 'start' }));
