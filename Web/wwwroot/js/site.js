@@ -30,9 +30,12 @@ if (calendarHeader) {
         const day = Array.from(calendar.querySelectorAll('[data-calendar-date]')).find(row =>
             row.dataset.calendarDate === date && row.getClientRects().length);
         if (day) {
-            const summary = day.querySelector('summary');
-            (summary ?? day).focus({ preventScroll: true });
-            day.scrollIntoView({ block: summary ? 'start' : 'center' });
+            // Let the browser finish scrolling to the month fragment before positioning the row.
+            requestAnimationFrame(() => {
+                const summary = day.querySelector('summary');
+                (summary ?? day).focus({ preventScroll: true });
+                day.scrollIntoView({ block: summary ? 'start' : 'center' });
+            });
         }
     });
 
