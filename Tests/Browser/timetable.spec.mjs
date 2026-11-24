@@ -235,6 +235,60 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
 });
 
+test('the month heading opens a date picker and jumps directly to the chosen day', async ({ page, isMobile }) => {
+    await page.setViewportSize({ width: isMobile ? 388 : 1164, height: 800 });
+    await page.goto('/post-5000?month=2026-11#month-title');
+    const trigger = page.getByRole('button', { name: 'november 2026', exact: true });
+    const dialog = page.getByRole('dialog', { name: 'Vælg dato' });
+    await trigger.click();
+    await expect(dialog.getByLabel('Måned')).toBeFocused();
+    await dialog.getByRole('button', { name: 'Annuller' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(trigger).toBeFocused();
+
+    await trigger.click();
+    await dialog.getByLabel('År').fill('2028');
+    await dialog.getByLabel('Måned').selectOption('2');
+    await dialog.getByLabel('Dag').selectOption('29');
+    await dialog.getByLabel('År').fill('2027');
+    await expect(dialog.getByLabel('Dag')).toHaveValue('28');
+    await dialog.getByLabel('Måned').selectOption('6');
+    await dialog.getByLabel('Dag').selectOption('21');
+    await dialog.getByRole('button', { name: 'Vis bønnetider' }).click();
+
+    await expect(page).toHaveURL(/\/post-5000\?month=2027-06&week=2027-06-21#calendar-selection$/);
+    await expect(page.getByRole('heading', { name: 'juni 2027', exact: true })).toBeVisible();
+    if (isMobile) {
+        const day = page.locator('details[data-calendar-date="2027-06-21"]');
+        await expect(day.locator('summary')).toBeFocused();
+        await expect(day.locator('.prayer-list')).toBeInViewport();
+        await expect(day.getByRole('link', { name: 'Læs om lyse nætter' })).toHaveCount(2);
+        await expect(page.locator('.calendar-place')).toContainText('Odense C');
+        await expect.poll(() => day.locator('summary').evaluate(summary =>
+            summary.getBoundingClientRect().top >= document.querySelector('.calendar-header').getBoundingClientRect().bottom
+        )).toBeTruthy();
+    } else {
+        const row = page.locator('tr[data-calendar-date="2027-06-21"]');
+        await expect(row).toBeFocused();
+        await expect(row).toBeInViewport();
+        await expect(page.getByRole('columnheader', { name: 'Fajr' })).toBeInViewport();
+    }
+});
+
+test('opening the next day keeps its date below the sticky calendar controls', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'The desktop calendar uses a month table.');
+    await page.setViewportSize({ width: 388, height: 800 });
+    await page.goto('/post-5000?month=2026-11&week=2026-11-24#calendar-selection');
+    const day = page.locator('details[data-calendar-date="2026-11-25"]');
+    const summary = day.locator('summary');
+    await summary.evaluate(element => element.scrollIntoView({ block: 'start' }));
+    await summary.click();
+    await expect(day.locator('.prayer-list')).toBeInViewport();
+    await expect.poll(() => summary.evaluate(element =>
+        element.getBoundingClientRect().top >= document.querySelector('.calendar-header').getBoundingClientRect().bottom
+    )).toBeTruthy();
+});
+
 test('the mobile calendar link opens today and keeps the location and month controls in view', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'The desktop calendar uses a month table.');
     await page.setViewportSize({ width: 320, height: 720 });
@@ -331,9 +385,12 @@ test('the next prayer counts down to its start and restarts for the following pr
             .replace(/data-midnight="[^"]+"/, 'data-midnight="2026-11-29T23:00:00Z"')
             .replace(/<div class="next-prayer" data-next-prayer>[\s\S]+?(?=<p class="today-context">)/, `
                 <div class="next-prayer" data-next-prayer>
-                    <div><h2 tabindex="-1">Næste bøn</h2><p data-next-prayer-label>${name}</p>
-                        <p data-prayer-countdown role="timer" aria-label="Tid til næste bøn" hidden></p></div>
-                    <time datetime="${startsAt}">${localTime}</time>
+                    <div><h2 tabindex="-1">Næste bøn</h2>
+                        <p class="next-prayer-title" data-next-prayer-label>
+                            <span>${name}</span> <time datetime="${startsAt}">${localTime}</time>
+                        </p>
+                        <p class="next-countdown" data-prayer-countdown role="timer" aria-label="Tid til næste bøn" hidden></p>
+                    </div>
                 </div>`);
         await route.fulfill({ response, body });
     }
@@ -349,6 +406,15 @@ test('the next prayer counts down to its start and restarts for the following pr
     await page.goto('/koebenhavn');
     const countdown = page.getByRole('timer', { name: 'Tid til næste bøn' });
     await expect(countdown).toHaveText('Om 1 min. 2 sek.');
+    const name = page.locator('.next-prayer-title span');
+    const time = page.locator('.next-prayer-title time');
+    await expect(time).toHaveText('13:01');
+    await expect(time).toHaveCSS('font-size', await name.evaluate(element => getComputedStyle(element).fontSize));
+    await expect(time).toHaveCSS('font-weight', await name.evaluate(element => getComputedStyle(element).fontWeight));
+    const [nameBox, timeBox, countdownBox] = await Promise.all([name.boundingBox(), time.boundingBox(), countdown.boundingBox()]);
+    expect(timeBox.y).toBe(nameBox.y);
+    expect(timeBox.x).toBeGreaterThan(nameBox.x + nameBox.width);
+    expect(countdownBox.y).toBeGreaterThan(timeBox.y + timeBox.height);
     await page.clock.fastForward(1000);
     await expect(countdown).toHaveText('Om 1 min. 1 sek.');
     await page.clock.fastForward(61000);

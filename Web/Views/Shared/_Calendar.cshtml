@@ -7,16 +7,52 @@
     var month = CalendarViewModel.MonthParameter(Model.Month);
     var monthName = Model.Month.ToString("MMMM yyyy", danish);
     var hasMonth = Model.Days.Count > 0;
-    var completeMonth = Model.Days.Count == DateTime.DaysInMonth(Model.Month.Year, Model.Month.Month);
+    var daysInMonth = DateTime.DaysInMonth(Model.Month.Year, Model.Month.Month);
+    var completeMonth = Model.Days.Count == daysInMonth;
 }
 <section class="month" id="month-title" aria-label="Bønnekalender">
     <header class="calendar-header">
-        <h2 id="calendar-month-heading">@monthName</h2>
+        <h2 id="calendar-month-heading">
+            <span class="calendar-month-text">@monthName</span>
+            <button type="button" class="calendar-date-trigger" aria-haspopup="dialog" aria-controls="calendar-date-picker"
+                    title="Vælg dato" hidden>@monthName<span aria-hidden="true"></span></button>
+        </h2>
         <p class="calendar-place mobile-calendar">@Model.City.Name</p>
         <nav class="calendar-nav" aria-label="Vælg måned">
             <partial name="_CalendarMonthLinks" model="Model" />
         </nav>
     </header>
+    <dialog id="calendar-date-picker" class="calendar-date-picker" aria-labelledby="calendar-date-title"
+            data-month-limit="@CalendarViewModel.MonthParameter(CalendarViewModel.MonthLimit)">
+        <h2 id="calendar-date-title">Vælg dato</h2>
+        <form asp-route="City" asp-route-city="@Model.City.Slug" method="get">
+            <div class="calendar-date-fields">
+                <label>Måned
+                    <select name="month" autofocus>
+                        @for (var i = 1; i <= 12; i++)
+                        {
+                            <option value="@i" selected="@(i == Model.Month.Month)">@danish.DateTimeFormat.GetMonthName(i)</option>
+                        }
+                    </select>
+                </label>
+                <label>År
+                    <input type="number" name="year" value="@Model.Month.Year" min="1" max="@CalendarViewModel.MonthLimit.Year" required />
+                </label>
+                <label>Dag
+                    <select name="day">
+                        @for (var i = 1; i <= 31; i++)
+                        {
+                            <option value="@i" selected="@(i == (Model.SelectedDate?.Day ?? 1))" disabled="@(i > daysInMonth)" hidden="@(i > daysInMonth)">@i</option>
+                        }
+                    </select>
+                </label>
+            </div>
+            <div class="actions">
+                <button class="button" type="submit">Vis bønnetider</button>
+                <button class="button" type="submit" formmethod="dialog" formnovalidate>Annuller</button>
+            </div>
+        </form>
+    </dialog>
     <p class="print-city">@Model.City.Name · Dansk lokal tid · Asr @(Model.Hanafi ? "Hanafi" : "standard")</p>
     @if (!hasMonth)
     {
@@ -78,7 +114,8 @@
                         var date = DateOnly.FromDateTime(day.Date);
                         var isToday = date == Model.Today;
                         var prayers = PrayerDay.Events(day, Model.Hanafi);
-                        <tr class="@(isToday ? "current-day" : null)" data-calendar-date="@CalendarViewModel.DayParameter(date)"
+                        <tr class="@(isToday ? "current-day" : date == Model.SelectedDate ? "selected-day" : null)"
+                            data-calendar-date="@CalendarViewModel.DayParameter(date)"
                             data-today-anchor="calendar-today" id="@(isToday ? "calendar-today" : null)" tabindex="-1">
                             <th scope="row">
                                 <time datetime="@CalendarViewModel.DayParameter(date)">@date.ToString("d. MMM", danish)</time>

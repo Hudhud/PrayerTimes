@@ -5,11 +5,88 @@ if (printButton) {
 }
 
 const calendarHeader = document.querySelector('.calendar-header');
-if (calendarHeader && 'ResizeObserver' in window) {
+if (calendarHeader) {
     const calendar = calendarHeader.parentElement;
-    new ResizeObserver(() => {
+    const selectionId = 'calendar-selection';
+    const updateHeaderHeight = () => {
         calendar.style.setProperty('--calendar-header-height', `${calendarHeader.offsetHeight}px`);
-    }).observe(calendarHeader);
+    };
+
+    calendar.querySelector('.month-days')?.addEventListener('click', event => {
+        const day = event.target.closest('summary')?.parentElement;
+        if (day) {
+            requestAnimationFrame(() => {
+                if (day.open) {
+                    day.scrollIntoView({ block: 'start' });
+                }
+            });
+        }
+    });
+
+    if (location.hash === `#${selectionId}`) {
+        const date = new URLSearchParams(location.search).get('week');
+        const day = Array.from(calendar.querySelectorAll('[data-calendar-date]')).find(row =>
+            row.dataset.calendarDate === date && row.getClientRects().length);
+        if (day) {
+            const summary = day.querySelector('summary');
+            const anchor = summary ?? day.querySelector('th');
+            // Point native fragment scrolling at the same day in either layout.
+            anchor.id = selectionId;
+            window.addEventListener('pageshow', event => {
+                if (!event.persisted) {
+                    (summary ?? day).focus({ preventScroll: true });
+                    anchor.scrollIntoView({ block: 'start' });
+                }
+            });
+        }
+    }
+
+    const picker = calendar.querySelector('#calendar-date-picker');
+    if (typeof picker.showModal === 'function') {
+        const trigger = calendar.querySelector('.calendar-date-trigger');
+        const form = picker.querySelector('form');
+        const { month, year, day } = form.elements;
+        const monthParameter = () => `${String(year.valueAsNumber).padStart(4, '0')}-${month.value.padStart(2, '0')}`;
+        const updateDays = () => {
+            const lastDay = new Date(0);
+            lastDay.setUTCFullYear(year.valueAsNumber, Number(month.value), 0);
+            const dayCount = lastDay.getUTCDate();
+            for (const option of day.options) {
+                option.hidden = option.disabled = Number(option.value) > dayCount;
+            }
+            if (Number(day.value) > dayCount) {
+                day.value = dayCount;
+            }
+            month.setCustomValidity(monthParameter() >= picker.dataset.monthLimit ? 'Vælg en tidligere måned.' : '');
+        };
+
+        trigger.hidden = false;
+        calendar.querySelector('.calendar-month-text').hidden = true;
+        trigger.addEventListener('click', () => {
+            form.reset();
+            updateDays();
+            picker.showModal();
+        });
+        month.addEventListener('change', updateDays);
+        year.addEventListener('input', updateDays);
+        form.addEventListener('submit', event => {
+            if (event.submitter?.formMethod === 'dialog') {
+                return;
+            }
+            event.preventDefault();
+            const url = new URL(form.action);
+            const selectedMonth = monthParameter();
+            url.searchParams.set('month', selectedMonth);
+            url.searchParams.set('week', `${selectedMonth}-${day.value.padStart(2, '0')}`);
+            url.hash = selectionId;
+            location.assign(url.href);
+        });
+    }
+
+    updateHeaderHeight();
+    if ('ResizeObserver' in window) {
+        new ResizeObserver(updateHeaderHeight).observe(calendarHeader);
+    }
 }
 
 for (const link of document.querySelectorAll('[data-open-calendar-today]')) {
@@ -159,8 +236,7 @@ if (timetable) {
             if (nextLabel !== previousNext.querySelector('[data-next-prayer-label]').textContent.trim() ||
                 nextTime?.dateTime !== previousNext.querySelector('time')?.dateTime) {
                 next.classList.add('prayer-updated');
-                announcement.textContent = [next.querySelector('h2').textContent, nextLabel, nextTime?.textContent]
-                    .filter(Boolean).join(' ').replace(/\s+/g, ' ');
+                announcement.textContent = `${next.querySelector('h2').textContent} ${nextLabel}`.replace(/\s+/g, ' ');
             }
             if (correctionLink && incoming.dataset.correctionUrl) {
                 correctionLink.href = incoming.dataset.correctionUrl;
