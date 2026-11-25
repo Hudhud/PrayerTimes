@@ -221,7 +221,7 @@ if (timetable) {
             const html = new DOMParser().parseFromString(await response.text(), 'text/html');
             const incoming = html.querySelector('[data-refresh-url]');
             if (incoming?.dataset.currentPlace !== timetable.dataset.currentPlace ||
-                incoming.dataset.asrMethod !== timetable.dataset.asrMethod ||
+                incoming.dataset.asrMethod !== timetable.dataset.asrMethod || incoming.dataset.angles !== timetable.dataset.angles ||
                 incoming.dataset.today !== danishDate.format(new Date()) || !incoming.querySelector('.prayer-list')) {
                 throw new Error('Timetable unavailable');
             }

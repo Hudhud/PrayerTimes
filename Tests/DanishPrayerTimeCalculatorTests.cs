@@ -50,7 +50,7 @@ public sealed class DanishPrayerTimeCalculatorTests
     [Theory]
     [InlineData("aalborg", 11, 6, "12:08", "14:35")]
     [InlineData("aarhus", 12, 8, "12:15", "14:00")]
-    public void DhuhrAndHanafiAsrDoNotLeadTheEstablishedExamples(string citySlug, int month, int day,
+    public void RemovingTheFixedBufferMovesDhuhrAndHanafiAsrEarlier(string citySlug, int month, int day,
         string referenceDhuhr, string referenceHanafi)
     {
         var city = PrayerCities.Find(citySlug)!;
@@ -66,7 +66,7 @@ public sealed class DanishPrayerTimeCalculatorTests
         {
             var difference = TimeOnly.ParseExact(actual, "HH:mm", CultureInfo.InvariantCulture).ToTimeSpan() -
                 TimeOnly.ParseExact(reference, "HH:mm", CultureInfo.InvariantCulture).ToTimeSpan();
-            Assert.InRange(difference.TotalMinutes, 0, 1);
+            Assert.InRange(difference.TotalMinutes, -2, -1);
         }
     }
 
@@ -80,6 +80,37 @@ public sealed class DanishPrayerTimeCalculatorTests
         Assert.Empty(day.FajrTime);
         Assert.Empty(day.IshaTime);
         Assert.Null(day.IshaDayOffset);
+    }
+
+    [Fact]
+    public void FajrAndIshaAnglesAreIndependentAndAcceptDecimalCommas()
+    {
+        var date = new DateOnly(2026, 12, 1);
+        Assert.True(TwilightAngles.TryParse("18,5", "17", out var fajrOnly));
+        Assert.True(TwilightAngles.TryParse("18", "15.5", out var ishaOnly));
+        Assert.Equal("18.5:17", fajrOnly.PreferenceValue);
+        Assert.Equal(fajrOnly, TwilightAngles.ReadPreference(fajrOnly.PreferenceValue));
+
+        var baseline = calculator.Calculate(date, 55.6759142, 12.5691285);
+        var morning = calculator.Calculate(date, 55.6759142, 12.5691285, fajrOnly);
+        var evening = calculator.Calculate(date, 55.6759142, 12.5691285, ishaOnly);
+        Assert.True(string.CompareOrdinal(morning.FajrTime, baseline.FajrTime) < 0);
+        Assert.Equal(baseline.IshaTime, morning.IshaTime);
+        Assert.Equal(baseline.FajrTime, evening.FajrTime);
+        Assert.True(string.CompareOrdinal(evening.IshaTime, baseline.IshaTime) < 0);
+        Assert.Equal(baseline.DhuhrTime, morning.DhuhrTime);
+        Assert.Equal(baseline.MaghribTime, evening.MaghribTime);
+    }
+
+    [Theory]
+    [InlineData("4.9", "17")]
+    [InlineData("18", "30.1")]
+    [InlineData("18.55", "17")]
+    [InlineData("NaN", "17")]
+    public void InvalidAnglePreferencesFallBackToTheDefaults(string fajr, string isha)
+    {
+        Assert.False(TwilightAngles.TryParse(fajr, isha, out _));
+        Assert.Equal(TwilightAngles.Default, TwilightAngles.ReadPreference($"{fajr}:{isha}"));
     }
 
     [Theory]

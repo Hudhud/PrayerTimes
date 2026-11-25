@@ -67,7 +67,7 @@
                 @if (completeMonth)
                 {
                     <a class="button" asp-route="CalendarExport" asp-route-city="@Model.City.Slug"
-                       asp-route-month="@month">Hent kalenderfil</a>
+                       asp-route-month="@month" asp-route-angles="@Model.Angles.PreferenceValue">Hent kalenderfil</a>
                 }
             </div>
         </details>

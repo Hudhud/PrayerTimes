@@ -1,13 +1,16 @@
+@model Application.Calendars.TwilightAngles
+@using System.Globalization
 @{
     ViewData["Title"] = "Sådan beregnes bønnetiderne";
+    var danish = CultureInfo.GetCultureInfo("da-DK");
 }
 <article class="readable">
     <h1>Sådan beregnes bønnetiderne</h1>
     <p>Salah Times viser tider i dansk lokal tid, med dansk sommer- og vintertid. Tiderne er knyttet til koordinaterne for det viste sted.</p>
     <h2>Solens position</h2>
-    <p>Astronomy Engine beregner solens position. Fajr beregnes, når solen på vej op når 18 grader under horisonten. Isha beregnes, når solen på vej ned når 17 grader under horisonten.</p>
+    <p>Astronomy Engine beregner solens position. Fajr indtræder, når solen på vej op når den valgte vinkel under horisonten. Isha indtræder, når solen på vej ned når den valgte vinkel. Dine vinkler er @(Model.Fajr.ToString("0.#", danish))° for Fajr og @(Model.Isha.ToString("0.#", danish))° for Isha. Du kan ændre dem ved <a href="@Url.Content("~/")#fajr-isha">dagens bønnetider</a>.</p>
     <p>Ved solmiddag står solen højest på himlen. Dhuhr-bønnen indtræder, så snart solen har passeret det punkt og begynder at synke mod vest.</p>
-    <p>Solopgang og Maghrib følger solopgang og solnedgang. Salah Times lægger tre minutter til de beregnede tider, før de vises i timer og minutter.</p>
+    <p>Solopgang og Maghrib følger solopgang og solnedgang. De beregnede tider rundes op til nærmeste hele minut.</p>
     <h2>Asr</h2>
     <p>Asr er den islamiske eftermiddagsbøn. Med standardmetoden indtræder Asr, når skyggen af en lodret genstand er lige så lang som genstanden selv plus dens skyggelængde ved solmiddag. Med Hanafi-metoden lægger man to gange genstandens længde til skyggelængden ved solmiddag. Du kan vælge Asr-metode ved dagens bønnetider.</p>
     <h2 id="lyse-naetter">Fajr og Isha under lyse nætter</h2>

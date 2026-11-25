@@ -96,4 +96,21 @@ public sealed class LocalPlacesTests
 
         Assert.All(results, result => Assert.Same(results[0][0], Assert.Single(result)));
     }
+
+    [Fact]
+    public async Task CacheSeparatesDefaultAndCustomAnglesForTheSamePlaceAndDay()
+    {
+        using var provider = new LocalPrayerTimeService(new DanishPrayerTimeCalculator());
+        var date = new DateOnly(2026, 6, 21);
+        var city = PrayerCities.Default;
+        Assert.True(TwilightAngles.TryParse("5.5", "6.5", out var custom));
+
+        var standard = Assert.Single(await provider.GetDaysAsync(city, date, date.AddDays(1), default));
+        var adjusted = Assert.Single(await provider.GetDaysAsync(city, date, date.AddDays(1), default, custom));
+        Assert.True(standard.FajrTimeUnavailable);
+        Assert.True(standard.IshaTimeUnavailable);
+        Assert.False(adjusted.FajrTimeUnavailable);
+        Assert.False(adjusted.IshaTimeUnavailable);
+        Assert.Same(standard, Assert.Single(await provider.GetDaysAsync(city, date, date.AddDays(1), default)));
+    }
 }

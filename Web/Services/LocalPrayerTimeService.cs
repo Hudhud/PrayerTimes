@@ -17,16 +17,17 @@ public sealed class LocalPrayerTimeService(DanishPrayerTimeCalculator calculator
     private readonly object[] gates = Array.ConvertAll(new int[32], _ => new object());
 
     public Task<IReadOnlyList<DailyPrayerTimes>> GetDaysAsync(PrayerCity city, DateOnly from, DateOnly until,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, TwilightAngles? angles = null)
     {
         var result = new List<DailyPrayerTimes>();
         var latitude = double.Parse(city.Latitude, CultureInfo.InvariantCulture);
         var longitude = double.Parse(city.Longitude, CultureInfo.InvariantCulture);
+        angles ??= TwilightAngles.Default;
 
         for (var date = from; date < until; date = date.AddDays(1))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var key = (latitude, longitude, date);
+            var key = (latitude, longitude, date, angles);
             if (!cache.TryGetValue(key, out DailyPrayerTimes? day))
             {
                 // An exact date is small enough to compute under a bounded set of locks.
@@ -36,7 +37,7 @@ public sealed class LocalPrayerTimeService(DanishPrayerTimeCalculator calculator
                     day = cache.GetOrCreate(key, entry =>
                     {
                         entry.SetSize(1).SetSlidingExpiration(TimeSpan.FromDays(1));
-                        return calculator.Calculate(date, latitude, longitude);
+                        return calculator.Calculate(date, latitude, longitude, angles);
                     });
                 }
             }

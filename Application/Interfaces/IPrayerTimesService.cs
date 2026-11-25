@@ -6,5 +6,5 @@ namespace Application.Interfaces;
 public interface IPrayerTimeService
 {
     Task<IReadOnlyList<DailyPrayerTimes>> GetDaysAsync(PrayerCity city, DateOnly from, DateOnly until,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken, TwilightAngles? angles = null);
 }

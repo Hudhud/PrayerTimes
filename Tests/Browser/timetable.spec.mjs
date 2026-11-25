@@ -235,6 +235,38 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
 });
 
+test('saved Fajr and Isha angles apply to the calendar and export and can be reset', async ({ page, isMobile }) => {
+    await page.goto('/koebenhavn?month=2026-06&week=2026-06-21');
+    const settings = page.locator('#fajr-isha');
+    const date = page.locator(`${isMobile ? 'details' : 'tr'}[data-calendar-date="2026-06-21"]`);
+    await expect(date).toContainText('lyse nætter', { ignoreCase: true });
+    await settings.locator('summary').click();
+    await settings.getByLabel('Fajr (°)').fill('5,5');
+    await settings.getByLabel('Isha (°)').fill('6.5');
+    await settings.getByRole('button', { name: 'Gem vinkler' }).click();
+    await expect(settings.locator('summary')).toContainText('Fajr 5,5° · Isha 6,5°');
+    await expect(date).not.toContainText('lyse nætter', { ignoreCase: true });
+    await page.reload();
+    await expect(page.locator('[data-current-place="koebenhavn"]')).toHaveAttribute('data-angles', '5.5:6.5');
+
+    const refreshUrl = await page.locator('[data-refresh-url]').getAttribute('data-refresh-url');
+    const refresh = await page.request.get(refreshUrl);
+    expect(await refresh.text()).toContain('data-angles="5.5:6.5"');
+
+    await page.getByText('Udskriv og eksportér', { exact: true }).click();
+    const exportUrl = await page.getByRole('link', { name: 'Hent kalenderfil' }).getAttribute('href');
+    const exported = await page.request.get(exportUrl);
+    expect(exported.ok()).toBeTruthy();
+    const ics = await exported.text();
+    expect(ics).toContain('UID:koebenhavn-2026-06-21-fajr@salahtimes.dk');
+    expect(ics).toContain('UID:koebenhavn-2026-06-21-isha@salahtimes.dk');
+
+    await settings.locator('summary').click();
+    await settings.getByRole('button', { name: 'Nulstil til 18° og 17°' }).click();
+    await expect(settings.locator('summary')).toContainText('Fajr 18° · Isha 17°');
+    await expect(date).toContainText('lyse nætter', { ignoreCase: true });
+});
+
 test('the month heading opens a date picker and jumps directly to the chosen day', async ({ page, isMobile }) => {
     await page.setViewportSize({ width: isMobile ? 388 : 1164, height: 800 });
     await page.goto('/post-5000?month=2026-11#month-title');
@@ -353,7 +385,7 @@ test('live timetable refresh keeps the next prayer above today’s date and pres
             .replace(/data-refresh-at="[^"]+"/, 'data-refresh-at="2026-11-20T20:00:02Z"');
         await route.fulfill({ response, body });
     }, { times: 1 });
-    await page.route('**/koebenhavn/i-dag?asr=standard', async route => {
+    await page.route('**/koebenhavn/i-dag?asr=standard&angles=*', async route => {
         const response = await route.fetch();
         const body = (await response.text()).replace('>Næste bøn</h2>', '>Næste bøn opdateret</h2>');
         await route.fulfill({ response, body });
@@ -398,7 +430,7 @@ test('the next prayer counts down to its start and restarts for the following pr
     await page.route('**/koebenhavn', route =>
         servePrayer(route, '2026-11-29T12:00:00Z', '2026-11-29T13:01:02+01:00', 'Dhuhr', '13:01'));
     let refreshes = 0;
-    await page.route('**/koebenhavn/i-dag?asr=standard', route => {
+    await page.route('**/koebenhavn/i-dag?asr=standard&angles=*', route => {
         refreshes++;
         return servePrayer(route, '2026-11-29T12:01:03Z', '2026-11-29T14:05:03+01:00', 'Asr', '14:05');
     });
@@ -433,7 +465,7 @@ test('a 503 keeps today’s times and retry only accepts the selected Asr method
         await route.fulfill({ response, body });
     });
     let attempt = 0;
-    await page.route('**/koebenhavn/i-dag?asr=standard', async route => {
+    await page.route('**/koebenhavn/i-dag?asr=standard&angles=*', async route => {
         const response = await route.fetch();
         const body = await response.text();
         attempt++;
@@ -478,7 +510,7 @@ test('at Danish midnight the previous times are historical during a failed refre
                 (_, prefix) => `${prefix}2026-11-29">søndag 29. november 2026`);
         await route.fulfill({ response, body });
     });
-    await page.route('**/koebenhavn/i-dag?asr=standard', route => route.fulfill({ status: 503 }));
+    await page.route('**/koebenhavn/i-dag?asr=standard&angles=*', route => route.fulfill({ status: 503 }));
 
     await page.goto('/koebenhavn?month=2026-11');
     const dates = page.locator('.today-context time');
@@ -514,6 +546,11 @@ test('a saved seven-day plan can be reopened without a connection', async ({ pag
     try {
         await page.goto(`${origin}/aarhus`);
         await page.getByRole('button', { name: 'Vis Hanafi' }).click();
+        const angles = page.locator('#fajr-isha');
+        await angles.locator('summary').click();
+        await angles.getByLabel('Fajr (°)').fill('5,5');
+        await angles.getByLabel('Isha (°)').fill('6,5');
+        await angles.getByRole('button', { name: 'Gem vinkler' }).click();
         const current = page.locator('.today');
         const now = await current.getAttribute('data-today');
         const asr = await current.locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time').textContent();
@@ -529,6 +566,7 @@ test('a saved seven-day plan can be reopened without a connection', async ({ pag
         await reopened.goto(new URL(savedPath, origin).href);
         await expect(reopened.getByRole('heading', { name: 'Offline bønnetider i Aarhus' })).toBeVisible();
         await expect(reopened.getByText('Asr-metode Hanafi')).toBeVisible();
+        await expect(reopened.getByText('Fajr 5,5° · Isha 6,5°')).toBeVisible();
         const days = reopened.locator('.offline-plan article');
         await expect(days).toHaveCount(7);
         await expect(days.first().locator('h2 time')).toHaveAttribute('datetime', now);

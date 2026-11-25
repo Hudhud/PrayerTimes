@@ -7,14 +7,11 @@ namespace Calculation;
 
 public sealed class DanishPrayerTimeCalculator
 {
-    private const double FajrAltitude = -18;
-    private const double IshaAltitude = -17;
-    private const int TimeAdjustmentMinutes = 3;
     private const double DegreesToRadians = Math.PI / 180;
     private const double SolarRadiusKilometers = 695700;
     private const double AstronomicalUnitKilometers = 149597870.7;
 
-    public DailyPrayerTimes Calculate(DateOnly date, double latitude, double longitude)
+    public DailyPrayerTimes Calculate(DateOnly date, double latitude, double longitude, TwilightAngles? angles = null)
     {
         if (!double.IsFinite(latitude) || latitude is < -90 or > 90)
         {
@@ -26,6 +23,7 @@ public sealed class DanishPrayerTimeCalculator
             throw new ArgumentOutOfRangeException(nameof(longitude));
         }
 
+        angles ??= TwilightAngles.Default;
         var observer = new Observer(latitude, longitude, height: 0);
         var midnight = new AstroTime(DanishTime.At(date, TimeOnly.MinValue).UtcDateTime);
         var nextMidnight = new AstroTime(DanishTime.At(date.AddDays(1), TimeOnly.MinValue).UtcDateTime);
@@ -37,8 +35,8 @@ public sealed class DanishPrayerTimeCalculator
         var sunset = Required(Astronomy.SearchRiseSet(Body.Sun, observer, Direction.Set, noon,
             nextMidnight.ut - noon.ut, metersAboveGround: 0), "sunset");
 
-        var fajr = SearchAltitude(observer, Direction.Rise, previousSolarMidnight, sunrise, FajrAltitude);
-        var isha = SearchAltitude(observer, Direction.Set, sunset, followingSolarMidnight, IshaAltitude);
+        var fajr = SearchAltitude(observer, Direction.Rise, previousSolarMidnight, sunrise, -(double)angles.Fajr);
+        var isha = SearchAltitude(observer, Direction.Set, sunset, followingSolarMidnight, -(double)angles.Isha);
 
         var sun = Astronomy.Equator(Body.Sun, noon, observer, EquatorEpoch.OfDate, Aberration.Corrected);
         // Dhuhr begins after the trailing edge of the solar disk has crossed the meridian.
@@ -53,7 +51,7 @@ public sealed class DanishPrayerTimeCalculator
         var asr = FindAsr(observer, noon, sunset, noonShadow, shadowLength: 1);
         var asrHanafi = FindAsr(observer, noon, sunset, noonShadow, shadowLength: 2);
 
-        var localIsha = isha is null ? (DateTimeOffset?)null : AdjustLocal(isha);
+        var localIsha = isha is null ? (DateTimeOffset?)null : RoundLocalMinute(isha);
         var result = new DailyPrayerTimes
         {
             Date = date.ToDateTime(TimeOnly.MinValue),
@@ -93,12 +91,16 @@ public sealed class DanishPrayerTimeCalculator
     private static AstroTime Required(AstroTime? time, string eventName) =>
         time ?? throw new InvalidDataException($"Could not calculate {eventName} for the date and location.");
 
-    private static DateTimeOffset AdjustLocal(AstroTime time) =>
-        DanishTime.FromUtc(time.ToUtcDateTime().AddMinutes(TimeAdjustmentMinutes));
+    private static DateTimeOffset RoundLocalMinute(AstroTime time)
+    {
+        var utc = time.ToUtcDateTime();
+        var remainder = utc.Ticks % TimeSpan.TicksPerMinute;
+        return DanishTime.FromUtc(remainder == 0 ? utc : utc.AddTicks(TimeSpan.TicksPerMinute - remainder));
+    }
 
     private static string FormatOnDate(DateOnly date, AstroTime time)
     {
-        var local = AdjustLocal(time);
+        var local = RoundLocalMinute(time);
         if (DateOnly.FromDateTime(local.Date) != date)
         {
             throw new InvalidDataException($"An event assigned to {date:yyyy-MM-dd} falls outside that Danish date.");

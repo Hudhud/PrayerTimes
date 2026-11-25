@@ -14,7 +14,8 @@
 <section aria-label="Dagens bønnetider" class="today" data-current-place="@Model.City.Slug"
          data-place-name="@Model.City.Name" data-today="@date" data-correction-url="@correctionUrl"
          data-asr-method="@Model.AsrMethod" data-midnight="@Model.Midnight.ToString("o", CultureInfo.InvariantCulture)"
-         data-refresh-url="@Url.RouteUrl("Today", new { city = Model.City.Slug, asr = Model.AsrMethod })"
+         data-angles="@Model.Angles.PreferenceValue"
+         data-refresh-url="@Url.RouteUrl("Today", new { city = Model.City.Slug, asr = Model.AsrMethod, angles = Model.Angles.PreferenceValue })"
          data-rendered-at="@Model.Now.ToString("o", CultureInfo.InvariantCulture)"
          data-refresh-at="@Model.RefreshAt.ToString("o", CultureInfo.InvariantCulture)">
     <div class="next-prayer" data-next-prayer>
