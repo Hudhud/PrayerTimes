@@ -465,6 +465,14 @@ tbody .selected-day, tbody .selected-day th { background: var(--surface-raised);
 .today > .prayer-list .prayer-stage { display: block; margin: .25rem 0 0; }
 .prayer-stage-current { color: var(--current); }
 .prayer-stage-next { color: var(--accent); }
+.current-prayer-summary {
+    display: inline-block;
+    margin-inline-start: .35rem;
+    padding: .15rem .5rem;
+    border: 1px solid var(--current-border);
+    border-radius: .5rem;
+    background: var(--current-surface);
+}
 .today:not([data-stale]) [data-prayer-stage="current"] { background: var(--current-surface); border-color: var(--current-border); }
 .today:not([data-stale]) [data-prayer-stage="next"] { background: var(--next-surface); border-color: var(--next-border); }
 .today[data-stale] [data-live-stage] { display: none; }

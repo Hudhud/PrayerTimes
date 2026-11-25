@@ -124,6 +124,7 @@ if (timetable) {
     let timer;
     let midnightTimer;
     let countdownTimer;
+    let overnightTimer;
     let calendarDate = timetable.dataset.today;
     let updating = false;
 
@@ -185,12 +186,30 @@ if (timetable) {
         countdownTimer = window.setTimeout(() => updateCountdown(card), remaining % 1000 || 1000);
     }
 
+    function updateCurrentSummary(stale) {
+        clearTimeout(overnightTimer);
+        const summary = timetable.querySelector('[data-current-summary]');
+        if (!summary) {
+            return;
+        }
+
+        const until = Date.parse(summary.dataset.overnightUntil);
+        const remaining = until - Date.now();
+        const outsideTimetable = summary.dataset.currentSummary === 'outside';
+        summary.hidden = stale ? !(remaining > 0) : !outsideTimetable || remaining <= 0;
+        if (!summary.hidden && remaining > 0) {
+            overnightTimer = window.setTimeout(() => { summary.hidden = true; }, remaining);
+        }
+    }
+
     function updateDisplayedDate() {
         const today = localDate?.format(new Date()) ?? timetable.dataset.today;
         const hasTimes = Boolean(timetable.querySelector('.prayer-list'));
         const historical = timetable.dataset.today < today;
+        const stale = historical || !refreshError.hidden;
         timetable.hidden = historical && !hasTimes;
-        timetable.toggleAttribute('data-stale', historical || !refreshError.hidden);
+        timetable.toggleAttribute('data-stale', stale);
+        updateCurrentSummary(stale);
         timetable.querySelector('[data-historical-times]').hidden = !historical;
         const card = timetable.querySelector('[data-next-prayer]');
         card.hidden = historical || (!refreshError.hidden && hasTimes);
