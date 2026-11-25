@@ -1,6 +1,7 @@
 namespace Application.Calendars;
 
-public sealed record PrayerCity(string Slug, string Name, string Latitude, string Longitude);
+public sealed record PrayerCity(string Slug, string Name, string Latitude, string Longitude,
+    string TimeZoneId = DanishTime.ZoneId, string CountryCode = "DK");
 
 public static class PrayerCities
 {

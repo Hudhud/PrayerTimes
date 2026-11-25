@@ -1,6 +1,6 @@
 # Salah Times
 
-Danish prayer timetables with city and postcode search. The ASP.NET Core site uses .NET 10 and local astronomical calculations. All dates and displayed times use Copenhagen time.
+Worldwide prayer timetables with city search and Danish postcode search. The ASP.NET Core site and Android app use .NET 10 and share local astronomical calculations. Dates and displayed times follow the selected place. The interface defaults to Danish, with English available in the website header and Android settings.
 
 ## Run locally
 
@@ -30,13 +30,13 @@ npm test
 
 ## Deploy
 
-The deployment publishes a self-contained Windows x86 build for the ASP.NET Core IIS hosting module. The website uses the shipped place index and caches timetables by coordinates, date, and Fajr and Isha angles. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
+The deployment publishes a self-contained Windows x86 build for the ASP.NET Core IIS hosting module. The website uses the shipped place index and caches timetables by coordinates, time zone, date, and Fajr and Isha angles. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
 
 After deployment, CI opens the public site and verifies the prayer times, postcode picker and calculation method. To roll back one release, revert its squash commit through a pull request so verification and deployment run again. A revert leaves the public place URLs and preference cookies usable by the earlier local release.
 
 ## Evaluate local prayer-time calculations
 
-Astronomy Engine powers the shared calculation in `Calculation`. The Android app runs it on the device and the website runs it on the server. The calculator places Dhuhr after the solar disk clears the meridian. Both Asr conventions use apparent solar altitudes for the reference shadow at noon and the afternoon shadow. Fajr and Isha use configurable twilight angles, defaulting to 18° and 17°, with a bright-night flag when a crossing is absent. Calculated times round up to the next whole minute when they include fractional minutes.
+Astronomy Engine powers the shared calculation in `Calculation`. The Android app runs it on the device and the website runs it on the server. The calculator places Dhuhr after the solar disk clears the meridian. Both Asr conventions use apparent solar altitudes for the reference shadow at noon and the afternoon shadow. Fajr and Isha use configurable twilight angles. The Danish default is 18° and 17°. The shared calculation supplies a small set of country defaults, with 18° and 17° as the general fallback. If a solar event is absent on a bright night or polar day, its time is left blank and reminders are skipped for that event. Calculated times round up to the next whole minute when they include fractional minutes.
 
 Run the comparison against saved reference times that use Salah Times' current city coordinates and displayed time conventions.
 
@@ -66,4 +66,10 @@ The place index is a filtered, combined copy of the GeoNames [Danish place expor
 python3 Tools/PlaceData/import_geonames.py places.zip postal.zip Web/wwwroot/data/prayer-places.json
 ```
 
-City and postal-code suggestions use the server's copy of the index. For geolocation, the browser loads the index and opens the nearest named place's shareable URL. After the user enables that mode, the browser can update the place when they return, while it still has location permission. The user can turn off automatic location or choose a place manually.
+Worldwide city search adds the GeoNames [cities5000 export](https://download.geonames.org/export/dump/cities5000.zip), [country names](https://download.geonames.org/export/dump/countryInfo.txt), and [first-level regions](https://download.geonames.org/export/dump/admin1CodesASCII.txt), also under CC BY 4.0. The Android app includes both indexes for offline search. Refresh the worldwide city index with:
+
+```sh
+python3 Tools/PlaceData/import_world_cities.py cities5000.zip countryInfo.txt admin1CodesASCII.txt Web/wwwroot/data/prayer-cities-world.json
+```
+
+City and postal-code suggestions use the server's copy of the indexes. For geolocation, the browser loads the index and opens the nearest named place's shareable URL. After the user enables that mode, the browser can update the place when they return, while it still has location permission. The user can turn off automatic location or choose a place manually.

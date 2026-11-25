@@ -1,8 +1,8 @@
 # Salah Times til Android
 
-Android-appen viser dagens bønnetider, en live nedtælling og en månedskalender, hvor dagene kan foldes ud. Appen bruger telefonens placering til at vælge en nærliggende dansk by. Ved en omtrentlig placering kan du bekræfte den foreslåede by. Du kan også søge efter en by eller et postnummer under **Skift sted**. Appen beholder et manuelt valgt sted, indtil du vælger **Brug min placering** og appen finder et sted. Under **Indstillinger** kan du vælge standard- eller Hanafi-metoden og læse beregningsvejledningen.
+Android-appen viser dagens bønnetider, en live nedtælling og en månedskalender, hvor dagene kan foldes ud. Appen bruger telefonens placering til at vælge en nærliggende by. Ved en omtrentlig placering kan du bekræfte den foreslåede by. Du kan også søge efter en by eller et dansk postnummer under **Skift sted**. Appen beholder et manuelt valgt sted, indtil du vælger **Brug min placering** og appen finder et sted. Under **Indstillinger** kan du vælge dansk eller engelsk, vælge standard- eller Hanafi-metoden og ændre vinklerne for Fajr og Isha. Tryk på kalendermåneden for at vælge en bestemt dato.
 
-Appen bruger de samme bønneberegninger og den samme stedliste som salahtimes.dk. Tiderne beregnes på telefonen og vises i dansk lokal tid. Appen gemmer senest valgte steder og Asr-metoden lokalt. Stedlisten er baseret på GeoNames og deles under CC BY 4.0.
+Appen bruger de samme bønneberegninger og de samme stedlister som salahtimes.dk. Tiderne beregnes på telefonen og vises i det valgte steds lokale tid. Appen gemmer senest valgte steder og dine indstillinger lokalt. Steddata er baseret på GeoNames og deles under CC BY 4.0.
 
 Med automatisk placering kan du slå **Opdatér sted i baggrunden** til under **Indstillinger → Sted**. Giv præcis placering og vælg **Tillad altid** i Androids appindstillinger, hvis Android kræver det. En ny præcis placering opdaterer widgetten og notifikationernes tider. Android bestemmer, hvor ofte baggrundsplacering leveres.
 
@@ -22,5 +22,14 @@ dotnet publish Android/SalahTimes.Android.csproj -c Release
 ```
 
 APK’en findes under `Android/bin/Release/net10.0-android36.0/`. Den kræver Android 8.0 eller nyere. Brug samme signeringsnøgle og en højere versionskode til opdateringer af en installeret APK.
+
+Hvis du vil bygge en test-APK, som kan installeres ved siden af både appen og den tidligere preview, kan du bruge et særskilt pakke-id:
+
+```sh
+dotnet publish Android/SalahTimes.Android.csproj -c Release \
+  -p:ApplicationId=dk.salahtimes.android.review \
+  -p:ApplicationVersion=15 -p:ApplicationDisplayVersion=1.5.4-review \
+  '-p:ApplicationTitle=Salah Times Review'
+```
 
 Websitet og de delte beregningstests kan bygges som før med `dotnet test PrayerTimes.sln -c Release`.

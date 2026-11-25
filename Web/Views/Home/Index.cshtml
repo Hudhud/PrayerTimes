@@ -4,12 +4,15 @@
 @using Web.ViewModels
 @{
     var city = Model.Daily.City;
-    var danish = CultureInfo.GetCultureInfo("da-DK");
+    var culture = CultureInfo.CurrentCulture;
     var angles = Model.Daily.Angles;
-    var fajr = angles.Fajr.ToString("0.#", danish);
-    var isha = angles.Isha.ToString("0.#", danish);
+    var fajr = angles.Fajr.ToString("0.#", culture);
+    var isha = angles.Isha.ToString("0.#", culture);
+    var defaults = TwilightAngles.ForPlace(city);
+    var defaultFajr = defaults.Fajr.ToString("0.#", culture);
+    var defaultIsha = defaults.Isha.ToString("0.#", culture);
     var returnUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
-    ViewData["Title"] = $"Bønnetider i {city.Name}";
+    ViewData["Title"] = T($"Bønnetider i {city.Name}", $"Prayer times in {city.Name}");
     ViewData["PlaceDataAttribution"] = true;
     ViewData["TimetableNavigation"] = true;
     ViewData["CalendarHasToday"] = Model.Calendar.Days.Any(day => DateOnly.FromDateTime(day.Date) == Model.Calendar.Today);
@@ -18,20 +21,20 @@
 <header class="place-heading">
     <div class="place-heading-row">
         <div class="place-title">
-            <h1><span class="place-heading-label">Bønnetider i </span>@city.Name</h1>
+            <h1><span class="place-heading-label">@T("Bønnetider i ", "Prayer times in ")</span>@city.Name</h1>
             @if (Model.IsDefaultPlace)
             {
-                <small class="default-place" data-default-place>Standardsted</small>
+                <small class="default-place" data-default-place>@T("Standardsted", "Default location")</small>
             }
-            <small data-auto-place hidden>Automatisk valgt</small>
+            <small data-auto-place hidden>@T("Automatisk valgt", "Selected automatically")</small>
         </div>
-        <a class="button" asp-controller="Home" asp-action="Places" data-place-fallback>Skift sted</a>
+        <a class="button" asp-controller="Home" asp-action="Places" data-place-fallback>@T("Skift sted", "Change location")</a>
         <button class="button" type="button" aria-controls="place-picker-panel" aria-expanded="false"
-                data-place-toggle hidden>Skift sted</button>
+                data-place-toggle hidden>@T("Skift sted", "Change location")</button>
     </div>
     @if (Model.IsDefaultPlace)
     {
-        <button class="button" type="button" aria-controls="place-picker-panel" data-location-shortcut hidden>Brug min placering</button>
+        <button class="button" type="button" aria-controls="place-picker-panel" data-location-shortcut hidden>@T("Brug min placering", "Use my location")</button>
     }
     <div id="place-picker-panel" class="place-picker-panel" hidden>
         <partial name="_PlacePicker" model="string.Empty" />
@@ -39,8 +42,8 @@
 </header>
 <p class="visually-hidden" data-prayer-announcement role="status"></p>
 <div class="notice" data-prayer-refresh-error hidden="@(Model.Daily.Day is not null)">
-    <p data-prayer-refresh-message role="status">Dagens bønnetider kunne ikke hentes.</p>
-    <a href="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" data-prayer-retry>Prøv igen</a>
+    <p data-prayer-refresh-message role="status">@T("Dagens bønnetider kunne ikke hentes.", "Today’s prayer times could not be loaded.")</p>
+    <a href="@(Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString)" data-prayer-retry>@T("Prøv igen", "Try again")</a>
 </div>
 <partial name="_Today" model="Model.Daily" />
 
@@ -48,26 +51,26 @@
     <form method="post" asp-action="Asr" class="asr-control">
         <input type="hidden" name="returnUrl"
                value="@returnUrl" />
-        <span>Asr-metode <strong>@(Model.Daily.Hanafi ? "Hanafi" : "Standard")</strong></span>
+        <span>@T("Asr-metode", "Asr method") <strong>@(Model.Daily.Hanafi ? "Hanafi" : "Standard")</strong></span>
         <button class="button" name="choice" value="@(Model.Daily.Hanafi ? "standard" : "hanafi")">
-            @(Model.Daily.Hanafi ? "Vis standard" : "Vis Hanafi")
+            @(Model.Daily.Hanafi ? T("Vis standard", "Show Standard") : T("Vis Hanafi", "Show Hanafi"))
         </button>
     </form>
 
     <div class="offline-controls" data-offline-controls hidden
          data-offline-plan="@Url.RouteUrl("OfflinePlan", new { city = city.Slug, asr = Model.Daily.AsrMethod, angles = angles.PreferenceValue })"
          data-worker="@Url.Content("~/offline-worker.js")">
-        <button class="button" type="button" data-save-offline>Gem 7 dages tider offline</button>
-        <a href="~/offline" data-open-offline hidden>Åbn gemt bønneplan</a>
+        <button class="button" type="button" data-save-offline>@T("Gem 7 dages tider offline", "Save 7 days offline")</button>
+        <a href="~/offline" data-open-offline hidden>@T("Åbn gemt bønneplan", "Open saved timetable")</a>
         <p class="offline-status" data-offline-status role="status"></p>
     </div>
 </div>
 
 <details id="fajr-isha" class="angle-settings">
-    <summary>Fajr- og Isha-vinkler <span>· Fajr @fajr° · Isha @isha°</span></summary>
+    <summary>@T("Fajr- og Isha-vinkler", "Fajr and Isha angles") <span>· Fajr @fajr° · Isha @isha°</span></summary>
     <form method="post" asp-action="Angles" class="angle-form">
         <input type="hidden" name="returnUrl" value="@(returnUrl + "#fajr-isha")" />
-        <p id="angle-hint">Vælg @TwilightAngles.Minimum–@TwilightAngles.Maximum° under horisonten med højst én decimal.</p>
+        <p id="angle-hint">@T($"Vælg {TwilightAngles.Minimum}–{TwilightAngles.Maximum}° under horisonten med højst én decimal.", $"Choose {TwilightAngles.Minimum}–{TwilightAngles.Maximum}° below the horizon, with at most one decimal place.")</p>
         <div class="angle-fields">
             <label>Fajr (°)
                 <input name="fajr" inputmode="decimal" value="@fajr" required maxlength="4"
@@ -79,8 +82,8 @@
             </label>
         </div>
         <div class="actions">
-            <button class="button" type="submit">Gem vinkler</button>
-            <button class="button" type="submit" name="reset" value="true" formnovalidate>Nulstil til @TwilightAngles.Default.Fajr° og @TwilightAngles.Default.Isha°</button>
+            <button class="button" type="submit">@T("Gem vinkler", "Save angles")</button>
+            <button class="button" type="submit" name="reset" value="true" formnovalidate>@T($"Nulstil til {defaultFajr}° og {defaultIsha}°", $"Reset to {defaultFajr}° and {defaultIsha}°")</button>
         </div>
     </form>
 </details>
@@ -89,10 +92,10 @@
 
 @section Footer {
     <div class="footer-links">
-        <a asp-action="Method">Dansk lokal tid og beregningsmetode</a>
+        <a asp-action="Method">@(city.CountryCode == "DK" ? T("Dansk lokal tid og beregningsmetode", "Local time and calculation method") : T("Lokal tid og beregningsmetode", "Local time and calculation method"))</a>
         <a asp-action="Correction" asp-route-city="@city.Slug"
            asp-route-date="@CalendarViewModel.DayParameter(Model.Daily.NextDate ?? Model.Daily.Date)"
-           asp-route-prayer="@Model.Daily.Next?.Name" data-correction-link>Meld en fejl i en bønnetid</a>
+           asp-route-prayer="@Model.Daily.Next?.Name" data-correction-link>@T("Meld en fejl i en bønnetid", "Report a prayer time error")</a>
     </div>
     <partial name="_StatisticsPrompt" />
 }

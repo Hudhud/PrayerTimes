@@ -20,7 +20,7 @@ public sealed partial class MainActivity
         var enabled = preferences.GetBoolean(PrayerLocationReceiver.BackgroundLocationKey, false);
         var toggle = new Switch(this)
         {
-            Text = "Opdatér sted i baggrunden",
+            Text = T("Opdatér sted i baggrunden", "Update location in the background"),
             TextSize = 14,
             Checked = enabled,
             Gravity = GravityFlags.CenterVertical,
@@ -41,14 +41,14 @@ public sealed partial class MainActivity
         if (enabled && !PrayerLocationReceiver.HasPermission(this))
         {
             var instruction = OperatingSystem.IsAndroidVersionAtLeast(29)
-                ? "Vælg Tilladelser → Placering → Tillad altid, og slå præcis placering til."
-                : "Giv Salah Times tilladelse til placering i Androids appindstillinger.";
+                ? T("Vælg Tilladelser → Placering → Tillad altid, og slå præcis placering til.", "Choose Permissions → Location → Allow all the time and turn on precise location.")
+                : T("Giv Salah Times tilladelse til placering i Androids appindstillinger.", "Allow Salah Times to access your location in Android app settings.");
             content.AddView(Label(instruction, 14, Muted), MatchWidth(top: 8));
-            content.AddView(ActionButton("Åbn Androids appindstillinger", OpenBackgroundLocationSettings), MatchWidth(top: 7));
+            content.AddView(ActionButton(T("Åbn Androids appindstillinger", "Open Android app settings"), OpenBackgroundLocationSettings), MatchWidth(top: 7));
         }
         else if (enabled)
         {
-            content.AddView(Label("Widgetten og påmindelserne følger dit sted, også når appen er lukket.",
+            content.AddView(Label(T("Widgetten og påmindelserne følger dit sted, også når appen er lukket.", "The widget and reminders follow your location even when the app is closed."),
                 14, Muted), MatchWidth(top: 8));
         }
     }
@@ -65,8 +65,15 @@ public sealed partial class MainActivity
         loadedPlaceId = selectedId;
         if (place.Slug != selection.Slug)
         {
+            var oldToday = DateOnly.FromDateTime(clock.NowIn(place.TimeZoneId).Date);
             place = selection;
-            schedule = new LocalPrayerSchedule(selection);
+            schedule = new LocalPrayerSchedule(selection, PrayerPreferences.Angles(preferences));
+            if (month == MonthOf(oldToday) && selectedDate == oldToday)
+            {
+                var today = DateOnly.FromDateTime(clock.NowIn(place.TimeZoneId).Date);
+                month = MonthOf(today);
+                selectedDate = today;
+            }
         }
     }
 

@@ -1,4 +1,3 @@
-using System.Globalization;
 using Android.App;
 using Android.Appwidget;
 using Android.Content;
@@ -25,7 +24,6 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
     private const string RefreshAction = "dk.salahtimes.android.WIDGET_REFRESH";
     private const int GridMinimumWidth = 215;
     private const int GridMinimumHeight = 148;
-    private static readonly CultureInfo Danish = CultureInfo.GetCultureInfo("da-DK");
     private static readonly Color Sunrise = Color.ParseColor("#B6D5CE");
 
     public override void OnReceive(Context? context, Intent? intent)
@@ -113,11 +111,12 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
         try
         {
             var preferences = PrayerPreferences.Open(context);
+            var language = new AppLanguage(preferences);
             if (!preferences.Contains(PrayerPreferences.PlaceKey))
             {
                 using var views = CreateLayout();
                 views.SetTextViewText(Resource.Id.widget_place, "Salah Times");
-                views.SetTextViewText(Resource.Id.widget_date, "Vælg dit sted i appen");
+                views.SetTextViewText(Resource.Id.widget_date, language.Text("Vælg dit sted i appen", "Choose your location in the app"));
                 views.SetViewVisibility(Resource.Id.widget_current, ViewStates.Gone);
                 views.SetViewVisibility(Resource.Id.widget_next, ViewStates.Gone);
                 views.RemoveAllViews(Resource.Id.widget_times);
@@ -128,29 +127,30 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
 
             var place = PrayerPreferences.SelectedPlace(context, preferences);
             var hanafi = preferences.GetBoolean(PrayerPreferences.HanafiKey, false);
-            var now = new DanishTime(TimeProvider.System).Now;
+            var now = LocalTime.FromUtc(TimeProvider.System.GetUtcNow(), place.TimeZoneId);
             var elapsed = SystemClock.ElapsedRealtime();
             var date = DateOnly.FromDateTime(now.Date);
-            var schedule = new LocalPrayerSchedule(place);
+            var schedule = new LocalPrayerSchedule(place, PrayerPreferences.Angles(preferences));
             var day = schedule.Day(date);
             var (current, next, refreshAt) = schedule.Status(now, hanafi);
             var times = PrayerDay.Events(day, hanafi).ToList();
-            var sunrise = PrayerDay.Sunrise(day);
+            var sunrise = PrayerDay.AvailableSunrise(day);
             times.Insert(1, new PrayerEvent("Solopgang", sunrise));
             var remaining = next?.StartsAt - now;
-            var currentLabel = current is not null ? $"Nu · {current.Name}" :
-                next?.Name == "Dhuhr" && now >= sunrise ? "Mellem bønner" : null;
-            var countdownLabel = next is null ? "Lyse nætter" : next.StartsAt?.Date > day.Date
-                ? $"Næste · {next.Name} i morgen" : $"Næste · {next.Name}";
+            var currentLabel = current is not null ? language.Text($"Nu · {current.Name}", $"Now · {current.Name}") :
+                next?.Name == "Dhuhr" && now >= sunrise ? language.Text("Mellem bønner", "Between prayers") : null;
+            var countdownLabel = next is null ? language.Text("Ikke tilgængelig", "Time unavailable") : next.StartsAt?.Date > day.Date
+                ? language.Text($"Næste · {next.Name} i morgen", $"Next · {next.Name} tomorrow")
+                : language.Text($"Næste · {next.Name}", $"Next · {next.Name}");
 
             var notes = new List<string>(2);
-            if (day.FajrTimeUnavailable || day.IshaTimeUnavailable)
+            if (day.HasUnavailableTimes)
             {
-                notes.Add("— Lyse nætter");
+                notes.Add(language.Text("— Ikke tilgængelig", "— Time unavailable"));
             }
             if (day.IshaDayOffset == 1)
             {
-                notes.Add("⁺ Næste døgn");
+                notes.Add(language.Text("⁺ Næste døgn", "⁺ Next day"));
             }
 
             RemoteViews Layout(bool compact)
@@ -167,7 +167,7 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
                 views.SetTextViewTextSize(Resource.Id.widget_countdown, (int)ComplexUnitType.Sp, compact ? 16 : 19);
 
                 views.SetTextViewText(Resource.Id.widget_place, place.Name);
-                views.SetTextViewText(Resource.Id.widget_date, $"{date.ToString("d. MMM", Danish)} · {(hanafi ? "Hanafi" : "Standard")}");
+                views.SetTextViewText(Resource.Id.widget_date, $"{date.ToString("d. MMM", language.Culture)} · {(hanafi ? "Hanafi" : "Standard")}");
                 views.SetTextViewText(Resource.Id.widget_current, currentLabel);
                 views.SetTextColor(Resource.Id.widget_current, new Color(context.GetColor(
                     current is null ? Resource.Color.widget_secondary : Resource.Color.widget_current)));
@@ -186,7 +186,7 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
                     using var row = new RemoteViews(context.PackageName, Resource.Layout.prayer_widget_row);
                     foreach (var prayer in prayers)
                     {
-                        using var cell = TimeCell(context, prayer, day.Date, prayer == current, prayer == next, compact);
+                        using var cell = TimeCell(context, language, prayer, day.Date, prayer == current, prayer == next, compact);
                         row.AddView(Resource.Id.widget_time_row, cell);
                     }
                     views.AddView(Resource.Id.widget_times, row);
@@ -253,16 +253,17 @@ public sealed class PrayerWidgetProvider : AppWidgetProvider
         return PendingIntent.GetBroadcast(context, 0, intent, PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable);
     }
 
-    private static RemoteViews TimeCell(Context context, PrayerEvent prayer, DateTime date, bool current, bool next, bool compact)
+    private static RemoteViews TimeCell(Context context, AppLanguage language, PrayerEvent prayer, DateTime date, bool current, bool next, bool compact)
     {
         var cell = new RemoteViews(context.PackageName, compact ? Resource.Layout.prayer_widget_compact_cell : Resource.Layout.prayer_widget_cell);
         var time = prayer.Time;
         var overnight = prayer.StartsAt?.Date > date;
-        cell.SetTextViewText(Resource.Id.widget_prayer_name, prayer.Name);
+        var name = prayer.Name == "Solopgang" ? language.Text("Solopgang", "Sunrise") : prayer.Name;
+        cell.SetTextViewText(Resource.Id.widget_prayer_name, name);
         cell.SetTextViewText(Resource.Id.widget_prayer_time, overnight ? $"{time}⁺" : time ?? "—");
-        var spoken = time is null ? "Lyse nætter" : $"{time}{(overnight ? ", næste døgn" : "")}";
-        var status = current ? "Aktuel bøn, " : next ? "Næste bøn, " : "";
-        cell.SetContentDescription(Resource.Id.widget_prayer_cell, $"{status}{prayer.Name}, {spoken}");
+        var spoken = time is null ? language.Text("Ikke tilgængelig", "Time unavailable") : $"{time}{(overnight ? language.Text(", næste døgn", ", next day") : "")}";
+        var status = current ? language.Text("Aktuel bøn, ", "Current prayer, ") : next ? language.Text("Næste bøn, ", "Next prayer, ") : "";
+        cell.SetContentDescription(Resource.Id.widget_prayer_cell, $"{status}{name}, {spoken}");
         if (current || next)
         {
             var color = new Color(context.GetColor(current ? Resource.Color.widget_current : Resource.Color.widget_accent));

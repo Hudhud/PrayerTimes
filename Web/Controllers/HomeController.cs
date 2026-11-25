@@ -57,6 +57,18 @@ public sealed class HomeController(
         return ShowCityAsync(selected, month, week, cancellationToken);
     }
 
+    [HttpGet("/sprog")]
+    public IActionResult Language(string? language, string? returnUrl)
+    {
+        if (language is not ("da" or "en"))
+        {
+            return BadRequest();
+        }
+
+        Response.Cookies.Append(SiteLanguage.Cookie, language, PreferenceCookie());
+        return Url.IsLocalUrl(returnUrl) ? LocalRedirect(returnUrl!) : LocalRedirect(language == "en" ? "/en/" : "/");
+    }
+
     [HttpGet("/steder")]
     public IActionResult Places(string? q)
     {
@@ -112,12 +124,12 @@ public sealed class HomeController(
             return NotFound();
         }
 
-        if (asr is not (null or "standard" or "hanafi") || RequestedAngles(angles) is not { } twilight)
+        if (asr is not (null or "standard" or "hanafi") || RequestedAngles(angles, selected) is not { } twilight)
         {
             return BadRequest();
         }
 
-        var daily = await LoadTodayAsync(selected, clock.Now, asr is null ? UsesHanafi : asr == "hanafi", twilight, cancellationToken);
+        var daily = await LoadTodayAsync(selected, clock.NowIn(selected.TimeZoneId), asr is null ? UsesHanafi : asr == "hanafi", twilight, cancellationToken);
         return PartialView("_Today", daily);
     }
 
@@ -129,13 +141,13 @@ public sealed class HomeController(
         {
             return NotFound();
         }
-        if (asr is not ("standard" or "hanafi") || RequestedAngles(angles) is not { } twilight)
+        if (asr is not ("standard" or "hanafi") || RequestedAngles(angles, selected) is not { } twilight)
         {
             return BadRequest();
         }
 
         var hanafi = asr == "hanafi";
-        var start = DateOnly.FromDateTime(clock.Now.Date);
+        var start = DateOnly.FromDateTime(clock.NowIn(selected.TimeZoneId).Date);
         var days = await LoadCalendarDaysAsync(selected, start, start.AddDays(7), hanafi, twilight, cancellationToken);
         if (days.Count != 7)
         {
@@ -149,7 +161,7 @@ public sealed class HomeController(
     public IActionResult Offline() => RedirectToAction(nameof(Index));
 
     [HttpGet("/beregning")]
-    public IActionResult Method() => View("Method", SavedAngles);
+    public IActionResult Method() => View("Method", SavedAngles(places.Find(Request.Cookies[CityCookie]) ?? PrayerCities.Default));
 
     [HttpPost("/vinkler")]
     [ValidateAntiForgeryToken]
@@ -165,7 +177,9 @@ public sealed class HomeController(
         }
         else
         {
-            return BadRequest($"Vælg Fajr- og Isha-vinkler mellem {TwilightAngles.Minimum} og {TwilightAngles.Maximum} grader med højst én decimal.");
+            return BadRequest(SiteLanguage.T(
+                $"Vælg Fajr- og Isha-vinkler mellem {TwilightAngles.Minimum} og {TwilightAngles.Maximum} grader med højst én decimal.",
+                $"Choose Fajr and Isha angles between {TwilightAngles.Minimum} and {TwilightAngles.Maximum} degrees, with at most one decimal place."));
         }
 
         return Url.IsLocalUrl(returnUrl) ? LocalRedirect(returnUrl!) : RedirectToAction(nameof(Index));
@@ -192,9 +206,9 @@ public sealed class HomeController(
         {
             return NotFound();
         }
-        var now = clock.Now;
+        var now = clock.NowIn(selected.TimeZoneId);
         var today = DateOnly.FromDateTime(now.Date);
-        if (!TryReadMonth(month, today, out var monthStart) || RequestedAngles(angles) is not { } twilight)
+        if (!TryReadMonth(month, today, out var monthStart) || RequestedAngles(angles, selected) is not { } twilight)
         {
             return BadRequest();
         }
@@ -211,15 +225,16 @@ public sealed class HomeController(
     }
 
     private bool UsesHanafi => Request.Cookies[AsrCookie] == "hanafi";
-    private TwilightAngles SavedAngles => TwilightAngles.ReadPreference(Request.Cookies[AnglesCookie]);
+    private TwilightAngles SavedAngles(PrayerCity city) =>
+        TwilightAngles.TryParsePreference(Request.Cookies[AnglesCookie], out var angles) ? angles : TwilightAngles.ForPlace(city);
 
-    private TwilightAngles? RequestedAngles(string? value) =>
-        value is null ? SavedAngles : TwilightAngles.TryParsePreference(value, out var angles) ? angles : null;
+    private TwilightAngles? RequestedAngles(string? value, PrayerCity city) =>
+        value is null ? SavedAngles(city) : TwilightAngles.TryParsePreference(value, out var angles) ? angles : null;
 
     private async Task<IActionResult> ShowCityAsync(PrayerCity city, string? month, string? week,
         CancellationToken cancellationToken, bool isDefaultPlace = false)
     {
-        var now = clock.Now;
+        var now = clock.NowIn(city.TimeZoneId);
         var today = DateOnly.FromDateTime(now.Date);
         if (!TryReadMonth(month, today, out var monthStart))
         {
@@ -240,7 +255,7 @@ public sealed class HomeController(
         }
 
         var hanafi = UsesHanafi;
-        var twilight = SavedAngles;
+        var twilight = SavedAngles(city);
         var monthRows = await LoadCalendarDaysAsync(city, monthStart, monthEnd, hanafi, twilight, cancellationToken);
         var daily = await LoadTodayAsync(city, now, hanafi, twilight, cancellationToken);
         var calendar = new CalendarViewModel(city, today, monthStart, selectedDate, monthRows, hanafi, twilight);
@@ -288,7 +303,7 @@ public sealed class HomeController(
             if (days.TryGetValue(today, out var todayRow))
             {
                 var next = PrayerDay.FindNextPrayer(days, today, now, hanafi);
-                var brightNights = next is null && days.Values.Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
+                var brightNights = next is null && days.Values.Any(day => day.HasUnavailableTimes);
                 var current = PrayerDay.FindCurrentPrayer(days, today, now, hanafi);
                 return new DailyPrayerTimesViewModel(city, now, todayRow, current, next, brightNights, null, hanafi, angles);
             }
@@ -349,13 +364,15 @@ public sealed class HomeController(
 
         if (open && selected.Slug == city && hasDate && validPrayer)
         {
-            var title = $"Bønnetid i {selected.Name} den {parsedDate:dd.MM.yyyy}";
-            var body = $"By: {selected.Name}\nDato: {parsedDate:yyyy-MM-dd}\nBøn: {prayer}\n\nBeskriv fejlen her:";
+            var title = SiteLanguage.T($"Bønnetid i {selected.Name} den {parsedDate:dd.MM.yyyy}",
+                $"Prayer time in {selected.Name} on {parsedDate:yyyy-MM-dd}");
+            var body = SiteLanguage.T($"By: {selected.Name}\nDato: {parsedDate:yyyy-MM-dd}\nBøn: {prayer}\n\nBeskriv fejlen her:",
+                $"City: {selected.Name}\nDate: {parsedDate:yyyy-MM-dd}\nPrayer: {prayer}\n\nDescribe the error:");
             return Redirect(QueryHelpers.AddQueryString("https://github.com/Hudhud/PrayerTimes/issues/new",
                 new Dictionary<string, string?> { ["title"] = title, ["body"] = body }));
         }
 
-        return View(new CorrectionViewModel(selected, hasDate ? parsedDate : DateOnly.FromDateTime(clock.Now.Date),
+        return View(new CorrectionViewModel(selected, hasDate ? parsedDate : DateOnly.FromDateTime(clock.NowIn(selected.TimeZoneId).Date),
             validPrayer ? prayer! : "Fajr"));
     }
 
@@ -369,7 +386,8 @@ public sealed class HomeController(
 
         Response.StatusCode = StatusCodes.Status500InternalServerError;
         var requestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-        return View(new CustomErrorViewModel("Siden kunne ikke indlæses. Prøv igen om lidt.", requestId));
+        return View(new CustomErrorViewModel(SiteLanguage.T("Siden kunne ikke indlæses. Prøv igen om lidt.",
+            "The page could not be loaded. Please try again shortly."), requestId));
     }
 
     private CookieOptions PreferenceCookie() => new()

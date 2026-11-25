@@ -12,6 +12,13 @@ public static class PrayerDay
 {
     public static IReadOnlyList<PrayerEvent> Events(DailyPrayerTimes day, bool hanafi = false)
     {
+        if (day.Instants is { } instants)
+        {
+            return [new("Fajr", instants.Fajr), new("Dhuhr", instants.Dhuhr),
+                new("Asr", hanafi ? instants.AsrHanafi : instants.Asr), new("Maghrib", instants.Maghrib),
+                new("Isha", instants.Isha)];
+        }
+
         var date = DateOnly.FromDateTime(day.Date);
         TimeOnly? fajr = day.FajrTimeUnavailable ? null : Read(day.FajrTime);
         var sunrise = Read(day.SunriseTime);
@@ -53,8 +60,14 @@ public static class PrayerDay
             : null;
         var prayers = Events(currentDay, hanafi);
 
+        if (currentDay.HasUnavailableSunEvents)
+        {
+            return prayers.Append(previousIsha).Where(prayer => prayer?.StartsAt > now)
+                .OrderBy(prayer => prayer?.StartsAt).FirstOrDefault();
+        }
+
         // Leave the next prayer unspecified while an overnight prayer may still be due.
-        if (now < (prayers[0].StartsAt ?? Sunrise(currentDay))
+        if (now < (prayers[0].StartsAt ?? AvailableSunrise(currentDay))
             && (prayers[0].StartsAt is null || previousIsha is { StartsAt: null }))
         {
             return null;
@@ -90,7 +103,11 @@ public static class PrayerDay
         }
 
         var prayers = Events(day, hanafi);
-        if (now >= Sunrise(day) && now < prayers[1].StartsAt)
+        if (day.HasUnavailableSunEvents)
+        {
+            return null;
+        }
+        if (now >= AvailableSunrise(day) && now < prayers[1].StartsAt)
         {
             return null;
         }
@@ -106,8 +123,12 @@ public static class PrayerDay
             ? null : current;
     }
 
-    public static DateTimeOffset Sunrise(DailyPrayerTimes day) =>
-        DanishTime.At(DateOnly.FromDateTime(day.Date), Read(day.SunriseTime));
+    public static DateTimeOffset Sunrise(DailyPrayerTimes day) => AvailableSunrise(day)
+        ?? throw new InvalidDataException("Sunrise is unavailable for this date and place.");
+
+    public static DateTimeOffset? AvailableSunrise(DailyPrayerTimes day) =>
+        day.Instants is { } instants ? instants.Sunrise :
+            DanishTime.At(DateOnly.FromDateTime(day.Date), Read(day.SunriseTime));
 
     public static bool IsUsable(DailyPrayerTimes day, bool hanafi = false)
     {

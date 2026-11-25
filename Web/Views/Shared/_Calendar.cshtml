@@ -3,42 +3,42 @@
 @using System.Globalization
 @using Web.ViewModels
 @{
-    var danish = CultureInfo.GetCultureInfo("da-DK");
+    var culture = CultureInfo.CurrentCulture;
     var month = CalendarViewModel.MonthParameter(Model.Month);
-    var monthName = Model.Month.ToString("MMMM yyyy", danish);
+    var monthName = Model.Month.ToString("MMMM yyyy", culture);
     var hasMonth = Model.Days.Count > 0;
     var daysInMonth = DateTime.DaysInMonth(Model.Month.Year, Model.Month.Month);
     var completeMonth = Model.Days.Count == daysInMonth;
 }
-<section class="month" id="month-title" aria-label="Bønnekalender">
+<section class="month" id="month-title" aria-label="@T("Bønnekalender", "Prayer timetable")">
     <header class="calendar-header">
         <h2 id="calendar-month-heading">
             <span class="calendar-month-text">@monthName</span>
             <button type="button" class="calendar-date-trigger" aria-haspopup="dialog" aria-controls="calendar-date-picker"
-                    title="Vælg dato" hidden>@monthName<span aria-hidden="true"></span></button>
+                    title="@T("Vælg dato", "Choose date")" hidden>@monthName<span aria-hidden="true"></span></button>
         </h2>
         <p class="calendar-place mobile-calendar">@Model.City.Name</p>
-        <nav class="calendar-nav" aria-label="Vælg måned">
+        <nav class="calendar-nav" aria-label="@T("Vælg måned", "Choose month")">
             <partial name="_CalendarMonthLinks" model="Model" />
         </nav>
     </header>
     <dialog id="calendar-date-picker" class="calendar-date-picker" aria-labelledby="calendar-date-title"
             data-month-limit="@CalendarViewModel.MonthParameter(CalendarViewModel.MonthLimit)">
-        <h2 id="calendar-date-title">Vælg dato</h2>
+        <h2 id="calendar-date-title">@T("Vælg dato", "Choose date")</h2>
         <form asp-route="City" asp-route-city="@Model.City.Slug" method="get">
             <div class="calendar-date-fields">
-                <label>Måned
+                <label>@T("Måned", "Month")
                     <select name="month" autofocus>
                         @for (var i = 1; i <= 12; i++)
                         {
-                            <option value="@i" selected="@(i == Model.Month.Month)">@danish.DateTimeFormat.GetMonthName(i)</option>
+                            <option value="@i" selected="@(i == Model.Month.Month)">@culture.DateTimeFormat.GetMonthName(i)</option>
                         }
                     </select>
                 </label>
-                <label>År
+                <label>@T("År", "Year")
                     <input type="number" name="year" value="@Model.Month.Year" min="1" max="@CalendarViewModel.MonthLimit.Year" required />
                 </label>
-                <label>Dag
+                <label>@T("Dag", "Day")
                     <select name="day">
                         @for (var i = 1; i <= 31; i++)
                         {
@@ -48,32 +48,32 @@
                 </label>
             </div>
             <div class="actions">
-                <button class="button" type="submit">Vis bønnetider</button>
-                <button class="button" type="submit" formmethod="dialog" formnovalidate>Annuller</button>
+                <button class="button" type="submit">@T("Vis bønnetider", "Show prayer times")</button>
+                <button class="button" type="submit" formmethod="dialog" formnovalidate>@T("Annuller", "Cancel")</button>
             </div>
         </form>
     </dialog>
-    <p class="print-city">@Model.City.Name · Dansk lokal tid · Asr @(Model.Hanafi ? "Hanafi" : "standard")</p>
+    <p class="print-city">@Model.City.Name · @TimeLabel(Model.City) · Asr @(Model.Hanafi ? "Hanafi" : "standard")</p>
     @if (!hasMonth)
     {
-        <p>Månedsoversigten er midlertidigt utilgængelig.</p>
+        <p>@T("Månedsoversigten er midlertidigt utilgængelig.", "The monthly timetable is temporarily unavailable.")</p>
     }
     else
     {
         <details class="calendar-options">
-            <summary>@(completeMonth ? "Udskriv og eksportér" : "Udskriv")</summary>
+            <summary>@(completeMonth ? T("Udskriv og eksportér", "Print and export") : T("Udskriv", "Print"))</summary>
             <div class="calendar-actions">
-                <button class="button print-button" type="button" data-print hidden>Udskriv</button>
+                <button class="button print-button" type="button" data-print hidden>@T("Udskriv", "Print")</button>
                 @if (completeMonth)
                 {
                     <a class="button" asp-route="CalendarExport" asp-route-city="@Model.City.Slug"
-                       asp-route-month="@month" asp-route-angles="@Model.Angles.PreferenceValue">Hent kalenderfil</a>
+                       asp-route-month="@month" asp-route-angles="@Model.Angles.PreferenceValue">@T("Hent kalenderfil", "Download calendar file")</a>
                 }
             </div>
         </details>
         @if (!completeMonth)
         {
-            <p>Månedsoversigten er ufuldstændig. Nogle datoer mangler.</p>
+            <p>@T("Månedsoversigten er ufuldstændig. Nogle datoer mangler.", "Some dates are missing from the monthly timetable.")</p>
         }
         <div class="mobile-calendar month-days">
             @foreach (var day in Model.Days)
@@ -85,8 +85,8 @@
                          data-calendar-date="@dayParameter" data-today-anchor="week-today"
                          id="@(isToday ? "week-today" : null)" open="@(date == Model.SelectedDate)" tabindex="-1">
                     <summary>
-                        <time datetime="@dayParameter">@date.ToString("dddd d. MMMM", danish)</time>
-                        <small data-today-label hidden="@(!isToday)">I dag</small>
+                        <time datetime="@dayParameter">@date.ToString(T("dddd d. MMMM", "dddd d MMMM"), culture)</time>
+                        <small data-today-label hidden="@(!isToday)">@T("I dag", "Today")</small>
                     </summary>
                     <div class="month-day-times">
                         <partial name="_PrayerList" model="new PrayerListViewModel(day, Model.Hanafi, ShowSunrise: true, ExplainBrightNights: true)" />
@@ -96,12 +96,12 @@
         </div>
         <div class="table-scroll desktop-calendar" role="region" aria-labelledby="calendar-month-heading" tabindex="0">
             <table>
-                <caption>Bønnetider i @Model.City.Name · @monthName · Dansk lokal tid</caption>
+                <caption>@T("Bønnetider i ", "Prayer times in ")@Model.City.Name · @monthName · @TimeLabel(Model.City)</caption>
                 <thead>
                     <tr>
-                        <th scope="col">Dato</th>
+                        <th scope="col">@T("Dato", "Date")</th>
                         <th scope="col">Fajr</th>
-                        <th scope="col">Solopgang</th>
+                        <th scope="col">@T("Solopgang", "Sunrise")</th>
                         <th scope="col">Dhuhr</th>
                         <th scope="col">Asr</th>
                         <th scope="col">Maghrib</th>
@@ -118,14 +118,14 @@
                             data-calendar-date="@CalendarViewModel.DayParameter(date)"
                             data-today-anchor="calendar-today" id="@(isToday ? "calendar-today" : null)" tabindex="-1">
                             <th scope="row">
-                                <time datetime="@CalendarViewModel.DayParameter(date)">@date.ToString("d. MMM", danish)</time>
-                                <small data-today-label hidden="@(!isToday)">I dag</small>
+                                <time datetime="@CalendarViewModel.DayParameter(date)">@date.ToString(T("d. MMM", "d MMM"), culture)</time>
+                                <small data-today-label hidden="@(!isToday)">@T("I dag", "Today")</small>
                             </th>
                             @for (var i = 0; i < prayers.Count; i++)
                             {
                                 @if (i == 1)
                                 {
-                                    <td>@day.SunriseTime</td>
+                                    <td>@(string.IsNullOrEmpty(day.SunriseTime) ? "—" : day.SunriseTime)</td>
                                 }
                                 var prayer = prayers[i];
                                 <td>
@@ -134,12 +134,12 @@
                                         @prayer.Time
                                         @if (DateOnly.FromDateTime(start.Date) != date)
                                         {
-                                            <small>Næste døgn</small>
+                                            <small>@T("Næste døgn", "Next day")</small>
                                         }
                                     }
                                     else
                                     {
-                                        <partial name="_BrightNightTime" />
+                                        <partial name="_BrightNightTime" model="day.HasUnavailableSunEvents" />
                                     }
                                 </td>
                             }
@@ -151,6 +151,6 @@
     }
     @if (Model.HasBrightNightTimes)
     {
-        <p class="calendar-note">Streger ved Fajr eller Isha betyder, at tidspunktet skal fastsættes efter en metode for lyse nætter. <a asp-action="Method" asp-fragment="lyse-naetter">Læs om lyse nætter</a>.</p>
+        <p class="calendar-note">@T("Streger markerer tider, der ikke kan beregnes for stedet og dagen.", "Dashes mark times that cannot be calculated for the place and date.") <a asp-action="Method" asp-fragment="lyse-naetter">@T("Læs om lyse nætter", "About unavailable times")</a>.</p>
     }
 </section>

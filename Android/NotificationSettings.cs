@@ -1,4 +1,5 @@
 using Android.Content;
+using Android.Content.Res;
 using Android.Content.PM;
 using Android.Views;
 using Android.Widget;
@@ -15,35 +16,36 @@ public sealed partial class MainActivity
 
     private void AddPrayerNotificationSettings()
     {
-        AddSectionTitle("Notifikationer");
+        AddSectionTitle(T("Notifikationer", "Notifications"));
         var options = Panel(Surface, Outline);
-        AddNotificationSwitch(options, "Påmindelse 30 min. før bøn", PrayerNotificationReceiver.ReminderKey);
+        var canPost = PrayerNotificationReceiver.CanPost(this);
+        AddNotificationSwitch(options, T("Påmindelse 30 min. før bøn", "Reminder 30 minutes before prayer"), PrayerNotificationReceiver.ReminderKey, canPost);
         options.AddView(Divider());
-        AddNotificationSwitch(options, "Adhan ved bønnetid", PrayerNotificationReceiver.AdhanKey);
+        AddNotificationSwitch(options, T("Vibration ved bønnetid", "Vibration at prayer time"), PrayerNotificationReceiver.AdhanKey, canPost);
         content.AddView(options, MatchWidth());
-        content.AddView(Label("Begge beskeder vibrerer uden lyd.", 14, Muted), MatchWidth(top: 8));
+        content.AddView(Label(T("Begge beskeder vibrerer uden lyd.", "Both notifications vibrate silently."), 14, Muted), MatchWidth(top: 8));
 
         if (!PrayerNotificationReceiver.Enabled(preferences))
         {
             return;
         }
 
-        if (!PrayerNotificationReceiver.CanPost(this))
+        if (!canPost)
         {
-            content.AddView(ActionButton("Tillad notifikationer", AllowPrayerNotifications), MatchWidth(top: 8));
+            content.AddView(ActionButton(T("Tillad notifikationer", "Allow notifications"), AllowPrayerNotifications), MatchWidth(top: 8));
         }
         else if (!HasSelectedPlace)
         {
-            content.AddView(Label("Vælg et sted for at få bønnebeskeder.", 14, Muted), MatchWidth(top: 8));
+            content.AddView(Label(T("Vælg et sted for at få bønnebeskeder.", "Choose a location to receive prayer notifications."), 14, Muted), MatchWidth(top: 8));
         }
         else if (OperatingSystem.IsAndroidVersionAtLeast(31) && !PrayerNotificationReceiver.CanScheduleExactly(this))
         {
-            content.AddView(Label("Android kan forsinke beskeder, hvis præcise alarmer er slået fra.", 14, Muted), MatchWidth(top: 8));
-            content.AddView(ActionButton("Tillad præcise alarmer", AllowPrecisePrayerAlarms), MatchWidth(top: 7));
+            content.AddView(Label(T("Android kan forsinke beskeder, hvis præcise alarmer er slået fra.", "Android can delay notifications when exact alarms are disabled."), 14, Muted), MatchWidth(top: 8));
+            content.AddView(ActionButton(T("Tillad præcise alarmer", "Allow exact alarms"), AllowPrecisePrayerAlarms), MatchWidth(top: 7));
         }
     }
 
-    private void AddNotificationSwitch(LinearLayout options, string title, string key)
+    private void AddNotificationSwitch(LinearLayout options, string title, string key, bool canPost)
     {
         var toggle = new Switch(this)
         {
@@ -55,6 +57,17 @@ public sealed partial class MainActivity
         toggle.SetMinHeight(Dp(52));
         toggle.SetPadding(Dp(13), Dp(5), Dp(13), Dp(5));
         toggle.SetTextColor(Text);
+        var blocked = toggle.Checked && !canPost;
+        var blockedLabel = T("Blokeret af Android", "Blocked by Android");
+        if (blocked)
+        {
+            toggle.ThumbTintList = ColorStateList.ValueOf(Muted);
+            toggle.TrackTintList = ColorStateList.ValueOf(Outline);
+            if (OperatingSystem.IsAndroidVersionAtLeast(30))
+            {
+                toggle.StateDescription = blockedLabel;
+            }
+        }
         toggle.CheckedChange += (_, args) =>
         {
             using var edit = preferences.Edit();
@@ -67,6 +80,12 @@ public sealed partial class MainActivity
             }
         };
         options.AddView(toggle, MatchWidth());
+        if (blocked)
+        {
+            var note = Label(blockedLabel, 13, Accent, bold: true);
+            note.SetPadding(Dp(13), 0, Dp(13), Dp(8));
+            options.AddView(note, MatchWidth());
+        }
     }
 
     private bool RequestPrayerNotificationPermission()
@@ -114,7 +133,7 @@ public sealed partial class MainActivity
             }
             catch (ActivityNotFoundException)
             {
-                Toast.MakeText(this, "Åbn Salah Times i Androids appindstillinger.", ToastLength.Long)?.Show();
+                Toast.MakeText(this, T("Åbn Salah Times i Androids appindstillinger.", "Open Salah Times in Android app settings."), ToastLength.Long)?.Show();
             }
         }
     }

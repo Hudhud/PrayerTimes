@@ -82,15 +82,16 @@ public sealed class PrayerNotificationReceiver : BroadcastReceiver
 
         try
         {
-            CreateChannel(notifications, ReminderChannel, PreviousReminderChannel, "Påmindelse med vibration");
-            CreateChannel(notifications, AdhanChannel, PreviousAdhanChannel, "Adhan med vibration");
+            var language = new AppLanguage(settings);
+            CreateChannel(notifications, ReminderChannel, PreviousReminderChannel, language.Text("Påmindelse med vibration", "Vibrating reminder"));
+            CreateChannel(notifications, AdhanChannel, PreviousAdhanChannel, language.Text("Adhan med vibration", "Vibrating adhan"));
 
             var place = PrayerPreferences.SelectedPlace(context, settings);
             var hanafi = settings.GetBoolean(PrayerPreferences.HanafiKey, false);
             var reminders = settings.GetBoolean(ReminderKey, false);
             var adhan = settings.GetBoolean(AdhanKey, false);
-            var schedule = new LocalPrayerSchedule(place);
-            var now = new DanishTime(TimeProvider.System).Now;
+            var schedule = new LocalPrayerSchedule(place, PrayerPreferences.Angles(settings));
+            var now = LocalTime.FromUtc(TimeProvider.System.GetUtcNow(), place.TimeZoneId);
             var date = DateOnly.FromDateTime(now.Date);
             var pendingNotices = new List<Notice>(30);
 
@@ -200,14 +201,17 @@ public sealed class PrayerNotificationReceiver : BroadcastReceiver
 
         var prayer = notice.Prayer;
         var remaining = (int)Math.Ceiling((prayer.StartsAt!.Value - now).TotalMinutes);
-        var title = notice.Reminder ? $"{prayer.Name} om {remaining} {(remaining == 1 ? "minut" : "minutter")}" :
-            $"Adhan · {prayer.Name}";
+        var language = new AppLanguage(settings);
+        var minutes = remaining == 1 ? language.Text("minut", "minute") : language.Text("minutter", "minutes");
+        var title = notice.Reminder
+            ? language.Text($"{prayer.Name} om {remaining} {minutes}", $"{prayer.Name} in {remaining} {minutes}")
+            : $"Adhan · {prayer.Name}";
         using var open = new Intent(context, typeof(MainActivity)).AddFlags(ActivityFlags.NewTask | ActivityFlags.ClearTop);
         using var tap = PendingIntent.GetActivity(context, 1, open, PendingIntentFlags.Immutable | PendingIntentFlags.UpdateCurrent);
         using var builder = new Notification.Builder(context, channel);
         using var notification = builder.SetSmallIcon(Resource.Drawable.ic_prayer_notification)
             .SetContentTitle(title)
-            .SetContentText($"{place} · kl. {prayer.Time}")
+            .SetContentText(language.Text($"{place} · kl. {prayer.Time}", $"{place} · {prayer.Time}"))
             .SetCategory(Notification.CategoryReminder)
             .SetContentIntent(tap)
             .SetAutoCancel(true)

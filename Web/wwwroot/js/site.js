@@ -1,3 +1,6 @@
+const english = document.documentElement.lang === 'en';
+const text = (da, en) => english ? en : da;
+
 const printButton = document.querySelector('[data-print]');
 if (printButton) {
     printButton.hidden = false;
@@ -57,7 +60,7 @@ if (calendarHeader) {
             if (Number(day.value) > dayCount) {
                 day.value = dayCount;
             }
-            month.setCustomValidity(monthParameter() >= picker.dataset.monthLimit ? 'Vælg en tidligere måned.' : '');
+            month.setCustomValidity(monthParameter() >= picker.dataset.monthLimit ? text("Vælg en tidligere måned.", "Choose an earlier month.") : '');
         };
 
         trigger.hidden = false;
@@ -107,7 +110,16 @@ if (timetable) {
     const refreshMessage = refreshError.querySelector('[data-prayer-refresh-message]');
     const retry = refreshError.querySelector('[data-prayer-retry]');
     const correctionLink = document.querySelector('[data-correction-link]');
-    const danishDate = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Copenhagen', dateStyle: 'short' });
+    let localDate;
+    try {
+        localDate = new Intl.DateTimeFormat('sv-SE', {
+            timeZone: timetable.dataset.timeZone ?? 'Europe/Copenhagen', dateStyle: 'short'
+        });
+    } catch (error) {
+        if (!(error instanceof RangeError)) {
+            throw error;
+        }
+    }
     let refreshAt;
     let timer;
     let midnightTimer;
@@ -160,20 +172,21 @@ if (timetable) {
 
         countdown.hidden = false;
         if (remaining <= 0) {
-            countdown.textContent = 'Tiden er inde';
+            countdown.textContent = text("Tiden er inde", "It’s time");
             return;
         }
 
         const seconds = Math.ceil(remaining / 1000);
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor(seconds / 60) % 60;
-        const duration = [hours && `${hours} t.`, (hours || minutes) && `${minutes} min.`, `${seconds % 60} sek.`];
-        countdown.textContent = `Om ${duration.filter(Boolean).join(' ')}`;
+        const duration = [hours && `${hours} ${text("t.", "hr")}`,
+            (hours || minutes) && `${minutes} ${text("min.", "min")}`, `${seconds % 60} ${text("sek.", "sec")}`];
+        countdown.textContent = `${text('Om', 'In')} ${duration.filter(Boolean).join(' ')}`;
         countdownTimer = window.setTimeout(() => updateCountdown(card), remaining % 1000 || 1000);
     }
 
     function updateDisplayedDate() {
-        const today = danishDate.format(new Date());
+        const today = localDate?.format(new Date()) ?? timetable.dataset.today;
         const hasTimes = Boolean(timetable.querySelector('.prayer-list'));
         const historical = timetable.dataset.today < today;
         timetable.hidden = historical && !hasTimes;
@@ -182,7 +195,7 @@ if (timetable) {
         const card = timetable.querySelector('[data-next-prayer]');
         card.hidden = historical || (!refreshError.hidden && hasTimes);
         updateCountdown(card);
-        timetable.setAttribute('aria-label', historical ? 'Historiske bønnetider' : 'Dagens bønnetider');
+        timetable.setAttribute('aria-label', historical ? text("Historiske bønnetider", "Historical prayer times") : text("Dagens bønnetider", "Today’s prayer times"));
         if (calendarDate !== today) {
             updateCalendar(today);
             calendarDate = today;
@@ -190,8 +203,8 @@ if (timetable) {
 
         if (!refreshError.hidden) {
             const message = historical || !hasTimes
-                ? 'Dagens bønnetider kunne ikke hentes.'
-                : 'Tiderne kunne ikke opdateres. Du ser de senest hentede tider for i dag.';
+                ? text("Dagens bønnetider kunne ikke hentes.", "Today’s prayer times could not be loaded.")
+                : text("Tiderne kunne ikke opdateres. Du ser de senest hentede tider for i dag.", "The times could not be refreshed. Showing the last available times for today.");
             if (refreshMessage.textContent !== message) {
                 refreshMessage.textContent = message;
             }
@@ -222,7 +235,8 @@ if (timetable) {
             const incoming = html.querySelector('[data-refresh-url]');
             if (incoming?.dataset.currentPlace !== timetable.dataset.currentPlace ||
                 incoming.dataset.asrMethod !== timetable.dataset.asrMethod || incoming.dataset.angles !== timetable.dataset.angles ||
-                incoming.dataset.today !== danishDate.format(new Date()) || !incoming.querySelector('.prayer-list')) {
+                incoming.dataset.timeZone !== timetable.dataset.timeZone ||
+                (localDate && incoming.dataset.today !== localDate.format(new Date())) || !incoming.querySelector('.prayer-list')) {
                 throw new Error('Timetable unavailable');
             }
             if (timetable.contains(document.activeElement) && document.activeElement.matches('a')) {
@@ -288,7 +302,7 @@ if (offline && 'serviceWorker' in navigator && 'caches' in window) {
     caches.match(open.href, { cacheName }).then(plan => { open.hidden = !plan; }).catch(() => {});
     save.addEventListener('click', async () => {
         save.disabled = true;
-        status.textContent = 'Gemmer bønneplanen…';
+        status.textContent = text("Gemmer bønneplanen…", "Saving the timetable…");
         try {
             const response = await fetch(offline.dataset.offlinePlan);
             if (!response.ok || response.redirected) {
@@ -300,9 +314,9 @@ if (offline && 'serviceWorker' in navigator && 'caches' in window) {
             await cache.addAll(['css/site.css', 'icons/crescent.svg', 'icons/favicon.svg'].map(path => new URL(path, worker).href));
             await cache.put(open.href, response);
             open.hidden = false;
-            status.textContent = 'Bønneplanen er gemt i denne browser.';
+            status.textContent = text("Bønneplanen er gemt i denne browser.", "The timetable has been saved in this browser.");
         } catch {
-            status.textContent = 'Bønneplanen kunne ikke gemmes. Prøv igen, når du er online.';
+            status.textContent = text("Bønneplanen kunne ikke gemmes. Prøv igen, når du er online.", "The timetable could not be saved. Try again when you’re online.");
         } finally {
             save.disabled = false;
         }

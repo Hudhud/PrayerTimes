@@ -4,7 +4,7 @@
     var offlinePlan = ViewData["OfflinePlan"] is true;
 }
 <!DOCTYPE html>
-<html lang="da">
+<html lang="@T("da", "en")">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -44,10 +44,10 @@
     }
 </head>
 <body>
-    <a class="skip-link" href="#indhold">Spring til indhold</a>
+    <a class="skip-link" href="#indhold">@T("Spring til indhold", "Skip to content")</a>
     <header class="site-header">
         <div class="site-width">
-            <a class="brand" href="/">
+            <a class="brand" href="@Url.Content("~/")">
                 <img src="~/icons/crescent.svg" width="22" height="22" alt="" />
                 <span>Salah Times</span>
             </a>
@@ -55,14 +55,16 @@
             {
                 if (ViewData["CalendarHasToday"] is true)
                 {
-                    <a class="header-link mobile-calendar" href="#week-today" data-open-calendar-today>Kalender <span aria-hidden="true">↓</span></a>
-                    <a class="header-link desktop-calendar" href="#month-title">Kalender <span aria-hidden="true">↓</span></a>
+                    <a class="header-link mobile-calendar" href="#week-today" data-open-calendar-today>@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
+                    <a class="header-link desktop-calendar" href="#month-title">@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
                 }
                 else
                 {
-                    <a class="header-link" href="#month-title">Kalender <span aria-hidden="true">↓</span></a>
+                    <a class="header-link" href="#month-title">@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
                 }
             }
+            <a class="header-link" asp-action="Language" asp-controller="Home" asp-route-language="@T("en", "da")"
+               asp-route-returnUrl="@SwitchTarget(Context.Request)" lang="@T("en", "da")">@T("English", "Dansk")</a>
         </div>
     </header>
     <main class="site-width" id="indhold">
@@ -70,10 +72,10 @@
     </main>
     <footer class="site-footer site-width">
         @await RenderSectionAsync("Footer", required: false)
-        <a href="/privatliv">Privatliv og statistik</a>
+        <a asp-action="Privacy" asp-controller="Home">@T("Privatliv og statistik", "Privacy and analytics")</a>
         @if (ViewData["PlaceDataAttribution"] is true)
         {
-            <p class="data-attribution">Steddata fra <a href="https://www.geonames.org/">GeoNames</a> ·
+            <p class="data-attribution">@T("Steddata fra", "Place data from") <a href="https://www.geonames.org/">GeoNames</a> ·
                 <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></p>
         }
     </footer>

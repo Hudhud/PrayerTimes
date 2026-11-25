@@ -387,7 +387,7 @@ test('live timetable refresh keeps the next prayer above today’s date and pres
     }, { times: 1 });
     await page.route('**/koebenhavn/i-dag?asr=standard&angles=*', async route => {
         const response = await route.fetch();
-        const body = (await response.text()).replace('>Næste bøn</h2>', '>Næste bøn opdateret</h2>');
+        const body = (await response.text()).replace(/(<h2 tabindex="-1">)[^<]+(<\/h2>)/, '$1Næste bøn opdateret$2');
         await route.fulfill({ response, body });
     }, { times: 1 });
 
@@ -583,4 +583,49 @@ test('a saved seven-day plan can be reopened without a connection', async ({ pag
             proxy.closeAllConnections();
         }
     }
+});
+
+test('the language preference survives navigation and keeps the selected city', async ({ page }) => {
+    await page.goto('/koebenhavn');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'da');
+    await page.getByRole('link', { name: 'English', exact: true }).click();
+    await expect(page).toHaveURL(/\/en\/koebenhavn$/);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Prayer times in København');
+    await expect(page.getByRole('heading', { name: 'Next prayer', exact: true })).toBeVisible();
+
+    await page.goto('/');
+    await expect(page).toHaveURL(/\/en\/$/);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Prayer times in København');
+    await page.getByRole('link', { name: 'Dansk', exact: true }).click();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'da');
+});
+
+test('worldwide search opens a local timetable in either language', async ({ page }) => {
+    await page.goto('/en/steder');
+    await page.getByRole('combobox').fill('Tokyo');
+    await page.getByRole('option', { name: /^Tokyo.*Japan/ }).first().click();
+    await expect(page).toHaveURL(/\/en\/city-\d+$/);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Prayer times in Tokyo');
+    await expect(page.locator('[data-current-place]')).toHaveAttribute('data-rendered-at', /\+09:00$/);
+    const refresh = await page.locator('[data-refresh-url]').getAttribute('data-refresh-url');
+    const response = await page.request.get(refresh);
+    expect(response.ok()).toBeTruthy();
+    expect(await response.text()).toContain('Next prayer');
+});
+
+test('the timetable stays current until midnight at the selected location', async ({ page }) => {
+    const routePattern = '**/en/city-5128581?*';
+    await page.clock.setFixedTime(new Date('2026-11-30T23:30:00Z'));
+    await page.route(routePattern, async route => {
+        const response = await route.fetch();
+        const body = (await response.text())
+            .replace(/data-today="[^"]+"/, 'data-today="2026-11-30"')
+            .replace(/data-midnight="[^"]+"/, 'data-midnight="2026-12-01T00:00:00-05:00"');
+        await route.fulfill({ response, body });
+    });
+    await page.goto('/en/city-5128581?month=2026-11');
+    await expect(page.locator('[data-current-place]')).toHaveAttribute('data-time-zone', 'America/New_York');
+    await expect(page.getByRole('heading', { name: 'Next prayer', exact: true })).toBeVisible();
+    await expect(page.locator('[data-historical-times]')).toBeHidden();
 });

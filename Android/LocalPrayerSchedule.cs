@@ -9,6 +9,10 @@ namespace SalahTimes.AndroidApp;
 internal static class PrayerPreferences
 {
     public const string PlaceKey = "place";
+    public const string AngleKey = "twilight-angles";
+    public static TwilightAngles? Angles(ISharedPreferences preferences) =>
+        TwilightAngles.TryParsePreference(preferences.GetString(AngleKey, null), out var angles) ? angles : null;
+
     public const string HanafiKey = "hanafi";
     public const string ManualLocationKey = "manual-location";
     public const string FoundByLocationKey = "found-by-location";
@@ -23,7 +27,8 @@ internal static class PrayerPreferences
         if (directory is null)
         {
             using var catalog = context.Assets!.Open("prayer-places.json");
-            directory = new PrayerPlaceDirectory(catalog);
+            using var worldwide = context.Assets!.Open("prayer-cities-world.json");
+            directory = new PrayerPlaceDirectory(catalog, worldwide);
         }
         return directory;
     }
@@ -48,7 +53,7 @@ internal static class PrayerPreferences
     }
 }
 
-internal sealed class LocalPrayerSchedule(PrayerCity place)
+internal sealed class LocalPrayerSchedule(PrayerCity place, TwilightAngles? angles = null)
 {
     private readonly DanishPrayerTimeCalculator calculator = new();
     private readonly Dictionary<DateOnly, DailyPrayerTimes> days = new();
@@ -59,7 +64,7 @@ internal sealed class LocalPrayerSchedule(PrayerCity place)
     {
         if (!days.TryGetValue(date, out var day))
         {
-            day = calculator.Calculate(date, latitude, longitude);
+            day = calculator.Calculate(date, latitude, longitude, angles ?? TwilightAngles.ForPlace(place), place.TimeZoneId);
             days.Add(date, day);
         }
         return day;
@@ -77,12 +82,12 @@ internal sealed class LocalPrayerSchedule(PrayerCity place)
         };
         var current = PrayerDay.FindCurrentPrayer(dates, date, now, hanafi);
         var next = PrayerDay.FindNextPrayer(dates, date, now, hanafi);
-        var midnight = DanishTime.At(date.AddDays(1), TimeOnly.MinValue);
-        var sunrise = PrayerDay.Sunrise(today);
+        var midnight = LocalTime.At(date.AddDays(1), TimeOnly.MinValue, place.TimeZoneId);
+        var sunrise = PrayerDay.AvailableSunrise(today);
         var refresh = next?.StartsAt is { } start && start < midnight ? start : midnight;
-        if (now < sunrise && sunrise < refresh && (current?.Name == "Fajr" || next is null))
+        if (sunrise is { } rising && now < rising && rising < refresh && (current?.Name == "Fajr" || next is null))
         {
-            refresh = sunrise;
+            refresh = rising;
         }
         return (current, next, refresh);
     }
