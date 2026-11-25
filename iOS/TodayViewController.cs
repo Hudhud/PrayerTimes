@@ -37,10 +37,12 @@ internal sealed class TodayViewController(PrayerAppState state) : PrayerViewCont
 
         nextLabel = Label("", UIFontTextStyle.Title2);
         countdown = Label("", UIFontTextStyle.Callout);
+        var (current, upcoming, refresh) = State.Schedule.Status(now, State.Hanafi);
+        next = upcoming;
+        refreshAt = refresh;
         Content.AddArrangedSubview(Card(Label(T("Næste bøn", "Next prayer"), UIFontTextStyle.Headline), nextLabel, countdown));
-        Content.AddArrangedSubview(Times(State.Schedule.Day(date)));
+        Content.AddArrangedSubview(Times(State.Schedule.Day(date), current));
         Content.AddArrangedSubview(Label(State.Hanafi ? "Asr · Hanafi" : "Asr · Standard", UIFontTextStyle.Footnote));
-        (_, next, refreshAt) = State.Schedule.Status(now, State.Hanafi);
         nextLabel.Text = next?.StartsAt is { } start
             ? $"{next.Name} · {next.Time}{(start.Date > now.Date ? T(" · I morgen", " · Tomorrow") : "")}"
             : T("Tidspunktet er ikke tilgængeligt", "Time unavailable");

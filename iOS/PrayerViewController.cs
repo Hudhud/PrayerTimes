@@ -91,11 +91,15 @@ internal abstract class PrayerViewController(PrayerAppState state) : UIViewContr
         }
     }
 
-    protected UIStackView Times(DailyPrayerTimes day)
+    protected UIStackView Times(DailyPrayerTimes day, PrayerEvent? current = null)
     {
         var rows = PrayerDay.Events(day, State.Hanafi).ToList();
         rows.Insert(1, new PrayerEvent(T("Solopgang", "Sunrise"), PrayerDay.AvailableSunrise(day)));
         var list = Card();
+        if (current is not null && !rows.Contains(current))
+        {
+            list.AddArrangedSubview(HighlightCurrent(Label(T($"Nu · {current.Name}", $"Now · {current.Name}"), UIFontTextStyle.Headline)));
+        }
         foreach (var prayer in rows)
         {
             var value = prayer.Time ?? "—";
@@ -103,12 +107,13 @@ internal abstract class PrayerViewController(PrayerAppState state) : UIViewContr
             {
                 value += T(" · Næste døgn", " · Next day");
             }
-            var title = Label(prayer.Name);
+            var isCurrent = prayer == current;
+            var title = isCurrent ? Label(T($"{prayer.Name} · Nu", $"{prayer.Name} · Now"), UIFontTextStyle.Headline) : Label(prayer.Name);
             var time = Label(value, UIFontTextStyle.Callout);
             time.TextAlignment = UITextAlignment.Right;
             time.SetContentHuggingPriority((float)UILayoutPriority.DefaultHigh, UILayoutConstraintAxis.Horizontal);
             var row = new UIStackView([title, time]) { Axis = UILayoutConstraintAxis.Horizontal, Spacing = 8 };
-            list.AddArrangedSubview(row);
+            list.AddArrangedSubview(isCurrent ? HighlightCurrent(row) : row);
         }
         if (day.HasUnavailableTimes)
         {
@@ -116,6 +121,15 @@ internal abstract class PrayerViewController(PrayerAppState state) : UIViewContr
                 "A dash marks a solar event that cannot be calculated for the place and date."), UIFontTextStyle.Footnote));
         }
         return list;
+    }
+
+    private static UIStackView HighlightCurrent(UIView content)
+    {
+        var highlight = Card(content);
+        highlight.BackgroundColor = UIColor.TertiarySystemFill;
+        highlight.DirectionalLayoutMargins = new NSDirectionalEdgeInsets(6, 8, 6, 8);
+        highlight.Layer.CornerRadius = 8;
+        return highlight;
     }
 
     protected string DateText(DateOnly date) =>
