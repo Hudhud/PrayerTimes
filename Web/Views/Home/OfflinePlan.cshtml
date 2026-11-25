@@ -14,6 +14,7 @@
             <span><time datetime="@CalendarViewModel.DayParameter(Model.Start)">@Model.Start.ToString("d. MMMM yyyy", danish)</time>
                 – <time datetime="@CalendarViewModel.DayParameter(Model.End)">@Model.End.ToString("d. MMMM yyyy", danish)</time></span>
             <span>Asr-metode <strong>@(Model.Hanafi ? "Hanafi" : "Standard")</strong></span>
+            <span>Fajr @(Model.Angles.Fajr.ToString("0.#", danish))° · Isha @(Model.Angles.Isha.ToString("0.#", danish))°</span>
             <span>Dansk lokal tid</span>
         </p>
         <a asp-route="City" asp-route-city="@Model.City.Slug">Åbn den aktuelle bønneplan, når du er online</a>

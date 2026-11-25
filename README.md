@@ -17,7 +17,7 @@ dotnet run --project Web
 dotnet test PrayerTimes.sln --configuration Release
 ```
 
-The checked-in regression fixture captures the local calculator at the 2026 cutover (`dc61543`), across six places and selected calendar and bright-night boundaries. It detects changes to the established local results. Use separate source timetables when evaluating an intentional change to calculation rules.
+The regression fixture covers six places and selected calendar and bright-night boundaries from the 2026 cutover (`dc61543`). Its expected times reflect the change from a fixed three-minute addition to rounding up to a whole minute. Use separate source timetables when evaluating an intentional change to calculation rules.
 
 Run the browser checks after a Release build.
 
@@ -30,13 +30,13 @@ npm test
 
 ## Deploy
 
-The deployment publishes a self-contained Windows x86 build for the ASP.NET Core IIS hosting module. The local calculator uses the shipped place index and caches individual days by coordinates. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
+The deployment publishes a self-contained Windows x86 build for the ASP.NET Core IIS hosting module. The website uses the shipped place index and caches timetables by coordinates, date, and Fajr and Isha angles. Logs go outside `wwwroot` and stay out of Git and the publish bundle.
 
 After deployment, CI opens the public site and verifies the prayer times, postcode picker and calculation method. To roll back one release, revert its squash commit through a pull request so verification and deployment run again. A revert leaves the public place URLs and preference cookies usable by the earlier local release.
 
 ## Evaluate local prayer-time calculations
 
-Astronomy Engine powers the local calculation in `Calculation`. The calculator places Dhuhr after the solar disk clears the meridian. Both Asr conventions use apparent solar altitudes for the reference shadow at noon and the afternoon shadow. Fajr and Isha use separate twilight crossings, with the corresponding bright-night flag when a crossing is absent.
+Astronomy Engine powers the shared calculation in `Calculation`. The Android app runs it on the device and the website runs it on the server. The calculator places Dhuhr after the solar disk clears the meridian. Both Asr conventions use apparent solar altitudes for the reference shadow at noon and the afternoon shadow. Fajr and Isha use configurable twilight angles, defaulting to 18° and 17°, with a bright-night flag when a crossing is absent. Calculated times round up to the next whole minute when they include fractional minutes.
 
 Run the comparison against saved reference times that use Salah Times' current city coordinates and displayed time conventions.
 

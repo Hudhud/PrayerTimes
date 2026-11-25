@@ -38,14 +38,15 @@ public sealed class PrayerCalendarTests
     [Fact]
     public void NextPrayerUsesIshaAfterMidnightBeforeTodaysFajr()
     {
-        var date = new DateOnly(2026, 5, 4);
+        var date = new DateOnly(2026, 5, 5);
         var days = Around(date);
+        var overnight = PrayerDay.Events(days[date.AddDays(-1)])[^1].StartsAt!.Value;
 
         var isha = PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, TimeOnly.MinValue));
         Assert.Equal("Isha", isha?.Name);
-        Assert.Equal(DanishTime.At(date, new TimeOnly(0, 1)), isha?.StartsAt);
+        Assert.Equal(overnight, isha?.StartsAt);
 
-        var fajr = PrayerDay.FindNextPrayer(days, date, DanishTime.At(date, new TimeOnly(0, 2)));
+        var fajr = PrayerDay.FindNextPrayer(days, date, overnight);
         Assert.Equal("Fajr", fajr?.Name);
     }
 
@@ -79,11 +80,12 @@ public sealed class PrayerCalendarTests
     [Fact]
     public void CurrentPrayerUsesThePreviousTimetableForOvernightIsha()
     {
-        var date = new DateOnly(2026, 5, 4);
+        var date = new DateOnly(2026, 5, 5);
         var days = Around(date);
+        var overnight = PrayerDay.Events(days[date.AddDays(-1)])[^1].StartsAt!.Value;
 
         Assert.Equal("Maghrib", PrayerDay.FindCurrentPrayer(days, date, DanishTime.At(date, TimeOnly.MinValue))?.Name);
-        Assert.Equal("Isha", PrayerDay.FindCurrentPrayer(days, date, DanishTime.At(date, new TimeOnly(0, 1)))?.Name);
+        Assert.Equal("Isha", PrayerDay.FindCurrentPrayer(days, date, overnight)?.Name);
     }
 
     [Fact]

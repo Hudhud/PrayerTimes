@@ -42,15 +42,17 @@ public sealed class LocalReferenceTests
         var city = PrayerCities.Default;
         var may = new DateOnly(2026, 5, 3);
         var june = new DateOnly(2026, 6, 21);
-        var rows = new[] { calculator.Calculate(may, 55.6759142, 12.5691285), calculator.Calculate(june, 55.6759142, 12.5691285) };
+        var rows = new[] { may, may.AddDays(2), june }.Select(date =>
+            calculator.Calculate(date, 55.6759142, 12.5691285)).ToArray();
 
         string Export(bool hanafi) => Encoding.UTF8.GetString(PrayerCalendarExport.Create(city, rows, hanafi,
             new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero)));
 
         var ics = Export(hanafi: true);
-        Assert.Contains("DTSTART:20260503T162400Z\r\nSUMMARY:Asr\r\n", ics);
-        Assert.Contains("DTSTART:20260503T151800Z\r\nSUMMARY:Asr\r\n", Export(hanafi: false));
-        Assert.Contains("UID:koebenhavn-2026-05-03-isha@salahtimes.dk\r\nDTSTAMP:20260101T000000Z\r\nDTSTART:20260503T220100Z", ics);
+        Assert.Contains("DTSTART:20260503T162200Z\r\nSUMMARY:Asr\r\n", ics);
+        Assert.Contains("DTSTART:20260503T151600Z\r\nSUMMARY:Asr\r\n", Export(hanafi: false));
+        Assert.Contains("UID:koebenhavn-2026-05-03-isha@salahtimes.dk\r\nDTSTAMP:20260101T000000Z\r\nDTSTART:20260503T215900Z", ics);
+        Assert.Contains("UID:koebenhavn-2026-05-05-isha@salahtimes.dk\r\nDTSTAMP:20260101T000000Z\r\nDTSTART:20260505T221400Z", ics);
         Assert.DoesNotContain("2026-06-21-fajr", ics, StringComparison.Ordinal);
         Assert.DoesNotContain("2026-06-21-isha", ics, StringComparison.Ordinal);
     }
@@ -66,7 +68,7 @@ public sealed class LocalReferenceTests
         Assert.Equal("Maghrib", PrayerDay.FindNextPrayer(days, date, now)?.Name);
         var hanafi = PrayerDay.FindNextPrayer(days, date, now, hanafi: true);
         Assert.Equal("Asr", hanafi?.Name);
-        Assert.Equal("18:24", hanafi?.Time);
+        Assert.Equal("18:22", hanafi?.Time);
     }
 
     private sealed record ReferenceDay(string City, double Latitude, double Longitude, DateOnly Date,

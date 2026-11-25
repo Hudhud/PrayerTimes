@@ -15,7 +15,8 @@ public sealed record DailyPrayerTimesViewModel(
     PrayerEvent? Next,
     bool NextAffectedByBrightNights,
     string? RequestId,
-    bool Hanafi)
+    bool Hanafi,
+    TwilightAngles Angles)
 {
     public DateOnly Date => DateOnly.FromDateTime(Now.Date);
     public DateOnly? NextDate => Next?.StartsAt is { } start ? DateOnly.FromDateTime(start.Date) : null;
@@ -45,7 +46,8 @@ public sealed record CalendarViewModel(
     DateOnly Month,
     DateOnly? SelectedDate,
     IReadOnlyList<DailyPrayerTimes> Days,
-    bool Hanafi)
+    bool Hanafi,
+    TwilightAngles Angles)
 {
     public static readonly DateOnly MonthLimit = new(9999, 12, 1);
     public DateOnly NextMonth => Month.AddMonths(1);
@@ -67,7 +69,7 @@ public sealed record PrayerListViewModel(
     bool InlineSunrise = false, PrayerEvent? Current = null, PrayerEvent? Next = null);
 
 public sealed record OfflinePrayerTimesViewModel(
-    PrayerCity City, DateOnly Start, IReadOnlyList<DailyPrayerTimes> Days, bool Hanafi)
+    PrayerCity City, DateOnly Start, IReadOnlyList<DailyPrayerTimes> Days, bool Hanafi, TwilightAngles Angles)
 {
     public DateOnly End => Start.AddDays(6);
 }

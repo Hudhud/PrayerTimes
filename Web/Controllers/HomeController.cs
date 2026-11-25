@@ -27,6 +27,7 @@ public sealed class HomeController(
 {
     public const string CityCookie = "salahtimes-city";
     private const string AsrCookie = "salahtimes-asr";
+    private const string AnglesCookie = "salahtimes-angles";
     public const string AnalyticsCookie = "salahtimes-statistics";
     private static readonly string[] PrayerNames = ["Fajr", "Solopgang", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
@@ -103,7 +104,7 @@ public sealed class HomeController(
     }
 
     [HttpGet("/{city}/i-dag", Name = "Today")]
-    public async Task<IActionResult> Today(string city, string? asr, CancellationToken cancellationToken)
+    public async Task<IActionResult> Today(string city, string? asr, string? angles, CancellationToken cancellationToken)
     {
         var selected = places.Find(city);
         if (selected is null)
@@ -111,44 +112,64 @@ public sealed class HomeController(
             return NotFound();
         }
 
-        if (asr is not (null or "standard" or "hanafi"))
+        if (asr is not (null or "standard" or "hanafi") || RequestedAngles(angles) is not { } twilight)
         {
             return BadRequest();
         }
 
-        var daily = await LoadTodayAsync(selected, clock.Now, asr is null ? UsesHanafi : asr == "hanafi", cancellationToken);
+        var daily = await LoadTodayAsync(selected, clock.Now, asr is null ? UsesHanafi : asr == "hanafi", twilight, cancellationToken);
         return PartialView("_Today", daily);
     }
 
     [HttpGet("/{city}/offline", Name = "OfflinePlan")]
-    public async Task<IActionResult> OfflinePlan(string city, string? asr, CancellationToken cancellationToken)
+    public async Task<IActionResult> OfflinePlan(string city, string? asr, string? angles, CancellationToken cancellationToken)
     {
         var selected = places.Find(city);
         if (selected is null)
         {
             return NotFound();
         }
-        if (asr is not ("standard" or "hanafi"))
+        if (asr is not ("standard" or "hanafi") || RequestedAngles(angles) is not { } twilight)
         {
             return BadRequest();
         }
 
         var hanafi = asr == "hanafi";
         var start = DateOnly.FromDateTime(clock.Now.Date);
-        var days = await LoadCalendarDaysAsync(selected, start, start.AddDays(7), hanafi, cancellationToken);
+        var days = await LoadCalendarDaysAsync(selected, start, start.AddDays(7), hanafi, twilight, cancellationToken);
         if (days.Count != 7)
         {
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
         }
 
-        return View(new OfflinePrayerTimesViewModel(selected, start, days, hanafi));
+        return View(new OfflinePrayerTimesViewModel(selected, start, days, hanafi, twilight));
     }
 
     [HttpGet("/offline")]
     public IActionResult Offline() => RedirectToAction(nameof(Index));
 
     [HttpGet("/beregning")]
-    public IActionResult Method() => View("Method");
+    public IActionResult Method() => View("Method", SavedAngles);
+
+    [HttpPost("/vinkler")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Angles(string? fajr, string? isha, string? returnUrl, bool reset = false)
+    {
+        if (reset)
+        {
+            Response.Cookies.Delete(AnglesCookie, PreferenceCookie());
+        }
+        else if (TwilightAngles.TryParse(fajr, isha, out var twilight))
+        {
+            Response.Cookies.Append(AnglesCookie, twilight.PreferenceValue, PreferenceCookie());
+        }
+        else
+        {
+            return BadRequest($"Vælg Fajr- og Isha-vinkler mellem {TwilightAngles.Minimum} og {TwilightAngles.Maximum} grader med højst én decimal.");
+        }
+
+        return Url.IsLocalUrl(returnUrl) ? LocalRedirect(returnUrl!) : RedirectToAction(nameof(Index));
+    }
 
     [HttpPost("/asr")]
     [ValidateAntiForgeryToken]
@@ -164,7 +185,7 @@ public sealed class HomeController(
     }
 
     [HttpGet("/{city}/kalender.ics", Name = "CalendarExport")]
-    public async Task<IActionResult> Export(string city, string? month, CancellationToken cancellationToken)
+    public async Task<IActionResult> Export(string city, string? month, string? angles, CancellationToken cancellationToken)
     {
         var selected = places.Find(city);
         if (selected is null)
@@ -173,13 +194,13 @@ public sealed class HomeController(
         }
         var now = clock.Now;
         var today = DateOnly.FromDateTime(now.Date);
-        if (!TryReadMonth(month, today, out var monthStart))
+        if (!TryReadMonth(month, today, out var monthStart) || RequestedAngles(angles) is not { } twilight)
         {
             return BadRequest();
         }
 
         var hanafi = UsesHanafi;
-        var days = await LoadCalendarDaysAsync(selected, monthStart, monthStart.AddMonths(1), hanafi, cancellationToken);
+        var days = await LoadCalendarDaysAsync(selected, monthStart, monthStart.AddMonths(1), hanafi, twilight, cancellationToken);
         if (days.Count != DateTime.DaysInMonth(monthStart.Year, monthStart.Month))
         {
             return StatusCode(StatusCodes.Status503ServiceUnavailable);
@@ -190,6 +211,10 @@ public sealed class HomeController(
     }
 
     private bool UsesHanafi => Request.Cookies[AsrCookie] == "hanafi";
+    private TwilightAngles SavedAngles => TwilightAngles.ReadPreference(Request.Cookies[AnglesCookie]);
+
+    private TwilightAngles? RequestedAngles(string? value) =>
+        value is null ? SavedAngles : TwilightAngles.TryParsePreference(value, out var angles) ? angles : null;
 
     private async Task<IActionResult> ShowCityAsync(PrayerCity city, string? month, string? week,
         CancellationToken cancellationToken, bool isDefaultPlace = false)
@@ -215,9 +240,10 @@ public sealed class HomeController(
         }
 
         var hanafi = UsesHanafi;
-        var monthRows = await LoadCalendarDaysAsync(city, monthStart, monthEnd, hanafi, cancellationToken);
-        var daily = await LoadTodayAsync(city, now, hanafi, cancellationToken);
-        var calendar = new CalendarViewModel(city, today, monthStart, selectedDate, monthRows, hanafi);
+        var twilight = SavedAngles;
+        var monthRows = await LoadCalendarDaysAsync(city, monthStart, monthEnd, hanafi, twilight, cancellationToken);
+        var daily = await LoadTodayAsync(city, now, hanafi, twilight, cancellationToken);
+        var calendar = new CalendarViewModel(city, today, monthStart, selectedDate, monthRows, hanafi, twilight);
         return View("Index", new CityPrayerTimesViewModel(daily, calendar, isDefaultPlace));
     }
 
@@ -235,11 +261,11 @@ public sealed class HomeController(
     }
 
     private async Task<IReadOnlyList<DailyPrayerTimes>> LoadCalendarDaysAsync(PrayerCity city, DateOnly from, DateOnly until, bool hanafi,
-        CancellationToken cancellationToken)
+        TwilightAngles angles, CancellationToken cancellationToken)
     {
         try
         {
-            var rows = await prayerTimes.GetDaysAsync(city, from, until, cancellationToken);
+            var rows = await prayerTimes.GetDaysAsync(city, from, until, cancellationToken, angles);
             return ValidDays(rows, hanafi).Where(entry => entry.Key >= from && entry.Key < until)
                 .OrderBy(entry => entry.Key).Select(entry => entry.Value).ToArray();
         }
@@ -251,20 +277,20 @@ public sealed class HomeController(
     }
 
     private async Task<DailyPrayerTimesViewModel> LoadTodayAsync(PrayerCity city, DateTimeOffset now, bool hanafi,
-        CancellationToken cancellationToken)
+        TwilightAngles angles, CancellationToken cancellationToken)
     {
         var today = DateOnly.FromDateTime(now.Date);
         var requestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         try
         {
-            var rows = await prayerTimes.GetDaysAsync(city, today.AddDays(-1), today.AddDays(2), cancellationToken);
+            var rows = await prayerTimes.GetDaysAsync(city, today.AddDays(-1), today.AddDays(2), cancellationToken, angles);
             var days = ValidDays(rows, hanafi);
             if (days.TryGetValue(today, out var todayRow))
             {
                 var next = PrayerDay.FindNextPrayer(days, today, now, hanafi);
                 var brightNights = next is null && days.Values.Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
                 var current = PrayerDay.FindCurrentPrayer(days, today, now, hanafi);
-                return new DailyPrayerTimesViewModel(city, now, todayRow, current, next, brightNights, null, hanafi);
+                return new DailyPrayerTimesViewModel(city, now, todayRow, current, next, brightNights, null, hanafi, angles);
             }
 
             logger.LogWarning("No valid prayer times for {City}, {Date}. Request {RequestId}", city.Slug, today, requestId);
@@ -276,7 +302,7 @@ public sealed class HomeController(
         }
 
         Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
-        return new DailyPrayerTimesViewModel(city, now, null, null, null, false, requestId, hanafi);
+        return new DailyPrayerTimesViewModel(city, now, null, null, null, false, requestId, hanafi, angles);
     }
 
     private static Dictionary<DateOnly, DailyPrayerTimes> ValidDays(IEnumerable<DailyPrayerTimes> rows, bool hanafi) =>
