@@ -8,6 +8,7 @@ using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using Application.Calendars;
+using Calculation;
 using Domain.Models;
 using Color = Android.Graphics.Color;
 using ColorStateList = Android.Content.Res.ColorStateList;

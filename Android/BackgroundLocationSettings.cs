@@ -2,6 +2,7 @@ using Android.Content;
 using Android.Views;
 using Android.Widget;
 using Application.Calendars;
+using Calculation;
 using DeviceSettings = Android.Provider.Settings;
 
 namespace SalahTimes.AndroidApp;

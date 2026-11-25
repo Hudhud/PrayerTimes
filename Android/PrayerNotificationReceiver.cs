@@ -1,6 +1,7 @@
 using Android.App;
 using Android.Content;
 using Application.Calendars;
+using Calculation;
 
 namespace SalahTimes.AndroidApp;
 

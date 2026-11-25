@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-ios</TargetFramework>
+    <SupportedOSPlatformVersion>16.0</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>SalahTimes.iOS</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ApplicationTitle>Salah Times</ApplicationTitle>
+    <ApplicationId>dk.salahtimes.ios</ApplicationId>
+    <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <AppIcon>AppIcon</AppIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <BundleResource Include="PrivacyInfo.xcprivacy" />
+    <ProjectReference Include="../Calculation/Calculation.csproj" />
+    <BundleResource Include="../Web/wwwroot/data/prayer-places.json" LogicalName="prayer-places.json" />
+    <BundleResource Include="../Web/wwwroot/data/prayer-cities-world.json" LogicalName="prayer-cities-world.json" />
+  </ItemGroup>
+</Project>
