@@ -1,15 +1,9 @@
 @model Web.ViewModels.CityPrayerTimesViewModel
-@using Application.Calendars
-@using System.Globalization
 @using Web.ViewModels
 @{
     var city = Model.Daily.City;
-    var culture = CultureInfo.CurrentCulture;
-    var angles = Model.Daily.Angles;
-    var fajr = angles.Fajr.ToString("0.#", culture);
-    var isha = angles.Isha.ToString("0.#", culture);
     var returnUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
-    var settings = new WebsiteSettingsViewModel(city, Model.Daily.Hanafi, angles, returnUrl);
+    var settings = new WebsiteSettingsViewModel(city, Model.Daily.Hanafi, Model.Daily.Angles, returnUrl);
     ViewData["Title"] = T($"Bønnetider i {city.Name}", $"Prayer times in {city.Name}");
     ViewData["PlaceDataAttribution"] = true;
     ViewData["TimetableNavigation"] = true;
@@ -49,11 +43,6 @@
     <partial name="_AsrPreference" model="settings" />
     <partial name="_OfflinePreference" model="settings" />
 </div>
-
-<details id="fajr-isha" class="angle-settings">
-    <summary>@T("Fajr- og Isha-vinkler", "Fajr and Isha angles") <span>· Fajr @fajr° · Isha @isha°</span></summary>
-    <partial name="_AnglePreference" model='settings with { ReturnUrl = returnUrl + "#fajr-isha" }' />
-</details>
 
 <partial name="_Calendar" model="Model.Calendar" />
 

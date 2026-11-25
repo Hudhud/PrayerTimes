@@ -471,9 +471,7 @@ tbody .selected-day, tbody .selected-day th { background: var(--surface-raised);
 .day-actions { display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: .6rem 1rem; margin-top: .8rem; }
 .day-actions .asr-control, .day-actions .offline-controls { margin: 0; }
 .day-actions .asr-control .button, .day-actions .offline-controls .button { font-size: .82rem; }
-.angle-settings { margin-top: .6rem; font-size: .875rem; }
-.angle-settings summary { width: fit-content; min-height: 2.75rem; padding: .65rem 0; cursor: pointer; font-weight: 650; }
-.angle-settings summary span, .angle-form p { color: var(--muted); font-weight: 500; }
+.angle-form p { color: var(--muted); font-weight: 500; }
 .angle-form { display: grid; gap: .55rem; margin-bottom: .75rem; }
 .angle-fields { display: flex; flex-wrap: wrap; gap: .75rem; }
 .angle-fields label { display: grid; gap: .25rem; width: 7rem; max-width: 100%; }
@@ -546,7 +544,7 @@ tbody .selected-day, tbody .selected-day th { background: var(--surface-raised);
 }
 
 @media print {
-    .place-heading, .asr-control, .offline-controls, .angle-settings,
+    .place-heading, .asr-control, .offline-controls,
     .calendar-options, .calendar-nav, .calendar-date-trigger, [data-prayer-refresh-error] { display: none !important; }
     .calendar-month-text[hidden] { display: inline !important; }
     .calendar-note { color: #000; background: #fff; border-color: #aaa; break-inside: avoid; }

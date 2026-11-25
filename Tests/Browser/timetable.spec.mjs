@@ -235,18 +235,26 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
 });
 
-test('saved Fajr and Isha angles apply to the calendar and export and can be reset', async ({ page, isMobile }) => {
-    await page.goto('/koebenhavn?month=2026-06&week=2026-06-21');
-    const settings = page.locator('#fajr-isha');
+test('Fajr and Isha angles can be edited only in Settings and apply to the calendar and export', async ({ page, isMobile }) => {
+    const timetable = '/koebenhavn?month=2026-06&week=2026-06-21';
+    await page.goto(timetable);
     const date = page.locator(`${isMobile ? 'details' : 'tr'}[data-calendar-date="2026-06-21"]`);
     await expect(date).toContainText('lyse nætter', { ignoreCase: true });
-    await settings.locator('summary').click();
+    await expect(page.getByLabel('Fajr (°)')).toHaveCount(0);
+    await expect(page.getByLabel('Isha (°)')).toHaveCount(0);
+
+    await page.getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
+    await expect(page.getByLabel('Fajr (°)')).toHaveCount(0);
+    await page.getByRole('link', { name: 'Skift vinkler i indstillinger' }).click();
+    await expect(page).toHaveURL(/\/indstillinger#fajr-isha$/);
+    const settings = page.getByRole('region', { name: 'Beregning', exact: true });
     await settings.getByLabel('Fajr (°)').fill('5,5');
     await settings.getByLabel('Isha (°)').fill('6.5');
     await settings.getByRole('button', { name: 'Gem vinkler' }).click();
-    await expect(settings.locator('summary')).toContainText('Fajr 5,5° · Isha 6,5°');
+    await expect(settings.getByLabel('Fajr (°)')).toHaveValue('5,5');
+    await expect(settings.getByLabel('Isha (°)')).toHaveValue('6,5');
+    await page.goto(timetable);
     await expect(date).not.toContainText('lyse nætter', { ignoreCase: true });
-    await page.reload();
     await expect(page.locator('[data-current-place="koebenhavn"]')).toHaveAttribute('data-angles', '5.5:6.5');
 
     const refreshUrl = await page.locator('[data-refresh-url]').getAttribute('data-refresh-url');
@@ -261,9 +269,11 @@ test('saved Fajr and Isha angles apply to the calendar and export and can be res
     expect(ics).toContain('UID:koebenhavn-2026-06-21-fajr@salahtimes.dk');
     expect(ics).toContain('UID:koebenhavn-2026-06-21-isha@salahtimes.dk');
 
-    await settings.locator('summary').click();
+    await page.getByRole('link', { name: 'Indstillinger', exact: true }).click();
     await settings.getByRole('button', { name: 'Nulstil til 18° og 17°' }).click();
-    await expect(settings.locator('summary')).toContainText('Fajr 18° · Isha 17°');
+    await expect(settings.getByLabel('Fajr (°)')).toHaveValue('18');
+    await expect(settings.getByLabel('Isha (°)')).toHaveValue('17');
+    await page.goto(timetable);
     await expect(date).toContainText('lyse nætter', { ignoreCase: true });
 });
 
@@ -546,11 +556,12 @@ test('a saved seven-day plan can be reopened without a connection', async ({ pag
     try {
         await page.goto(`${origin}/aarhus`);
         await page.getByRole('button', { name: 'Vis Hanafi' }).click();
-        const angles = page.locator('#fajr-isha');
-        await angles.locator('summary').click();
+        await page.getByRole('link', { name: 'Indstillinger', exact: true }).click();
+        const angles = page.getByRole('region', { name: 'Beregning', exact: true });
         await angles.getByLabel('Fajr (°)').fill('5,5');
         await angles.getByLabel('Isha (°)').fill('6,5');
         await angles.getByRole('button', { name: 'Gem vinkler' }).click();
+        await page.goto(`${origin}/aarhus`);
         const current = page.locator('.today');
         const now = await current.getAttribute('data-today');
         const asr = await current.locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time').textContent();
