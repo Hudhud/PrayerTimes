@@ -1,0 +1,29 @@
+@model Web.ViewModels.WebsiteSettingsViewModel
+@using Application.Calendars
+@using System.Globalization
+@{
+    var culture = CultureInfo.CurrentCulture;
+    var fajr = Model.Angles.Fajr.ToString("0.#", culture);
+    var isha = Model.Angles.Isha.ToString("0.#", culture);
+    var defaults = TwilightAngles.ForPlace(Model.City);
+    var defaultFajr = defaults.Fajr.ToString("0.#", culture);
+    var defaultIsha = defaults.Isha.ToString("0.#", culture);
+}
+<form method="post" asp-action="Angles" class="angle-form">
+    <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+    <p id="angle-hint">@T($"Vælg {TwilightAngles.Minimum}–{TwilightAngles.Maximum}° under horisonten med højst én decimal.", $"Choose {TwilightAngles.Minimum}–{TwilightAngles.Maximum}° below the horizon, with at most one decimal place.")</p>
+    <div class="angle-fields">
+        <label>Fajr (°)
+            <input name="fajr" inputmode="decimal" value="@fajr" required maxlength="4"
+                   pattern="([5-9]|[12][0-9])([.,][0-9])?|30([.,]0)?" aria-describedby="angle-hint" />
+        </label>
+        <label>Isha (°)
+            <input name="isha" inputmode="decimal" value="@isha" required maxlength="4"
+                   pattern="([5-9]|[12][0-9])([.,][0-9])?|30([.,]0)?" aria-describedby="angle-hint" />
+        </label>
+    </div>
+    <div class="actions">
+        <button class="button" type="submit">@T("Gem vinkler", "Save angles")</button>
+        <button class="button" type="submit" name="reset" value="true" formnovalidate>@T($"Nulstil til {defaultFajr}° og {defaultIsha}°", $"Reset to {defaultFajr}° and {defaultIsha}°")</button>
+    </div>
+</form>

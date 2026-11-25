@@ -1,4 +1,5 @@
 @model Web.ViewModels.PlaceSearchViewModel
+@using Web.ViewModels
 @{
     ViewData["Title"] = T("Find bønnetider", "Find prayer times");
     ViewData["PlaceDataAttribution"] = true;
@@ -6,7 +7,11 @@
 
 <section class="readable" aria-labelledby="places-title">
     <h1 id="places-title">@T("Find bønnetider", "Find prayer times")</h1>
-    <partial name="_PlacePicker" model="Model.Query" />
+    @if (Model.ReturnToSettings)
+    {
+        <p><a asp-route="@SettingsRoute">@T("Tilbage til indstillinger", "Back to settings")</a></p>
+    }
+    <partial name="_PlacePicker" model="new PlacePickerViewModel(Model.Query, Model.ReturnToSettings)" />
     @if (Model.Results.Count > 0)
     {
         @if (Model.IsSpellingSuggestion)
@@ -17,7 +22,8 @@
             @foreach (var place in Model.Results)
             {
                 <li>
-                    <a asp-route="City" asp-route-city="@place.Id" data-place-result>
+                    <a asp-route="City" asp-route-city="@place.Id"
+                       asp-route-settings="@(Model.ReturnToSettings ? "true" : null)" data-place-result>
                         @place.Label
                         @if (!string.IsNullOrWhiteSpace(place.Area) && place.Area != place.Name)
                         {

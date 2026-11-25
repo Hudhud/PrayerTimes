@@ -7,11 +7,12 @@
     }
 
     const form = picker.querySelector('form');
-    const input = form.querySelector('input');
+    const input = form.querySelector('input[type=search]');
     const list = form.querySelector('[role="listbox"]');
     const spellingHeading = form.querySelector('[data-spelling-heading]');
     const searchStatus = form.querySelector('[role="status"]');
     const locationButton = picker.querySelector('[data-use-location]');
+    const returnToSettings = locationButton.dataset.returnToSettings === 'true';
     const locationFeedback = picker.querySelector('[data-location-feedback]');
     const locationStatus = picker.querySelector('[data-location-status]');
     const locationSuggestion = picker.querySelector('[data-location-suggestion]');
@@ -150,11 +151,19 @@
         if (query.length >= 2) {
             searchTimer = window.setTimeout(() => loadSuggestions(query), 200);
         } else if (query.length === 0 && recentPlaces.length > 0) {
-            const base = new URL(locationButton.dataset.placeBase, location.href);
             renderSuggestions(recentPlaces.map(place => ({
-                label: place.label, url: new URL(encodeURIComponent(place.id), base).href
+                label: place.label, url: placeUrl(place.id).href
             })), text("Senest brugte steder", "Recent places"));
         }
+    }
+
+    function placeUrl(id) {
+        const base = new URL(locationButton.dataset.placeBase, location.href);
+        const url = new URL(encodeURIComponent(id), base);
+        if (returnToSettings) {
+            url.searchParams.set('settings', 'true');
+        }
+        return url;
     }
 
     function selectPlace(place) {
@@ -319,7 +328,7 @@
                 return;
             }
 
-            const target = new URL(encodeURIComponent(nearest.id), new URL(locationButton.dataset.placeBase, location.href));
+            const target = placeUrl(nearest.id);
             if (!Number.isFinite(coords.accuracy) || coords.accuracy <= 0 || coords.accuracy > maxAutomaticAccuracy) {
                 if (automatic) {
                     saveLocationPreference({ placeId: currentPlace.currentPlace, checkedAt: Date.now() });
@@ -372,7 +381,7 @@
     }
 
     function canRefreshLocation() {
-        return currentPlace && locationPreference?.placeId === currentPlace.currentPlace && !locationRequest &&
+        return !returnToSettings && currentPlace && locationPreference?.placeId === currentPlace.currentPlace && !locationRequest &&
             !document.hidden && (!panel || panel.hidden) && document.activeElement !== input;
     }
 

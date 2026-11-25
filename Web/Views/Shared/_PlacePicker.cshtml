@@ -1,11 +1,15 @@
-@model string
+@model Web.ViewModels.PlacePickerViewModel
 <div class="place-picker" data-place-picker>
     <label for="place-query">@T("By eller postnummer", "City or Danish postcode")</label>
     <div class="place-controls">
         <form method="get" asp-controller="Home" asp-action="Places" class="place-search" role="search"
-              data-suggestions="@Url.Action("PlaceSuggestions", "Home")">
+              data-suggestions="@Url.Action("PlaceSuggestions", "Home", new { settings = Model.ReturnToSettings ? true : (bool?)null })">
+            @if (Model.ReturnToSettings)
+            {
+                <input type="hidden" name="settings" value="true" />
+            }
             <div class="place-search-field">
-                <input id="place-query" name="q" type="search" value="@Model" placeholder="@T("Fx Aarhus, 8000 eller London", "e.g. Aarhus, 8000 or London")"
+                <input id="place-query" name="q" type="search" value="@Model.Query" placeholder="@T("Fx Aarhus, 8000 eller London", "e.g. Aarhus, 8000 or London")"
                        maxlength="80" required autocomplete="off" />
                 <div class="place-suggestions">
                     <p class="place-suggestion-heading" data-spelling-heading aria-hidden="true" hidden>@T("Mente du?", "Did you mean?")</p>
@@ -18,6 +22,7 @@
         <button class="button location-button" type="button" data-use-location
                 data-catalog="@Url.Content("~/data/prayer-places.json")"
                 data-world-catalog="@Url.Content("~/data/prayer-cities-world.json")" data-place-base="@Url.Content("~/")"
+                data-return-to-settings="@Model.ReturnToSettings.ToString().ToLowerInvariant()"
                 hidden>@T("Brug min placering", "Use my location")</button>
     </div>
     <div data-location-feedback>

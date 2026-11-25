@@ -51,20 +51,24 @@
                 <img src="~/icons/crescent.svg" width="22" height="22" alt="" />
                 <span>Salah Times</span>
             </a>
-            @if (ViewData["TimetableNavigation"] is true)
-            {
-                if (ViewData["CalendarHasToday"] is true)
+            <nav class="site-navigation" aria-label="@T("Hovedmenu", "Main navigation")">
+                @if (ViewData["TimetableNavigation"] is true)
                 {
-                    <a class="header-link mobile-calendar" href="#week-today" data-open-calendar-today>@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
-                    <a class="header-link desktop-calendar" href="#month-title">@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
+                    if (ViewData["CalendarHasToday"] is true)
+                    {
+                        <a class="header-link mobile-calendar" href="#week-today" data-open-calendar-today>@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
+                        <a class="header-link desktop-calendar" href="#month-title">@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
+                    }
+                    else
+                    {
+                        <a class="header-link" href="#month-title">@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
+                    }
                 }
-                else
-                {
-                    <a class="header-link" href="#month-title">@T("Kalender", "Calendar") <span aria-hidden="true">↓</span></a>
-                }
-            }
-            <a class="header-link" asp-action="Language" asp-controller="Home" asp-route-language="@T("en", "da")"
-               asp-route-returnUrl="@SwitchTarget(Context.Request)" lang="@T("en", "da")">@T("English", "Dansk")</a>
+                <a class="header-link" asp-route="@SettingsRoute"
+                   aria-current='@(ViewData["SettingsPage"] is true ? "page" : null)'>@T("Indstillinger", "Settings")</a>
+                <a class="header-link" asp-action="Language" asp-controller="Home" asp-route-language="@T("en", "da")"
+                   asp-route-returnUrl="@SwitchTarget(Context.Request)" lang="@T("en", "da")">@T("English", "Dansk")</a>
+            </nav>
         </div>
     </header>
     <main class="site-width" id="indhold">

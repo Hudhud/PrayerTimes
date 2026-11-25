@@ -1,0 +1,8 @@
+@model Web.ViewModels.WebsiteSettingsViewModel
+<div class="offline-controls" data-offline-controls hidden
+     data-offline-plan="@Url.RouteUrl("OfflinePlan", new { city = Model.City.Slug, asr = Model.AsrMethod, angles = Model.Angles.PreferenceValue })"
+     data-worker="@Url.Content("~/offline-worker.js")">
+    <button class="button" type="button" data-save-offline>@T("Gem 7 dages tider offline", "Save 7 days offline")</button>
+    <a href="~/offline" data-open-offline hidden>@T("Åbn gemt bønneplan", "Open saved timetable")</a>
+    <p class="offline-status" data-offline-status role="status"></p>
+</div>

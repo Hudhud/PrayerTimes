@@ -8,10 +8,8 @@
     var angles = Model.Daily.Angles;
     var fajr = angles.Fajr.ToString("0.#", culture);
     var isha = angles.Isha.ToString("0.#", culture);
-    var defaults = TwilightAngles.ForPlace(city);
-    var defaultFajr = defaults.Fajr.ToString("0.#", culture);
-    var defaultIsha = defaults.Isha.ToString("0.#", culture);
     var returnUrl = Context.Request.PathBase + Context.Request.Path + Context.Request.QueryString;
+    var settings = new WebsiteSettingsViewModel(city, Model.Daily.Hanafi, angles, returnUrl);
     ViewData["Title"] = T($"Bønnetider i {city.Name}", $"Prayer times in {city.Name}");
     ViewData["PlaceDataAttribution"] = true;
     ViewData["TimetableNavigation"] = true;
@@ -37,7 +35,7 @@
         <button class="button" type="button" aria-controls="place-picker-panel" data-location-shortcut hidden>@T("Brug min placering", "Use my location")</button>
     }
     <div id="place-picker-panel" class="place-picker-panel" hidden>
-        <partial name="_PlacePicker" model="string.Empty" />
+        <partial name="_PlacePicker" model="new PlacePickerViewModel(string.Empty)" />
     </div>
 </header>
 <p class="visually-hidden" data-prayer-announcement role="status"></p>
@@ -48,44 +46,13 @@
 <partial name="_Today" model="Model.Daily" />
 
 <div class="day-actions">
-    <form method="post" asp-action="Asr" class="asr-control">
-        <input type="hidden" name="returnUrl"
-               value="@returnUrl" />
-        <span>@T("Asr-metode", "Asr method") <strong>@(Model.Daily.Hanafi ? "Hanafi" : "Standard")</strong></span>
-        <button class="button" name="choice" value="@(Model.Daily.Hanafi ? "standard" : "hanafi")">
-            @(Model.Daily.Hanafi ? T("Vis standard", "Show Standard") : T("Vis Hanafi", "Show Hanafi"))
-        </button>
-    </form>
-
-    <div class="offline-controls" data-offline-controls hidden
-         data-offline-plan="@Url.RouteUrl("OfflinePlan", new { city = city.Slug, asr = Model.Daily.AsrMethod, angles = angles.PreferenceValue })"
-         data-worker="@Url.Content("~/offline-worker.js")">
-        <button class="button" type="button" data-save-offline>@T("Gem 7 dages tider offline", "Save 7 days offline")</button>
-        <a href="~/offline" data-open-offline hidden>@T("Åbn gemt bønneplan", "Open saved timetable")</a>
-        <p class="offline-status" data-offline-status role="status"></p>
-    </div>
+    <partial name="_AsrPreference" model="settings" />
+    <partial name="_OfflinePreference" model="settings" />
 </div>
 
 <details id="fajr-isha" class="angle-settings">
     <summary>@T("Fajr- og Isha-vinkler", "Fajr and Isha angles") <span>· Fajr @fajr° · Isha @isha°</span></summary>
-    <form method="post" asp-action="Angles" class="angle-form">
-        <input type="hidden" name="returnUrl" value="@(returnUrl + "#fajr-isha")" />
-        <p id="angle-hint">@T($"Vælg {TwilightAngles.Minimum}–{TwilightAngles.Maximum}° under horisonten med højst én decimal.", $"Choose {TwilightAngles.Minimum}–{TwilightAngles.Maximum}° below the horizon, with at most one decimal place.")</p>
-        <div class="angle-fields">
-            <label>Fajr (°)
-                <input name="fajr" inputmode="decimal" value="@fajr" required maxlength="4"
-                       pattern="([5-9]|[12][0-9])([.,][0-9])?|30([.,]0)?" aria-describedby="angle-hint" />
-            </label>
-            <label>Isha (°)
-                <input name="isha" inputmode="decimal" value="@isha" required maxlength="4"
-                       pattern="([5-9]|[12][0-9])([.,][0-9])?|30([.,]0)?" aria-describedby="angle-hint" />
-            </label>
-        </div>
-        <div class="actions">
-            <button class="button" type="submit">@T("Gem vinkler", "Save angles")</button>
-            <button class="button" type="submit" name="reset" value="true" formnovalidate>@T($"Nulstil til {defaultFajr}° og {defaultIsha}°", $"Reset to {defaultFajr}° and {defaultIsha}°")</button>
-        </div>
-    </form>
+    <partial name="_AnglePreference" model='settings with { ReturnUrl = returnUrl + "#fajr-isha" }' />
 </details>
 
 <partial name="_Calendar" model="Model.Calendar" />

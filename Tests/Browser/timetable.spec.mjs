@@ -629,3 +629,55 @@ test('the timetable stays current until midnight at the selected location', asyn
     await expect(page.getByRole('heading', { name: 'Next prayer', exact: true })).toBeVisible();
     await expect(page.locator('[data-historical-times]')).toBeHidden();
 });
+
+test('website settings keep the chosen language and apply to the timetable', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Indstillinger', exact: true }).click();
+    await expect(page).toHaveURL(/\/indstillinger$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Indstillinger');
+
+    await page.getByRole('region', { name: 'Sprog', exact: true }).getByRole('link', { name: 'English' }).click();
+    await expect(page).toHaveURL(/\/en\/settings$/);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+
+    const location = page.getByRole('region', { name: 'Location', exact: true });
+    await location.getByRole('combobox').fill('Tokyo');
+    await location.getByRole('option', { name: /^Tokyo.*Japan/ }).first().click();
+    await expect(page).toHaveURL(/\/en\/settings$/);
+    await expect(location).toContainText('Tokyo');
+    await expect(location).toContainText('Asia/Tokyo');
+
+    const calculation = page.getByRole('region', { name: 'Calculation', exact: true });
+    await calculation.getByRole('button', { name: 'Show Hanafi' }).click();
+    await expect(calculation.getByRole('button', { name: 'Show Standard' })).toBeVisible();
+    await calculation.getByLabel('Fajr (°)').fill('16.5');
+    await calculation.getByRole('button', { name: 'Save angles' }).click();
+    await expect(calculation.getByLabel('Fajr (°)')).toHaveValue('16.5');
+
+    const privacy = page.getByRole('region', { name: 'Privacy and analytics', exact: true });
+    await privacy.getByRole('button', { name: 'Decline' }).click();
+    await expect(privacy).toContainText('Declined');
+    await expect(page).toHaveURL(/\/en\/settings$/);
+
+    await page.getByRole('link', { name: 'Salah Times', exact: true }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Prayer times in Tokyo');
+    await expect(page.locator('[data-asr-method]')).toHaveAttribute('data-asr-method', 'hanafi');
+    await expect(page.locator('[data-angles]')).toHaveAttribute('data-angles', '16.5:17');
+});
+
+test('website settings allow automatic location to be started and stopped without leaving', async ({ page, context }) => {
+    await context.grantPermissions(['geolocation']);
+    await context.setGeolocation({ latitude: 55.4037, longitude: 10.4024, accuracy: 20 });
+    await page.goto('/en/settings');
+
+    const location = page.getByRole('region', { name: 'Location', exact: true });
+    await location.getByRole('button', { name: 'Use my location' }).click();
+    await expect(location).toContainText('Odense');
+    await expect(location).toContainText('Selected automatically');
+    await expect(page).toHaveURL(/\/en\/settings$/);
+
+    await location.getByRole('button', { name: 'Stop automatic location' }).click();
+    await expect(location.getByRole('button', { name: 'Use my location' })).toBeVisible();
+    await expect(location.locator('[data-auto-place]')).toBeHidden();
+    await expect(location).toContainText('Odense');
+});

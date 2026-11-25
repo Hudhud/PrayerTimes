@@ -1,0 +1,47 @@
+@model Web.ViewModels.WebsiteSettingsViewModel
+@using Web.ViewModels
+@{
+    ViewData["Title"] = T("Indstillinger", "Settings");
+    ViewData["SettingsPage"] = true;
+    ViewData["PlaceDataAttribution"] = true;
+}
+<div class="readable website-settings">
+    <h1>@ViewData["Title"]</h1>
+    <section aria-labelledby="language-heading">
+        <h2 id="language-heading">@T("Sprog", "Language")</h2>
+        <p class="actions">
+            <strong lang="@T("da", "en")">@T("Dansk", "English")</strong>
+            <a class="button" asp-action="Language" asp-route-language="@T("en", "da")"
+               asp-route-returnUrl="@SwitchTarget(Context.Request)" lang="@T("en", "da")">@T("English", "Dansk")</a>
+        </p>
+    </section>
+
+    <section aria-labelledby="location-heading" data-current-place="@Model.City.Slug" data-place-name="@Model.City.Name">
+        <h2 id="location-heading">@T("Placering", "Location")</h2>
+        <p><strong>@Model.City.Name</strong> · @TimeLabel(Model.City)
+            <span data-auto-place hidden>· @T("Automatisk valgt", "Selected automatically")</span></p>
+        <partial name="_PlacePicker" model="new PlacePickerViewModel(string.Empty, ReturnToSettings: true)" />
+    </section>
+
+    <section aria-labelledby="calculation-heading">
+        <h2 id="calculation-heading">@T("Beregning", "Calculation")</h2>
+        <partial name="_AsrPreference" model="Model" />
+        <h3>@T("Fajr- og Isha-vinkler", "Fajr and Isha angles")</h3>
+        <partial name="_AnglePreference" model="Model" />
+        <p><a asp-action="Method">@T("Sådan beregnes bønnetiderne", "How prayer times are calculated")</a></p>
+    </section>
+
+    <section aria-labelledby="offline-heading">
+        <h2 id="offline-heading">@T("Offline bønnetider", "Offline prayer times")</h2>
+        <partial name="_OfflinePreference" model="Model" />
+        <noscript><p>@T("Slå JavaScript til for at gemme bønnetider offline.", "Enable JavaScript to save prayer times offline.")</p></noscript>
+    </section>
+
+    <section aria-labelledby="privacy-heading">
+        <h2 id="privacy-heading">@T("Privatliv og statistik", "Privacy and analytics")</h2>
+        <p>@T("Med dit samtykke bruger vi Google Analytics til at se, hvor ofte siden bliver brugt.",
+            "With your consent, we use Google Analytics to see how often the site is used.")</p>
+        <partial name="_StatisticsPreference" model="Model.ReturnUrl" />
+        <p><a asp-action="Privacy">@T("Læs om privatliv", "Read about privacy")</a></p>
+    </section>
+</div>
