@@ -41,7 +41,7 @@ public sealed class HomeController(
     }
 
     [HttpGet("/{city}", Name = "City")]
-    public Task<IActionResult> City(string city, string? month, string? week, CancellationToken cancellationToken)
+    public Task<IActionResult> City(string city, string? month, string? week, bool settings, CancellationToken cancellationToken)
     {
         var selected = places.Find(city);
         if (selected is null)
@@ -54,7 +54,22 @@ public sealed class HomeController(
             Response.Cookies.Append(CityCookie, selected.Slug, PreferenceCookie());
         }
 
-        return ShowCityAsync(selected, month, week, cancellationToken);
+        return settings
+            ? Task.FromResult<IActionResult>(RedirectToRoute(SiteLanguage.SettingsRoute))
+            : ShowCityAsync(selected, month, week, cancellationToken);
+    }
+
+    [HttpGet(SiteLanguage.DanishSettingsPath, Name = SiteLanguage.DanishSettingsRoute)]
+    [HttpGet(SiteLanguage.EnglishSettingsPath, Name = SiteLanguage.EnglishSettingsRoute)]
+    public IActionResult Settings()
+    {
+        if (Request.Path != SiteLanguage.SettingsPath)
+        {
+            return RedirectToRoute(SiteLanguage.SettingsRoute);
+        }
+
+        var city = places.Find(Request.Cookies[CityCookie]) ?? PrayerCities.Default;
+        return View(new WebsiteSettingsViewModel(city, UsesHanafi, SavedAngles(city), Url.RouteUrl(SiteLanguage.SettingsRoute)!));
     }
 
     [HttpGet("/sprog")]
@@ -70,7 +85,7 @@ public sealed class HomeController(
     }
 
     [HttpGet("/steder")]
-    public IActionResult Places(string? q)
+    public IActionResult Places(string? q, bool settings)
     {
         var query = q?.Trim() ?? string.Empty;
         if (query.Length > 80)
@@ -80,12 +95,12 @@ public sealed class HomeController(
 
         var search = SearchPlaces(query);
         return !search.IsSpellingSuggestion && search.Results.Count == 1
-            ? RedirectToRoute("City", new { city = search.Results[0].Id })
-            : View(search);
+            ? RedirectToRoute("City", new { city = search.Results[0].Id, settings = settings ? true : (bool?)null })
+            : View(search with { ReturnToSettings = settings });
     }
 
     [HttpGet("/steder/forslag")]
-    public IActionResult PlaceSuggestions(string? q)
+    public IActionResult PlaceSuggestions(string? q, bool settings)
     {
         var query = q?.Trim() ?? string.Empty;
         if (query.Length > 80)
@@ -98,7 +113,7 @@ public sealed class HomeController(
         {
             place.Label,
             Area = place.Area == place.Name ? null : place.Area,
-            Url = Url.RouteUrl("City", new { city = place.Id }),
+            Url = Url.RouteUrl("City", new { city = place.Id, settings = settings ? true : (bool?)null }),
             search.IsSpellingSuggestion
         }));
     }

@@ -1,0 +1,11 @@
+@model string
+@using Web.Controllers
+@{
+    var statistics = Context.Request.Cookies[HomeController.AnalyticsCookie];
+}
+<p><strong>@T("Dit valg", "Your choice")</strong> @(statistics == "yes" ? T("Tilladt", "Allowed") : statistics == "no" ? T("Afvist", "Declined") : T("Intet valg gemt", "No saved choice"))</p>
+<form method="post" asp-controller="Home" asp-action="Statistics" class="actions">
+    <input type="hidden" name="returnUrl" value="@Model" />
+    <button class="button" name="choice" value="no">@T("Afvis", "Decline")</button>
+    <button class="button" name="choice" value="yes">@T("Tillad", "Allow")</button>
+</form>

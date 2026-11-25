@@ -28,7 +28,8 @@ button, select, input { font: inherit; }
 
 .site-width { width: min(100% - 2rem, 58rem); margin-inline: auto; }
 .site-header { border-bottom: 1px solid var(--border); background: #14211e; }
-.site-header .site-width { min-height: 3.5rem; display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.site-header .site-width { min-height: 3.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .2rem .75rem; }
+.site-navigation { display: flex; flex-wrap: wrap; align-items: center; gap: 0 .9rem; }
 .brand {
     display: inline-flex;
     min-width: 0;
@@ -40,7 +41,7 @@ button, select, input { font: inherit; }
     text-decoration: none;
 }
 .header-link { display: inline-flex; gap: .5rem; min-height: 2.75rem; min-width: 0; overflow-wrap: anywhere; align-items: center; color: var(--muted); font-size: .875rem; font-weight: 650; text-decoration: none; }
-.header-link:hover { color: var(--text); }
+.header-link:hover, .header-link[aria-current="page"] { color: var(--text); }
 .header-link span { color: var(--accent); }
 .skip-link {
     position: absolute;
@@ -203,6 +204,9 @@ tbody .selected-day, tbody .selected-day th { background: var(--surface-raised);
 .actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .readable { max-width: 39rem; margin-block: 1.8rem; }
 .readable p, .readable h2, .readable .actions { margin-top: .85rem; }
+.website-settings { max-width: 44rem; }
+.website-settings section { border-top: 1px solid var(--border); margin-top: 1.25rem; padding-top: .3rem; }
+.website-settings .place-picker { margin-top: .85rem; }
 .report-form { display: grid; gap: .45rem; width: min(100%, 23rem); margin-top: 1rem; }
 .report-form select, .report-form input, .angle-fields input {
     width: 100%;

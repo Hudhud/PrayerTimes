@@ -1,0 +1,9 @@
+@model Web.ViewModels.WebsiteSettingsViewModel
+<form method="post" asp-action="Asr" class="asr-control">
+    <input type="hidden" name="returnUrl"
+           value="@Model.ReturnUrl" />
+    <span>@T("Asr-metode", "Asr method") <strong>@(Model.Hanafi ? "Hanafi" : "Standard")</strong></span>
+    <button class="button" name="choice" value="@(Model.Hanafi ? "standard" : "hanafi")">
+        @(Model.Hanafi ? T("Vis standard", "Show Standard") : T("Vis Hanafi", "Show Hanafi"))
+    </button>
+</form>

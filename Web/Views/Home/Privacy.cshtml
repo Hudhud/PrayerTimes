@@ -1,7 +1,5 @@
-@using Web.Controllers
 @{
     ViewData["Title"] = T("Privatliv og statistik", "Privacy and analytics");
-    var statistics = Context.Request.Cookies[HomeController.AnalyticsCookie];
 }
 
 <section class="readable">
@@ -22,10 +20,5 @@
     <p>@T("Hvis du siger ja, bruger vi Google Analytics til at se antal besøg og viste sider. Google Analytics kan gemme sine målingscookies i op til 180 dage. Du kan ændre dit valg her. Hvis du trækker dit samtykke tilbage, stopper målingen fra næste sidevisning.",
         "If you agree, we use Google Analytics to count visits and page views. Google Analytics can store measurement cookies for up to 180 days. You can change your choice here. If you withdraw consent, measurement stops with the next page view.")</p>
     <p><a href="https://policies.google.com/technologies/partner-sites?hl=@T("da", "en")">@T("Sådan bruger Google oplysninger fra websteder", "How Google uses information from websites")</a></p>
-    <p><strong>@T("Dit valg", "Your choice")</strong> @(statistics == "yes" ? T("Tilladt", "Allowed") : statistics == "no" ? T("Afvist", "Declined") : T("Intet valg gemt", "No saved choice"))</p>
-    <form method="post" asp-controller="Home" asp-action="Statistics" class="actions">
-        <input type="hidden" name="returnUrl" value="@Url.Action("Privacy")" />
-        <button class="button" name="choice" value="no">@T("Afvis", "Decline")</button>
-        <button class="button" name="choice" value="yes">@T("Tillad", "Allow")</button>
-    </form>
+    <partial name="_StatisticsPreference" model='Url.Action("Privacy")' />
 </section>
