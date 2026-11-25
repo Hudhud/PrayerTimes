@@ -1,4 +1,6 @@
 (() => {
+    const english = document.documentElement.lang === 'en';
+    const text = (da, en) => english ? en : da;
     const picker = document.querySelector('[data-place-picker]');
     if (!picker) {
         return;
@@ -65,7 +67,7 @@
         searchRequest = request;
         const waitingTimer = window.setTimeout(() => {
             if (searchRequest === request && !request.signal.aborted && document.activeElement === input) {
-                showSearchMessage('Søger efter steder…');
+                showSearchMessage(text("Søger efter steder…", "Searching for places…"));
             }
         }, 350);
         try {
@@ -82,15 +84,15 @@
             }
 
             if (results.length === 0) {
-                showSearchMessage('Ingen steder fundet. Prøv et andet bynavn eller postnummer.');
+                showSearchMessage(text("Ingen steder fundet. Prøv et andet bynavn eller postnummer.", "No places found. Try another city or a Danish postcode."));
             } else {
                 const spelling = results[0].isSpellingSuggestion;
-                renderSuggestions(results, spelling ? 'Mente du?' : 'Stedforslag');
+                renderSuggestions(results, spelling ? 'Mente du?' : text("Stedforslag", "Suggested places"));
                 spellingHeading.hidden = !spelling;
             }
         } catch {
             if (!request.signal.aborted && document.activeElement === input) {
-                showSearchMessage('Forslag kunne ikke hentes. Tryk Søg for at prøve igen.');
+                showSearchMessage(text("Forslag kunne ikke hentes. Tryk Søg for at prøve igen.", "Suggestions could not be loaded. Select Search to try again."));
             }
         } finally {
             clearTimeout(waitingTimer);
@@ -137,8 +139,8 @@
         });
         list.hidden = false;
         input.setAttribute('aria-expanded', 'true');
-        searchStatus.textContent = label === 'Stedforslag'
-            ? (results.length === 1 ? '1 forslag' : `${results.length} forslag`)
+        searchStatus.textContent = label === text("Stedforslag", "Suggested places")
+            ? (results.length === 1 ? text("1 forslag", "1 suggestion") : text(`${results.length} forslag`, `${results.length} suggestions`))
             : label;
     }
 
@@ -151,7 +153,7 @@
             const base = new URL(locationButton.dataset.placeBase, location.href);
             renderSuggestions(recentPlaces.map(place => ({
                 label: place.label, url: new URL(encodeURIComponent(place.id), base).href
-            })), 'Senest brugte steder');
+            })), text("Senest brugte steder", "Recent places"));
         }
     }
 
@@ -225,7 +227,7 @@
 
     function updateLocationButton() {
         const automatic = currentPlace && locationPreference?.placeId === currentPlace.currentPlace;
-        locationButton.textContent = automatic ? 'Stop automatisk placering' : 'Brug min placering';
+        locationButton.textContent = automatic ? text("Stop automatisk placering", "Stop automatic location") : text("Brug min placering", "Use my location");
         if (automaticPlace) {
             automaticPlace.hidden = !automatic;
         }
@@ -258,23 +260,27 @@
         updateLocationButton();
     }
 
-    function findNearestPlace(places, coords) {
+    function findNearestPlace(catalogs, coords) {
         const radians = Math.PI / 180;
         const latitude = coords.latitude * radians;
         const longitude = coords.longitude * radians;
+        const scale = Math.cos(latitude);
+        const danishLimit = Math.sin(30 / (2 * 6371)) ** 2;
         let nearest;
-        let minimum = Math.sin(30 / (2 * 6371)) ** 2;
-        for (const place of places) {
-            if (place.postalCode) {
-                continue;
-            }
-            const lat = place.latitude * radians;
-            const lon = place.longitude * radians;
-            const distance = Math.sin((lat - latitude) / 2) ** 2 +
-                Math.cos(latitude) * Math.cos(lat) * Math.sin((lon - longitude) / 2) ** 2;
-            if (distance < minimum) {
-                nearest = place;
-                minimum = distance;
+        let minimum = Math.sin(50 / (2 * 6371)) ** 2;
+        for (const places of catalogs) {
+            for (const place of places) {
+                if (place.postalCode) {
+                    continue;
+                }
+                const lat = place.latitude * radians;
+                const lon = place.longitude * radians;
+                const distance = Math.sin((lat - latitude) / 2) ** 2 +
+                    scale * Math.cos(lat) * Math.sin((lon - longitude) / 2) ** 2;
+                if (distance < minimum && (place.countryCode || distance < danishLimit)) {
+                    nearest = place;
+                    minimum = distance;
+                }
             }
         }
         return nearest;
@@ -288,7 +294,7 @@
         if (!automatic) {
             locationButton.disabled = true;
             locationButton.setAttribute('aria-busy', 'true');
-            locationStatus.textContent = 'Finder et sted i nærheden…';
+            locationStatus.textContent = text("Finder et sted i nærheden…", "Finding a nearby place…");
         }
 
         try {
@@ -297,17 +303,19 @@
             if (request.signal.aborted) {
                 return;
             }
-            const response = await fetch(locationButton.dataset.catalog, { signal: request.signal });
-            if (!response.ok) {
+            const responses = await Promise.all([locationButton.dataset.catalog, locationButton.dataset.worldCatalog]
+                .map(url => fetch(url, { signal: request.signal })));
+            if (!responses[0].ok) {
                 throw new Error('Place catalog unavailable');
             }
-            const nearest = findNearestPlace(await response.json(), coords);
+            const catalogs = await Promise.all(responses.filter(response => response.ok).map(response => response.json()));
+            const nearest = findNearestPlace(catalogs, coords);
             if (request.signal.aborted ||
                 (automatic && (document.hidden || (panel && !panel.hidden) || document.activeElement === input))) {
                 return;
             }
             if (!nearest) {
-                locationStatus.textContent = 'Der blev ikke fundet et dansk sted i nærheden. Søg efter by eller postnummer.';
+                locationStatus.textContent = text("Der blev ikke fundet et sted i nærheden. Søg efter by eller postnummer.", "No nearby city was found. Search by city or Danish postcode.");
                 return;
             }
 
@@ -317,11 +325,12 @@
                     saveLocationPreference({ placeId: currentPlace.currentPlace, checkedAt: Date.now() });
                 }
                 if (currentPlace?.currentPlace === nearest.id) {
-                    locationStatus.textContent = `Placeringen er omtrentlig. Du ser allerede bønnetiderne for ${nearest.name}.`;
+                    locationStatus.textContent = text(`Placeringen er omtrentlig. Du ser allerede bønnetiderne for ${nearest.name}.`,
+                        `Your location is approximate. You are already viewing prayer times for ${nearest.name}.`);
                 } else {
                     suggestedPlace = { url: target };
-                    locationStatus.textContent = 'Placeringen er omtrentlig. Bekræft det foreslåede sted.';
-                    locationSuggestion.textContent = `Vælg ${nearest.name}`;
+                    locationStatus.textContent = text("Placeringen er omtrentlig. Bekræft det foreslåede sted.", "Your location is approximate. Confirm the suggested place.");
+                    locationSuggestion.textContent = text(`Vælg ${nearest.name}`, `Choose ${nearest.name}`);
                     locationSuggestion.hidden = false;
                 }
                 return;
@@ -332,7 +341,7 @@
             if (currentPlace?.currentPlace === nearest.id && (!defaultPlace || automatic)) {
                 updateLocationButton();
                 if (!automatic) {
-                    locationStatus.textContent = `Du ser allerede bønnetiderne for ${nearest.name}.`;
+                    locationStatus.textContent = text(`Du ser allerede bønnetiderne for ${nearest.name}.`, `You are already viewing prayer times for ${nearest.name}.`);
                 }
                 return;
             }
@@ -350,8 +359,8 @@
                 stopLocation();
             } else if (!automatic) {
                 locationStatus.textContent = error.code === 1
-                    ? 'Browseren giver ikke adgang til din placering. Søg efter by eller postnummer.'
-                    : 'Placeringen kunne ikke bruges. Prøv igen, eller søg efter by eller postnummer.';
+                    ? text("Browseren giver ikke adgang til din placering. Søg efter by eller postnummer.", "Your browser does not allow location access. Search by city or Danish postcode.")
+                    : text("Placeringen kunne ikke bruges. Prøv igen, eller søg efter by eller postnummer.", "Your location could not be used. Try again or search by city or Danish postcode.");
             }
         } finally {
             if (locationRequest === request) {
@@ -409,7 +418,7 @@
         function openPicker() {
             cancelLocationRequest();
             panel.hidden = false;
-            toggle.textContent = 'Luk stedvælger';
+            toggle.textContent = text("Luk stedvælger", "Close location picker");
             toggle.setAttribute('aria-expanded', 'true');
             if (locationShortcut) {
                 locationShortcut.hidden = true;
@@ -420,7 +429,7 @@
             closeSuggestions();
             cancelLocationRequest();
             panel.hidden = true;
-            toggle.textContent = 'Skift sted';
+            toggle.textContent = text("Skift sted", "Change location");
             toggle.setAttribute('aria-expanded', 'false');
             if (!locationButton.hidden) {
                 updateLocationButton();
@@ -443,7 +452,7 @@
         locationButton.addEventListener('click', () => {
             if (currentPlace && locationPreference?.placeId === currentPlace.currentPlace) {
                 stopLocation();
-                locationStatus.textContent = 'Automatisk placering er slået fra.';
+                locationStatus.textContent = text("Automatisk placering er slået fra.", "Automatic location is off.");
             } else {
                 useLocation();
             }

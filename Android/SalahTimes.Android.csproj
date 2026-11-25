@@ -18,5 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="../Calculation/Calculation.csproj" />
     <AndroidAsset Include="../Web/wwwroot/data/prayer-places.json" Link="Assets/prayer-places.json" />
+    <AndroidAsset Include="../Web/wwwroot/data/prayer-cities-world.json" Link="Assets/prayer-cities-world.json" />
   </ItemGroup>
 </Project>

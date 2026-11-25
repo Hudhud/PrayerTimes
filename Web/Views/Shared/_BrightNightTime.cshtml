@@ -1,1 +1,4 @@
-<span aria-hidden="true">- -</span><span class="visually-hidden">Tidspunktet fastsættes efter en metode for lyse nætter.</span>
+@model bool
+<span aria-hidden="true">- -</span><span class="visually-hidden">@(Model
+    ? T("Tidspunktet kan ikke beregnes.", "The time cannot be calculated.")
+    : T("Tidspunktet fastsættes efter en metode for lyse nætter.", "A bright-night calculation method is needed."))</span>

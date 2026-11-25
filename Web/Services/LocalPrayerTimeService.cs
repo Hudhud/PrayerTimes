@@ -22,12 +22,12 @@ public sealed class LocalPrayerTimeService(DanishPrayerTimeCalculator calculator
         var result = new List<DailyPrayerTimes>();
         var latitude = double.Parse(city.Latitude, CultureInfo.InvariantCulture);
         var longitude = double.Parse(city.Longitude, CultureInfo.InvariantCulture);
-        angles ??= TwilightAngles.Default;
+        angles ??= TwilightAngles.ForPlace(city);
 
         for (var date = from; date < until; date = date.AddDays(1))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var key = (latitude, longitude, date, angles);
+            var key = (latitude, longitude, city.TimeZoneId, date, angles);
             if (!cache.TryGetValue(key, out DailyPrayerTimes? day))
             {
                 // An exact date is small enough to compute under a bounded set of locks.
@@ -37,7 +37,7 @@ public sealed class LocalPrayerTimeService(DanishPrayerTimeCalculator calculator
                     day = cache.GetOrCreate(key, entry =>
                     {
                         entry.SetSize(1).SetSlidingExpiration(TimeSpan.FromDays(1));
-                        return calculator.Calculate(date, latitude, longitude, angles);
+                        return calculator.Calculate(date, latitude, longitude, angles, city.TimeZoneId);
                     });
                 }
             }

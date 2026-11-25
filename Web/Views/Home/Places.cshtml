@@ -1,17 +1,17 @@
 @model Web.ViewModels.PlaceSearchViewModel
 @{
-    ViewData["Title"] = "Find bønnetider";
+    ViewData["Title"] = T("Find bønnetider", "Find prayer times");
     ViewData["PlaceDataAttribution"] = true;
 }
 
 <section class="readable" aria-labelledby="places-title">
-    <h1 id="places-title">Find bønnetider</h1>
+    <h1 id="places-title">@T("Find bønnetider", "Find prayer times")</h1>
     <partial name="_PlacePicker" model="Model.Query" />
     @if (Model.Results.Count > 0)
     {
         @if (Model.IsSpellingSuggestion)
         {
-            <h2>Mente du?</h2>
+            <h2>@T("Mente du?", "Did you mean?")</h2>
         }
         <ul class="place-results">
             @foreach (var place in Model.Results)
@@ -30,10 +30,10 @@
     }
     else if (Model.Query.Length == 1)
     {
-        <p>Skriv mindst to tegn for at søge.</p>
+        <p>@T("Skriv mindst to tegn for at søge.", "Enter at least two characters to search.")</p>
     }
     else if (Model.Query.Length > 0)
     {
-        <p>Der blev ikke fundet et sted. Prøv et andet bynavn eller postnummer.</p>
+        <p>@T("Der blev ikke fundet et sted. Prøv et andet bynavn eller postnummer.", "No place found. Try another city or a Danish postcode.")</p>
     }
 </section>

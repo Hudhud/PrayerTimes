@@ -19,7 +19,6 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
 {
     private enum Screen { Today, Calendar, Settings, Places, Method }
 
-    private static readonly CultureInfo Danish = CultureInfo.GetCultureInfo("da-DK");
     private static readonly Color Background = Color.ParseColor("#101917");
     private static readonly Color Surface = Color.ParseColor("#182622");
     private static readonly Color Outline = Color.ParseColor("#35483F");
@@ -43,6 +42,8 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
     private bool foreground;
     private Screen screen;
     private Screen returnScreen;
+    private int returnScrollPosition;
+    private bool solarEventHelp;
     private DateOnly displayedToday;
     private DateOnly month;
     private DateOnly? selectedDate;
@@ -56,16 +57,20 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         base.OnCreate(savedInstanceState);
         places = PrayerPreferences.Places(this);
         preferences = PrayerPreferences.Open(this);
+        language = new AppLanguage(preferences);
         loadedPlaceId = preferences.GetString(PrayerPreferences.PlaceKey, null);
         place = PrayerPreferences.SelectedPlace(this, preferences);
         hanafi = preferences.GetBoolean(PrayerPreferences.HanafiKey, false);
-        schedule = new LocalPrayerSchedule(place);
-        var today = DateOnly.FromDateTime(clock.Now.Date);
+        schedule = new LocalPrayerSchedule(place, PrayerPreferences.Angles(preferences));
+        var today = DateOnly.FromDateTime(clock.NowIn(place.TimeZoneId).Date);
         month = MonthOf(today);
         selectedDate = today;
         if (savedInstanceState is not null)
         {
             screen = (Screen)savedInstanceState.GetInt("screen");
+            returnScreen = (Screen)savedInstanceState.GetInt("return-screen");
+            returnScrollPosition = savedInstanceState.GetInt("return-scroll");
+            solarEventHelp = savedInstanceState.GetBoolean("solar-event-help");
             locationPermissionPending = savedInstanceState.GetBoolean("location-permission-pending");
             if (DateOnly.TryParseExact(savedInstanceState.GetString("month"), "yyyy-MM-dd",
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out var savedMonth))
@@ -85,7 +90,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         }
         Window?.SetSoftInputMode(SoftInput.AdjustResize);
         SetContentView(root);
-        Show(screen);
+        Show(screen, jumpToSelected: screen == Screen.Calendar, scrollPosition: savedInstanceState?.GetInt("scroll-position"));
     }
 
     protected override void OnStart()
@@ -119,6 +124,10 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         var primary = screen is Screen.Places or Screen.Method ? returnScreen : screen;
         outState.PutInt("screen", (int)primary);
         outState.PutBoolean("location-permission-pending", locationPermissionPending);
+        outState.PutInt("return-screen", (int)returnScreen);
+        outState.PutInt("return-scroll", returnScrollPosition);
+        outState.PutBoolean("solar-event-help", solarEventHelp);
+        outState.PutInt("scroll-position", scroll.ScrollY);
         outState.PutString("month", month.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
         outState.PutString("day", selectedDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
         base.OnSaveInstanceState(outState);
@@ -133,7 +142,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
                 CancelLocationLookup();
             }
             HideKeyboard();
-            Show(returnScreen);
+            Show(returnScreen, scrollPosition: returnScrollPosition);
         }
         else if (screen != Screen.Today)
         {
@@ -145,23 +154,23 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         }
     }
 
-    private void Show(Screen target, bool jumpToSelected = false)
+    private void Show(Screen target, bool jumpToSelected = false, int? scrollPosition = null)
     {
         screen = target;
         locationPanel = null;
         root.RemoveAllViews();
-        root.AddView(BuildHeader(), MatchWidth());
+        root.AddView(screen == Screen.Calendar && HasSelectedPlace ? BuildCalendarHeader() : BuildHeader(), MatchWidth());
         scroll = new ScrollView(this) { FillViewport = true };
         content = new LinearLayout(this) { Orientation = Orientation.Vertical };
         content.SetPadding(Dp(20), Dp(8), Dp(20), Dp(24));
         scroll.AddView(content, new ScrollView.LayoutParams(-1, -2));
         root.AddView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
-        displayedToday = DateOnly.FromDateTime(clock.Now.Date);
+        displayedToday = DateOnly.FromDateTime(clock.NowIn(place.TimeZoneId).Date);
 
         switch (screen)
         {
             case Screen.Today: RenderToday(); break;
-            case Screen.Calendar: RenderCalendar(jumpToSelected); break;
+            case Screen.Calendar: RenderCalendar(jumpToSelected && !scrollPosition.HasValue); break;
             case Screen.Settings: RenderSettings(); break;
             case Screen.Places: RenderPlaces(); break;
             case Screen.Method: RenderMethod(); break;
@@ -171,6 +180,32 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         {
             root.AddView(BuildNavigation(), MatchWidth());
         }
+        if (scrollPosition is { } position)
+        {
+            var currentScroll = scroll;
+            AfterLayout(currentScroll, () => currentScroll.ScrollTo(0, position));
+        }
+    }
+
+    private static void AfterLayout(View view, Action action)
+    {
+        var observer = view.ViewTreeObserver;
+        if (observer is not { IsAlive: true })
+        {
+            view.Post(action);
+            return;
+        }
+
+        EventHandler? listener = null;
+        listener = (_, _) =>
+        {
+            if ((observer.IsAlive ? observer : view.ViewTreeObserver) is { } current)
+            {
+                current.GlobalLayout -= listener;
+            }
+            action();
+        };
+        observer.GlobalLayout += listener;
     }
 
     private View BuildHeader()
@@ -180,7 +215,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         row.SetPadding(Dp(20), Dp(8), Dp(20), Dp(8));
         if (screen is Screen.Places or Screen.Method)
         {
-            row.AddView(ActionButton("‹ Tilbage", () => OnBackPressed(), description: "Tilbage"), new LinearLayout.LayoutParams(-2, -2));
+            row.AddView(ActionButton(T("‹ Tilbage", "‹ Back"), () => OnBackPressed(), description: T("Tilbage", "Back")), new LinearLayout.LayoutParams(-2, -2));
             return row;
         }
 
@@ -191,7 +226,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         row.AddView(brand, new LinearLayout.LayoutParams(0, -2, 1));
         if (screen != Screen.Settings)
         {
-            row.AddView(ActionButton("Skift sted", OpenPlaces), new LinearLayout.LayoutParams(-2, -2) { LeftMargin = Dp(8) });
+            row.AddView(ActionButton(T("Skift sted", "Change location"), OpenPlaces), new LinearLayout.LayoutParams(-2, -2) { LeftMargin = Dp(8) });
         }
         return row;
     }
@@ -203,9 +238,9 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         band.AddView(Divider());
         var row = new LinearLayout(this);
         row.SetPadding(Dp(12), Dp(4), Dp(12), Dp(4));
-        row.AddView(NavigationTab(Screen.Today, "I dag", Resource.Drawable.nav_today), new LinearLayout.LayoutParams(0, -2, 1));
-        row.AddView(NavigationTab(Screen.Calendar, "Kalender", Resource.Drawable.nav_calendar), new LinearLayout.LayoutParams(0, -2, 1));
-        row.AddView(NavigationTab(Screen.Settings, "Indstillinger", Resource.Drawable.nav_settings), new LinearLayout.LayoutParams(0, -2, 1));
+        row.AddView(NavigationTab(Screen.Today, T("I dag", "Today"), Resource.Drawable.nav_today), new LinearLayout.LayoutParams(0, -2, 1));
+        row.AddView(NavigationTab(Screen.Calendar, T("Kalender", "Calendar"), Resource.Drawable.nav_calendar), new LinearLayout.LayoutParams(0, -2, 1));
+        row.AddView(NavigationTab(Screen.Settings, T("Indstillinger", "Settings"), Resource.Drawable.nav_settings), new LinearLayout.LayoutParams(0, -2, 1));
         band.AddView(row, MatchWidth());
         return band;
     }
@@ -230,7 +265,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
         label.ImportantForAccessibility = ImportantForAccessibility.No;
         label.Gravity = GravityFlags.Center;
         tab.AddView(label, MatchWidth(top: 3));
-        tab.Click += (_, _) => { if (screen != target) Show(target); };
+        tab.Click += (_, _) => { if (screen != target) Show(target, jumpToSelected: target == Screen.Calendar); };
         return tab;
     }
 
@@ -241,7 +276,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
             return;
         }
 
-        var now = clock.Now;
+        var now = clock.NowIn(place.TimeZoneId);
         var today = DateOnly.FromDateTime(now.Date);
         if (today != displayedToday && screen is Screen.Today or Screen.Calendar)
         {
@@ -250,10 +285,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
                 month = MonthOf(today);
                 selectedDate = today;
             }
-            var position = scroll.ScrollY;
-            Show(screen);
-            var currentScroll = scroll;
-            currentScroll.Post(() => currentScroll.ScrollTo(0, position));
+            Show(screen, scrollPosition: scroll.ScrollY);
         }
         else if (screen == Screen.Today && HasSelectedPlace)
         {
@@ -273,12 +305,19 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
     {
         CancelLocationLookup();
         returnScreen = screen;
+        returnScrollPosition = scroll.ScrollY;
         Show(Screen.Places);
     }
 
-    private void OpenMethod()
+    private void OpenMethod() => ShowMethod(showSolarEventHelp: false);
+
+    private void OpenSolarEventHelp() => ShowMethod(showSolarEventHelp: true);
+
+    private void ShowMethod(bool showSolarEventHelp)
     {
+        solarEventHelp = showSolarEventHelp;
         returnScreen = screen;
+        returnScrollPosition = scroll.ScrollY;
         Show(Screen.Method);
     }
 
@@ -378,7 +417,7 @@ public sealed partial class MainActivity : Activity, ISharedPreferencesOnSharedP
 
     private static DateOnly MonthOf(DateOnly date) => new(date.Year, date.Month, 1);
 
-    private static string Capitalize(string text) => char.ToUpper(text[0], Danish) + text[1..];
+    private string Capitalize(string text) => char.ToUpper(text[0], UiCulture) + text[1..];
 
     private sealed class SafeArea(Context context) : LinearLayout(context)
     {

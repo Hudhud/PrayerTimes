@@ -9,6 +9,14 @@ public sealed record TwilightAngles
     public const int Maximum = 30;
     public static TwilightAngles Default { get; } = new(18, 17);
 
+    public static TwilightAngles ForPlace(PrayerCity place) => place.CountryCode switch
+    {
+        "US" or "CA" => new(15, 15),
+        "EG" => new(19.5m, 17.5m),
+        "PK" or "BD" => new(18, 18),
+        _ => Default
+    };
+
     private TwilightAngles(decimal fajr, decimal isha) => (Fajr, Isha) = (fajr, isha);
 
     public decimal Fajr { get; }

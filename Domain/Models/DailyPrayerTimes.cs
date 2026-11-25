@@ -13,4 +13,12 @@ public sealed class DailyPrayerTimes
     public bool FajrTimeUnavailable { get; init; }
     public bool IshaTimeUnavailable { get; init; }
     public int? IshaDayOffset { get; init; }
+    public PrayerInstants? Instants { get; init; }
+    public bool HasUnavailableSunEvents => string.IsNullOrEmpty(SunriseTime) || string.IsNullOrEmpty(MaghribTime)
+        || string.IsNullOrEmpty(AsrTime) || string.IsNullOrEmpty(AsrHanafiTime);
+    public bool HasUnavailableTimes => FajrTimeUnavailable || IshaTimeUnavailable || HasUnavailableSunEvents;
+
 }
+
+public sealed record PrayerInstants(DateTimeOffset? Fajr, DateTimeOffset? Sunrise, DateTimeOffset? Dhuhr,
+    DateTimeOffset? Asr, DateTimeOffset? AsrHanafi, DateTimeOffset? Maghrib, DateTimeOffset? Isha);

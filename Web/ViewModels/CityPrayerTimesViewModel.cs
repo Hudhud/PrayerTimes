@@ -20,7 +20,7 @@ public sealed record DailyPrayerTimesViewModel(
 {
     public DateOnly Date => DateOnly.FromDateTime(Now.Date);
     public DateOnly? NextDate => Next?.StartsAt is { } start ? DateOnly.FromDateTime(start.Date) : null;
-    public DateTimeOffset Midnight => DanishTime.At(Date.AddDays(1), TimeOnly.MinValue);
+    public DateTimeOffset Midnight => LocalTime.At(Date.AddDays(1), TimeOnly.MinValue, City.TimeZoneId);
     public string AsrMethod => Hanafi ? "hanafi" : "standard";
 
     public DateTimeOffset RefreshAt
@@ -33,9 +33,9 @@ public sealed record DailyPrayerTimesViewModel(
                 var retry = Now.AddMinutes(2);
                 return retry < midnight ? retry : midnight;
             }
-            var sunrise = PrayerDay.Sunrise(Day);
+            var sunrise = PrayerDay.AvailableSunrise(Day);
             var refresh = Next?.StartsAt is { } next && next < midnight ? next : midnight;
-            return Now < sunrise && sunrise < refresh && (Current?.Name == "Fajr" || Next is null) ? sunrise : refresh;
+            return sunrise is { } rising && Now < rising && rising < refresh && (Current?.Name == "Fajr" || Next is null) ? rising : refresh;
         }
     }
 }
@@ -53,7 +53,7 @@ public sealed record CalendarViewModel(
     public DateOnly NextMonth => Month.AddMonths(1);
     public DateOnly? PreviousMonth => Month == DateOnly.MinValue ? null : Month.AddMonths(-1);
     public bool HasBrightNightTimes =>
-        Days.Any(day => day.FajrTimeUnavailable || day.IshaTimeUnavailable);
+        Days.Any(day => day.HasUnavailableTimes);
 
     public static string MonthParameter(DateOnly date) => date.ToString("yyyy-MM", CultureInfo.InvariantCulture);
     public static string DayParameter(DateOnly date) => date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);

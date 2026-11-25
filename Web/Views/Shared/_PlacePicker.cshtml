@@ -1,23 +1,24 @@
 @model string
 <div class="place-picker" data-place-picker>
-    <label for="place-query">By eller postnummer</label>
+    <label for="place-query">@T("By eller postnummer", "City or Danish postcode")</label>
     <div class="place-controls">
         <form method="get" asp-controller="Home" asp-action="Places" class="place-search" role="search"
               data-suggestions="@Url.Action("PlaceSuggestions", "Home")">
             <div class="place-search-field">
-                <input id="place-query" name="q" type="search" value="@Model" placeholder="Fx Aarhus eller 8000"
+                <input id="place-query" name="q" type="search" value="@Model" placeholder="@T("Fx Aarhus, 8000 eller London", "e.g. Aarhus, 8000 or London")"
                        maxlength="80" required autocomplete="off" />
                 <div class="place-suggestions">
-                    <p class="place-suggestion-heading" data-spelling-heading aria-hidden="true" hidden>Mente du?</p>
-                    <ul id="place-suggestions" role="listbox" aria-label="Stedforslag" hidden></ul>
+                    <p class="place-suggestion-heading" data-spelling-heading aria-hidden="true" hidden>@T("Mente du?", "Did you mean?")</p>
+                    <ul id="place-suggestions" role="listbox" aria-label="@T("Stedforslag", "Suggested places")" hidden></ul>
                     <p class="place-search-status visually-hidden" role="status"></p>
                 </div>
             </div>
-            <button class="button place-search-button" type="submit">Søg</button>
+            <button class="button place-search-button" type="submit">@T("Søg", "Search")</button>
         </form>
         <button class="button location-button" type="button" data-use-location
-                data-catalog="@Url.Content("~/data/prayer-places.json")" data-place-base="@Url.Content("~/")"
-                hidden>Brug min placering</button>
+                data-catalog="@Url.Content("~/data/prayer-places.json")"
+                data-world-catalog="@Url.Content("~/data/prayer-cities-world.json")" data-place-base="@Url.Content("~/")"
+                hidden>@T("Brug min placering", "Use my location")</button>
     </div>
     <div data-location-feedback>
         <p class="location-status" data-location-status role="status"></p>

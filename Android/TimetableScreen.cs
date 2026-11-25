@@ -12,6 +12,8 @@ public sealed partial class MainActivity
     private TextView nextName = null!;
     private TextView nextTime = null!;
     private TextView countdown = null!;
+    private Button nextHelp = null!;
+    private int todayColumns;
     private TextView todayStatus = null!;
     private LinearLayout todayTimes = null!;
     private PrayerEvent? nextPrayer;
@@ -19,6 +21,7 @@ public sealed partial class MainActivity
 
     private Button? openDateButton;
     private LinearLayout? openDatePanel;
+    private LinearLayout? calendarDays;
 
     private string AsrMethod => hanafi ? "Hanafi" : "Standard";
 
@@ -30,12 +33,12 @@ public sealed partial class MainActivity
             return;
         }
 
-        var now = clock.Now;
+        var now = clock.NowIn(place.TimeZoneId);
         var date = DateOnly.FromDateTime(now.Date);
-        AddHeading(place.Name, Capitalize(date.ToString("dddd d. MMMM yyyy", Danish)));
+        AddHeading(place.Name, Capitalize(date.ToString(T("dddd d. MMMM yyyy", "dddd d MMMM yyyy"), UiCulture)));
         if (preferences.GetBoolean(PrayerPreferences.FoundByLocationKey, false))
         {
-            content.AddView(Label("Valgt via placering", 12, Accent), MatchWidth(bottom: 8));
+            content.AddView(Label(T("Valgt via placering", "Selected using your location"), 12, Accent), MatchWidth(bottom: 8));
         }
         AddLocationPanel();
 
@@ -46,7 +49,7 @@ public sealed partial class MainActivity
         heroBackground.SetStroke(Dp(1), AccentOutline);
         hero.Background = heroBackground;
         hero.SetPadding(Dp(16), Dp(14), Dp(16), Dp(15));
-        hero.AddView(Label("Næste bøn", 14, Accent, bold: true, heading: true), MatchWidth());
+        hero.AddView(Label(T("Næste bøn", "Next prayer"), 14, Accent, bold: true, heading: true), MatchWidth());
         var headingRow = new LinearLayout(this);
         headingRow.SetGravity(GravityFlags.CenterVertical);
         nextName = Label("", 29, Text, bold: true);
@@ -58,16 +61,30 @@ public sealed partial class MainActivity
         countdown = Label("", 14, Text);
         countdown.FontFeatureSettings = "tnum";
         hero.AddView(countdown, MatchWidth(top: 2));
+        nextHelp = ActionButton(T("Læs om manglende tider", "About unavailable times"), OpenSolarEventHelp);
+        hero.AddView(nextHelp, MatchWidth(top: 6));
         content.AddView(hero, MatchWidth(top: 2));
-        AddSectionTitle("Dagens tider");
+        AddSectionTitle(T("Dagens tider", "Today’s times"));
         todayStatus = Label("", 13, CurrentAccent, bold: true);
         content.AddView(todayStatus, MatchWidth(bottom: 6));
         todayTimes = new LinearLayout(this) { Orientation = Orientation.Vertical };
         content.AddView(todayTimes, MatchWidth());
+        todayColumns = 3;
         RefreshTodayTimes(now);
         RenderCountdown(now);
-        content.AddView(ActionButton("Se månedskalenderen", OpenTodayInCalendar), MatchWidth(top: 12));
-        content.AddView(Label($"Dansk lokal tid   ·   Asr {AsrMethod}", 13, Muted), MatchWidth(top: 10));
+        AfterLayout(todayTimes, () =>
+        {
+            var minimum = TodayTileWidth();
+            var fit = Math.Max(1, (todayTimes.Width + Dp(6)) / (minimum + Dp(6)));
+            var columns = fit >= 6 ? 6 : fit >= 3 ? 3 : fit;
+            if (screen == Screen.Today && columns != todayColumns)
+            {
+                todayColumns = columns;
+                RefreshTodayTimes(clock.NowIn(place.TimeZoneId));
+            }
+        });
+        content.AddView(ActionButton(T("Se månedskalenderen", "View monthly timetable"), OpenTodayInCalendar), MatchWidth(top: 12));
+        content.AddView(Label($"{(place.CountryCode == "DK" ? T("Dansk lokal tid", "Local time in Denmark") : place.TimeZoneId)}   ·   Asr {AsrMethod}", 13, Muted), MatchWidth(top: 10));
     }
 
     private void RefreshTodayTimes(DateTimeOffset now)
@@ -75,19 +92,22 @@ public sealed partial class MainActivity
         var (current, next, refreshAt) = schedule.Status(now, hanafi);
         nextPrayer = next;
         refreshPrayerAt = refreshAt;
-        nextName.Text = nextPrayer?.Name ?? "Tidspunktet afhænger af lyse nætter";
+        nextName.Text = nextPrayer is null ? T("Næste bønnetid er ikke tilgængelig", "Next prayer time unavailable")
+            : nextPrayer.StartsAt?.Date > now.Date ? T($"{nextPrayer.Name} i morgen", $"{nextPrayer.Name} tomorrow") : nextPrayer.Name;
         nextName.TextSize = nextPrayer is null ? 18 : 29;
         nextTime.Text = nextPrayer?.Time;
         nextTime.Visibility = nextPrayer is null ? ViewStates.Gone : ViewStates.Visible;
+        nextHelp.Visibility = nextPrayer is null ? ViewStates.Visible : ViewStates.Gone;
+        countdown.Visibility = nextPrayer is null ? ViewStates.Gone : ViewStates.Visible;
 
         var day = Day(DateOnly.FromDateTime(now.Date));
         var times = PrayerDay.Events(day, hanafi).ToList();
-        times.Insert(1, new PrayerEvent("Solopgang", PrayerDay.Sunrise(day)));
-        todayStatus.Text = current is not null && !times.Contains(current) ? $"Nu · {current.Name}" : "";
+        times.Insert(1, new PrayerEvent("Solopgang", PrayerDay.AvailableSunrise(day)));
+        todayStatus.Text = current is not null && !times.Contains(current) ? T($"Nu · {current.Name}", $"Now · {current.Name}") : "";
         todayStatus.Visibility = string.IsNullOrEmpty(todayStatus.Text) ? ViewStates.Gone : ViewStates.Visible;
 
         todayTimes.RemoveAllViews();
-        foreach (var rowTimes in times.Chunk(3))
+        foreach (var rowTimes in times.Chunk(todayColumns))
         {
             var row = new LinearLayout(this) { BaselineAligned = false };
             foreach (var prayer in rowTimes)
@@ -98,10 +118,10 @@ public sealed partial class MainActivity
                     isCurrent ? CurrentOutline : isNext ? AccentOutline : Outline, 12);
                 tile.SetMinimumHeight(Dp(79));
                 tile.SetPadding(Dp(8), Dp(7), Dp(8), Dp(6));
-                var caption = isCurrent ? "Nu" : isNext ? "Næste" : prayer.Time is null ? "Lyse nætter" :
-                    prayer.StartsAt?.Date > day.Date ? "Næste døgn" : null;
+                var caption = isCurrent ? T("Nu", "Now") : isNext ? T("Næste", "Next") : prayer.Time is null ? T("Ikke tilgængelig", "Time unavailable") :
+                    prayer.StartsAt?.Date > day.Date ? T("Næste døgn", "Next day") : null;
                 var tint = isCurrent ? CurrentAccent : isNext ? Accent : Muted;
-                tile.AddView(Label(prayer.Name, 13, tint, bold: isCurrent || isNext), MatchWidth());
+                tile.AddView(Label(prayer.Name == "Solopgang" ? T("Solopgang", "Sunrise") : prayer.Name, 13, tint, bold: isCurrent || isNext), MatchWidth());
                 var time = Label(prayer.Time ?? "—", 22, prayer.Name == "Solopgang" ? Muted : Text, bold: true);
                 time.FontFeatureSettings = "tnum";
                 tile.AddView(time, MatchWidth());
@@ -113,27 +133,33 @@ public sealed partial class MainActivity
             }
             todayTimes.AddView(row, MatchWidth(bottom: 6));
         }
-        if (day.FajrTimeUnavailable || day.IshaTimeUnavailable)
+        if (day.HasUnavailableTimes)
         {
-            todayTimes.AddView(ActionButton("Læs om lyse nætter", OpenMethod), MatchWidth());
+            todayTimes.AddView(ActionButton(T("Læs om manglende tider", "About unavailable times"), OpenSolarEventHelp), MatchWidth());
         }
+    }
+
+    private int TodayTileWidth()
+    {
+        using var name = Label("", 13, Text);
+        using var time = Label("", 22, Text, bold: true);
+        return (int)Math.Ceiling(Math.Max(name.Paint!.MeasureText(T("Solopgang", "Sunrise")),
+            time.Paint!.MeasureText("00:00"))) + Dp(18);
     }
 
     private void RenderCountdown(DateTimeOffset now)
     {
         if (nextPrayer?.StartsAt is not { } startsAt)
         {
-            countdown.Text = "Se vejledningen under Indstillinger";
             return;
         }
 
         var seconds = Math.Max(0, (int)Math.Ceiling((startsAt - now).TotalSeconds));
         var hours = seconds / 3600;
         var minutes = seconds / 60 % 60;
-        var duration = hours > 0 ? $"{hours} t. {minutes} min. {seconds % 60} sek." :
-            minutes > 0 ? $"{minutes} min. {seconds % 60} sek." : $"{seconds} sek.";
-        var tomorrow = startsAt.Date > now.Date ? "I morgen · " : "";
-        countdown.Text = $"{tomorrow}Om {duration}";
+        var duration = hours > 0 ? T($"{hours} t. {minutes} min. {seconds % 60} sek.", $"{hours} hr {minutes} min {seconds % 60} sec") :
+            minutes > 0 ? T($"{minutes} min. {seconds % 60} sek.", $"{minutes} min {seconds % 60} sec") : T($"{seconds} sek.", $"{seconds} sec");
+        countdown.Text = T($"Om {duration}", $"In {duration}");
     }
 
     private LinearLayout BuildPrayerTimes(DailyPrayerTimes day)
@@ -149,17 +175,17 @@ public sealed partial class MainActivity
             }
             if (i == 1)
             {
-                AddPrayerRow(panel, "Solopgang", day.SunriseTime, null, secondary: true);
+                AddPrayerRow(panel, T("Solopgang", "Sunrise"), string.IsNullOrEmpty(day.SunriseTime) ? "—" : day.SunriseTime, null, secondary: true);
                 panel.AddView(Divider());
             }
-            var note = prayer.StartsAt is null ? "Lyse nætter" :
-                prayer.StartsAt.Value.Date > day.Date ? "Næste døgn" : null;
+            var note = prayer.StartsAt is null ? T("Ikke tilgængelig", "Time unavailable") :
+                prayer.StartsAt.Value.Date > day.Date ? T("Næste døgn", "Next day") : null;
             AddPrayerRow(panel, prayer.Name, prayer.Time ?? "—", note);
         }
-        if (day.FajrTimeUnavailable || day.IshaTimeUnavailable)
+        if (day.HasUnavailableTimes)
         {
             panel.AddView(Divider());
-            var explanation = ActionButton("Læs om lyse nætter", OpenMethod);
+            var explanation = ActionButton(T("Læs om manglende tider", "About unavailable times"), OpenSolarEventHelp);
             var spacing = MatchWidth(top: 8, bottom: 8);
             spacing.LeftMargin = Dp(12);
             spacing.RightMargin = Dp(12);
@@ -185,6 +211,34 @@ public sealed partial class MainActivity
         panel.AddView(row, MatchWidth());
     }
 
+    private LinearLayout BuildCalendarHeader()
+    {
+        var header = new LinearLayout(this) { Orientation = Orientation.Vertical };
+        header.SetPadding(Dp(20), Dp(8), Dp(20), 0);
+        var row = new LinearLayout(this);
+        row.SetGravity(GravityFlags.CenterVertical);
+        var title = Capitalize(month.ToString("MMMM yyyy", UiCulture));
+        var date = ActionButton(title + " ⌄", OpenCalendarDatePicker,
+            description: T($"Vælg dato, {title}", $"Choose date, {title}"));
+        date.Gravity = GravityFlags.CenterVertical | GravityFlags.Left;
+        row.AddView(date, new LinearLayout.LayoutParams(0, -2, 1));
+        row.AddView(ActionButton(T("Skift sted", "Change location"), OpenPlaces), new LinearLayout.LayoutParams(-2, -2) { LeftMargin = Dp(8) });
+        header.AddView(row, MatchWidth());
+        header.AddView(Label($"{place.Name}   ·   Asr {AsrMethod}", 14, Muted), MatchWidth(top: 5, bottom: 7));
+
+        var navigation = new LinearLayout(this);
+        var previous = ActionButton(T("‹ Forrige", "‹ Previous"), () => ChangeMonth(-1), description: T("Forrige måned", "Previous month"));
+        previous.Enabled = month > FirstCalendarMonth;
+        navigation.AddView(previous, new LinearLayout.LayoutParams(0, -2, 1));
+        navigation.AddView(ActionButton(T("I dag", "Today"), OpenTodayInCalendar),
+            new LinearLayout.LayoutParams(0, -2, 1) { LeftMargin = Dp(6), RightMargin = Dp(6) });
+        var next = ActionButton(T("Næste ›", "Next ›"), () => ChangeMonth(1), description: T("Næste måned", "Next month"));
+        next.Enabled = month < LastCalendarMonth;
+        navigation.AddView(next, new LinearLayout.LayoutParams(0, -2, 1));
+        header.AddView(navigation, MatchWidth(bottom: 7));
+        return header;
+    }
+
     private void RenderCalendar(bool jumpToSelected)
     {
         if (!HasSelectedPlace)
@@ -193,17 +247,10 @@ public sealed partial class MainActivity
             return;
         }
 
-        AddHeading(Capitalize(month.ToString("MMMM yyyy", Danish)), $"{place.Name}   ·   Asr {AsrMethod}");
         AddLocationPanel();
-        var navigation = new LinearLayout(this);
-        navigation.AddView(ActionButton("‹ Forrige", () => ChangeMonth(-1), description: "Forrige måned"), new LinearLayout.LayoutParams(0, -2, 1));
-        navigation.AddView(ActionButton("I dag", OpenTodayInCalendar), new LinearLayout.LayoutParams(0, -2, 1) { LeftMargin = Dp(6), RightMargin = Dp(6) });
-        navigation.AddView(ActionButton("Næste ›", () => ChangeMonth(1), description: "Næste måned"), new LinearLayout.LayoutParams(0, -2, 1));
-        content.AddView(navigation, MatchWidth(bottom: 12));
-
         openDateButton = null;
         openDatePanel = null;
-        var list = Panel(Surface, Outline);
+        var list = calendarDays = Panel(Surface, Outline);
         for (var date = month; date < month.AddMonths(1); date = date.AddDays(1))
         {
             var day = date;
@@ -232,11 +279,9 @@ public sealed partial class MainActivity
         }
         content.AddView(list, MatchWidth());
 
-        if (jumpToSelected && openDateButton?.Parent is View selected)
+        if (jumpToSelected)
         {
-            var calendarScroll = scroll;
-            var screenContent = content;
-            calendarScroll.Post(() => calendarScroll.ScrollTo(0, list.Top + selected.Top - screenContent.PaddingTop));
+            ScrollToCalendarDate();
         }
     }
 
@@ -257,6 +302,23 @@ public sealed partial class MainActivity
         if (previousDate != date)
         {
             OpenDate(date, button, panel);
+            ScrollToCalendarDate();
+        }
+    }
+
+    private void ScrollToCalendarDate()
+    {
+        if (openDateButton?.Parent is View selected && calendarDays is { } list)
+        {
+            var calendarScroll = scroll;
+            var padding = content.PaddingTop;
+            AfterLayout(calendarScroll, () =>
+            {
+                if (openDateButton?.Parent == selected)
+                {
+                    calendarScroll.ScrollTo(0, list.Top + selected.Top - padding);
+                }
+            });
         }
     }
 
@@ -273,23 +335,24 @@ public sealed partial class MainActivity
 
     private string DateLabel(DateOnly date, bool expanded)
     {
-        var today = date == displayedToday ? " · I dag" : "";
-        return $"{Capitalize(date.ToString("dddd d. MMMM", Danish))}{today}  {(expanded ? "⌃" : "⌄")}";
+        var today = date == displayedToday ? T(" · I dag", " · Today") : "";
+        return $"{Capitalize(date.ToString(T("dddd d. MMMM", "dddd d MMMM"), UiCulture))}{today}  {(expanded ? "⌃" : "⌄")}";
     }
 
     private void ChangeMonth(int direction)
     {
         month = month.AddMonths(direction);
-        var today = DateOnly.FromDateTime(clock.Now.Date);
+        var today = DateOnly.FromDateTime(clock.NowIn(place.TimeZoneId).Date);
         selectedDate = month == MonthOf(today) ? today : null;
-        Show(Screen.Calendar);
+        Show(Screen.Calendar, jumpToSelected: selectedDate.HasValue);
     }
 
-    private void OpenTodayInCalendar()
+    private void OpenTodayInCalendar() => OpenCalendarDate(DateOnly.FromDateTime(clock.NowIn(place.TimeZoneId).Date));
+
+    private void OpenCalendarDate(DateOnly date)
     {
-        var today = DateOnly.FromDateTime(clock.Now.Date);
-        month = MonthOf(today);
-        selectedDate = today;
+        month = MonthOf(date);
+        selectedDate = date;
         Show(Screen.Calendar, jumpToSelected: true);
     }
 }

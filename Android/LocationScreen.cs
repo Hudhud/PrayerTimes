@@ -83,22 +83,25 @@ public sealed partial class MainActivity
             return;
         }
 
-        if (LocationPermissionBlocked || (!userInitiated && LocationPermissionAsked))
+        if (!userInitiated)
         {
-            ShowLocationFallback("Giv adgang til placering, eller søg efter by eller postnummer.");
-            if (userInitiated && LocationPermissionBlocked)
-            {
-                returningFromLocationSettings = true;
-                StartActivity(new Intent(global::Android.Provider.Settings.ActionApplicationDetailsSettings,
-                    global::Android.Net.Uri.FromParts("package", PackageName, null)));
-            }
+            return;
+        }
+
+        if (LocationPermissionBlocked)
+        {
+            ShowLocationFallback(T("Placering er slået fra for Salah Times. Du kan stadig vælge dit sted ovenfor.", "Location is off for Salah Times. You can still choose a place above."));
+            returningFromLocationSettings = true;
+            using var intent = new Intent(global::Android.Provider.Settings.ActionApplicationDetailsSettings,
+                global::Android.Net.Uri.FromParts("package", PackageName, null));
+            StartActivity(intent);
             return;
         }
 
         using var edit = preferences.Edit();
         edit?.PutBoolean(LocationPermissionAskedKey, true)?.Apply();
         locationPermissionPending = true;
-        locationStatus = "Tillad placering for at finde en by i nærheden.";
+        locationStatus = T("Tillad placering for at finde en by i nærheden.", "Allow location access to find a nearby city.");
         UpdateLocationPanel();
         RequestPermissions([PermissionNames.AccessFineLocation, PermissionNames.AccessCoarseLocation], LocationPermissionRequest);
     }
@@ -125,7 +128,7 @@ public sealed partial class MainActivity
         }
         else
         {
-            ShowLocationFallback("Placering blev ikke tilladt. Søg efter by eller postnummer.");
+            ShowLocationFallback(T("Placering blev ikke tilladt. Søg efter by eller postnummer.", "Location access was denied. Search by city or Danish postcode."));
         }
     }
 
@@ -133,7 +136,7 @@ public sealed partial class MainActivity
     {
         if (GetSystemService(LocationService) is not LocationManager manager)
         {
-            ShowLocationFallback("Placering er ikke tilgængelig. Vælg dit sted manuelt.");
+            ShowLocationFallback(T("Placering er ikke tilgængelig. Vælg dit sted manuelt.", "Location is unavailable. Choose your place manually."));
             return;
         }
 
@@ -152,7 +155,7 @@ public sealed partial class MainActivity
         }
         if (providers.Count == 0)
         {
-            ShowLocationFallback("Slå placering til på telefonen, eller vælg dit sted manuelt.");
+            ShowLocationFallback(T("Slå placering til på telefonen, eller vælg dit sted manuelt.", "Turn on location on your phone or choose your place manually."));
             return;
         }
 
@@ -164,7 +167,7 @@ public sealed partial class MainActivity
         positionListener = listener;
         locationTimeout = new Java.Lang.Runnable(CompleteLocationLookup);
         handler.PostDelayed(locationTimeout, LocationTimeoutMilliseconds);
-        locationStatus = "Finder din placering…";
+        locationStatus = T("Finder din placering…", "Finding your location…");
         UpdateLocationPanel();
 
         try
@@ -187,7 +190,7 @@ public sealed partial class MainActivity
         catch (Java.Lang.SecurityException)
         {
             CancelLocationLookup();
-            ShowLocationFallback("Placering er ikke tilgængelig. Vælg dit sted manuelt.");
+            ShowLocationFallback(T("Placering er ikke tilgængelig. Vælg dit sted manuelt.", "Location is unavailable. Choose your place manually."));
         }
     }
 
@@ -206,7 +209,7 @@ public sealed partial class MainActivity
             CancelLocationLookup();
             if (nearest is null)
             {
-                ShowLocationFallback("Der blev ikke fundet en dansk by nær din placering.");
+                ShowLocationFallback(T("Der blev ikke fundet en by nær din placering.", "No city was found near your location."));
             }
             else if (!HasSelectedPlace || nearest.Slug != place.Slug ||
                 !preferences.GetBoolean(PrayerPreferences.FoundByLocationKey, false))
@@ -232,9 +235,9 @@ public sealed partial class MainActivity
         CancelLocationLookup();
         locationSuggestion = approximatePlace;
         ShowLocationFallback(approximatePlace is not null
-            ? "Din placering er omtrentlig. Bekræft stedet, eller vælg et andet."
-            : positionReceived ? "Der blev ikke fundet en dansk by nær din placering."
-            : "Din placering kunne ikke findes. Søg efter by eller postnummer.");
+            ? T("Din placering er omtrentlig. Bekræft stedet, eller vælg et andet.", "Your location is approximate. Confirm the suggested place or choose another.")
+            : positionReceived ? T("Der blev ikke fundet en by nær din placering.", "No city was found near your location.")
+            : T("Din placering kunne ikke findes. Søg efter by eller postnummer.", "Your location could not be found. Search by city or Danish postcode."));
     }
 
     private void CancelLocationLookup()
@@ -269,27 +272,20 @@ public sealed partial class MainActivity
     private void ShowLocationFallback(string message)
     {
         locationStatus = message;
-        if (!HasSelectedPlace && screen is Screen.Today or Screen.Calendar)
-        {
-            OpenPlaces();
-        }
-        else
-        {
-            UpdateLocationPanel();
-        }
+        UpdateLocationPanel();
     }
 
     private void RenderLocationRequired()
     {
-        AddHeading("Find bønnetider for dit sted");
-        AddLocationPanel();
+        AddHeading(T("Find bønnetider for dit sted", "Find prayer times for your location"));
+        AddPlaceSearch();
     }
 
-    private void AddLocationPanel()
+    private void AddLocationPanel(int top = 0)
     {
         locationPanel = new LinearLayout(this) { Orientation = Orientation.Vertical };
         locationPanel.AccessibilityLiveRegion = AccessibilityLiveRegion.Polite;
-        content.AddView(locationPanel, MatchWidth());
+        content.AddView(locationPanel, MatchWidth(top));
         UpdateLocationPanel();
     }
 
@@ -307,21 +303,21 @@ public sealed partial class MainActivity
         }
         if (locationSuggestion is { } suggestion)
         {
-            panel.AddView(ActionButton($"Vælg {suggestion.Name}", () => ChoosePlace(suggestion, fromDevice: true),
+            panel.AddView(ActionButton(T($"Vælg {suggestion.Name}", $"Choose {suggestion.Name}"), () => ChoosePlace(suggestion, fromDevice: true),
                 selected: true), MatchWidth(bottom: 8));
         }
 
         var busy = positionListener is not null || locationPermissionPending;
         if (screen == Screen.Places || !HasSelectedPlace)
         {
-            var label = LocationPermissionBlocked && !locationPermissionPending ? "Åbn appindstillinger" : "Brug min placering";
+            var label = LocationPermissionBlocked && !locationPermissionPending ? T("Åbn appindstillinger", "Open app settings") : T("Brug min placering", "Use my location");
             var useLocation = ActionButton(label, () => RequestDeviceLocation(userInitiated: true), selected: !busy);
             useLocation.Enabled = !busy;
             panel.AddView(useLocation, MatchWidth(bottom: 8));
         }
-        if (screen != Screen.Places && (!HasSelectedPlace || locationStatus is not null))
+        if (screen != Screen.Places && HasSelectedPlace && locationStatus is not null)
         {
-            panel.AddView(ActionButton("Vælg sted manuelt", OpenPlaces), MatchWidth(bottom: 8));
+            panel.AddView(ActionButton(T("Vælg sted manuelt", "Choose location manually"), OpenPlaces), MatchWidth(bottom: 8));
         }
     }
 

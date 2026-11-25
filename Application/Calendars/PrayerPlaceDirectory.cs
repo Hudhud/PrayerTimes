@@ -10,27 +10,29 @@ using System.Text.Json.Serialization;
 namespace Application.Calendars;
 
 public sealed record PrayerPlace(string Id, string Name, string Area, double Latitude, double Longitude,
-    string? PostalCode = null)
+    string? PostalCode = null, string TimeZoneId = DanishTime.ZoneId, string CountryCode = "DK",
+    string? AlternateName = null, long Population = 0)
 {
     public string Label => PostalCode is null ? Name : $"{PostalCode} {Name}";
 
     public PrayerCity ToPrayerCity() => new(Id, Label,
-        Latitude.ToString(CultureInfo.InvariantCulture), Longitude.ToString(CultureInfo.InvariantCulture));
+        Latitude.ToString(CultureInfo.InvariantCulture), Longitude.ToString(CultureInfo.InvariantCulture), TimeZoneId, CountryCode);
 }
 
 public sealed class PrayerPlaceDirectory
 {
     private readonly Dictionary<string, PrayerPlace> places;
     private static readonly StringComparer DanishComparer = StringComparer.Create(CultureInfo.GetCultureInfo("da-DK"), true);
-    private readonly (PrayerPlace Place, string Label, string FoldedLabel, string Area)[] searchable;
+    private readonly (PrayerPlace Place, string Label, string FoldedLabel, string Area, string? Alternate)[] searchable;
 
-    public static PrayerPlaceDirectory Load(string path)
+    public static PrayerPlaceDirectory Load(string path, string? worldwidePath = null)
     {
         using var data = File.OpenRead(path);
-        return new PrayerPlaceDirectory(data);
+        using var worldwide = worldwidePath is null ? null : File.OpenRead(worldwidePath);
+        return new PrayerPlaceDirectory(data, worldwide);
     }
 
-    public PrayerPlaceDirectory(Stream data)
+    public PrayerPlaceDirectory(Stream data, Stream? worldwide = null)
     {
         var locations = JsonSerializer.Deserialize(data, PrayerPlaceJsonContext.Default.PrayerPlaceArray);
         if (locations is not { Length: > 0 })
@@ -38,8 +40,15 @@ public sealed class PrayerPlaceDirectory
             throw new InvalidDataException("The Danish place index is empty.");
         }
 
+        if (worldwide is not null)
+        {
+            var cities = JsonSerializer.Deserialize(worldwide, PrayerPlaceJsonContext.Default.PrayerPlaceArray)
+                ?? throw new InvalidDataException("The worldwide city index is empty.");
+            locations = [.. locations, .. cities];
+        }
         places = locations.ToDictionary(place => place.Id, StringComparer.OrdinalIgnoreCase);
-        searchable = locations.Select(place => (place, Normalize(place.Label), Fold(place.Label), Fold(place.Area))).ToArray();
+        searchable = locations.Select(place => (place, Normalize(place.Label), Fold(place.Label), Fold(place.Area),
+            place.AlternateName is { } name ? Fold(name) : null)).ToArray();
     }
 
     public PrayerCity? Find(string? slug)
@@ -60,11 +69,12 @@ public sealed class PrayerPlaceDirectory
 
         const double radians = Math.PI / 180;
         const double earthRadiusKm = 6371;
-        const double maxDistanceKm = 30;
+        const double maxDistanceKm = 50;
         var radius = Math.Sin(maxDistanceKm / (2 * earthRadiusKm));
         var nearestDistance = radius * radius;
         var latitudeCosine = Math.Cos(latitude * radians);
         PrayerPlace? nearest = null;
+        var localLimit = Math.Sin(30 / (2 * earthRadiusKm));
         foreach (var candidate in places.Values)
         {
             if (candidate.PostalCode is not null)
@@ -76,7 +86,7 @@ public sealed class PrayerPlaceDirectory
             var longitudeSine = Math.Sin((candidate.Longitude - longitude) * radians / 2);
             var distance = latitudeSine * latitudeSine +
                 latitudeCosine * Math.Cos(candidate.Latitude * radians) * longitudeSine * longitudeSine;
-            if (distance < nearestDistance)
+            if (distance < nearestDistance && (candidate.CountryCode != "DK" || distance < localLimit * localLimit))
             {
                 nearestDistance = distance;
                 nearest = candidate;
@@ -95,7 +105,7 @@ public sealed class PrayerPlaceDirectory
             return [];
         }
 
-        if (text == "kbh")
+        if (text is "kbh" or "copenhagen")
         {
             input = "København";
             text = "koebenhavn";
@@ -106,9 +116,11 @@ public sealed class PrayerPlaceDirectory
         var words = folded.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         return searchable
             .Where(entry => (entry.Place.PostalCode is not null) == isPostalCode)
-            .Select(entry => (entry.Place, Rank: Rank(entry.Label, entry.FoldedLabel, entry.Area, text, folded, words, isPostalCode)))
+            .Select(entry => (entry.Place, Rank: Rank(entry.Label, entry.FoldedLabel, entry.Area, entry.Alternate, text, folded, words, isPostalCode)))
             .Where(entry => entry.Rank >= 0)
             .OrderBy(entry => entry.Rank)
+            .ThenBy(entry => entry.Place.CountryCode != "DK")
+            .ThenByDescending(entry => entry.Place.Population)
             .ThenBy(entry => entry.Place.Label, DanishComparer)
             .ThenBy(entry => entry.Place.Area, DanishComparer)
             .Take(25)
@@ -167,17 +179,17 @@ public sealed class PrayerPlaceDirectory
                 first.AsSpan(index + 2).SequenceEqual(second.AsSpan(index + 2)));
     }
 
-    private static int Rank(string label, string foldedLabel, string area, string query, string folded, string[] words, bool isPostalCode)
+    private static int Rank(string label, string foldedLabel, string area, string? alternate, string query, string folded, string[] words, bool isPostalCode)
     {
         if (label == query)
         {
             return 0;
         }
-        if (foldedLabel == folded)
+        if (foldedLabel == folded || alternate == folded)
         {
             return 1;
         }
-        if (label.StartsWith(query, StringComparison.Ordinal) || foldedLabel.StartsWith(folded, StringComparison.Ordinal))
+        if (label.StartsWith(query, StringComparison.Ordinal) || foldedLabel.StartsWith(folded, StringComparison.Ordinal) || alternate?.StartsWith(folded, StringComparison.Ordinal) == true)
         {
             return 2;
         }

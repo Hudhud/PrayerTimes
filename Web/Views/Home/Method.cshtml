@@ -1,19 +1,29 @@
 @model Application.Calendars.TwilightAngles
 @using System.Globalization
 @{
-    ViewData["Title"] = "Sådan beregnes bønnetiderne";
-    var danish = CultureInfo.GetCultureInfo("da-DK");
+    ViewData["Title"] = T("Sådan beregnes bønnetiderne", "How prayer times are calculated");
+    var culture = CultureInfo.CurrentCulture;
 }
 <article class="readable">
-    <h1>Sådan beregnes bønnetiderne</h1>
-    <p>Salah Times viser tider i dansk lokal tid, med dansk sommer- og vintertid. Tiderne er knyttet til koordinaterne for det viste sted.</p>
-    <h2>Solens position</h2>
-    <p>Astronomy Engine beregner solens position. Fajr indtræder, når solen på vej op når den valgte vinkel under horisonten. Isha indtræder, når solen på vej ned når den valgte vinkel. Dine vinkler er @(Model.Fajr.ToString("0.#", danish))° for Fajr og @(Model.Isha.ToString("0.#", danish))° for Isha. Du kan ændre dem ved <a href="@Url.Content("~/")#fajr-isha">dagens bønnetider</a>.</p>
-    <p>Ved solmiddag står solen højest på himlen. Dhuhr-bønnen indtræder, så snart solen har passeret det punkt og begynder at synke mod vest.</p>
-    <p>Solopgang og Maghrib følger solopgang og solnedgang. De beregnede tider rundes op til nærmeste hele minut.</p>
+    <h1>@T("Sådan beregnes bønnetiderne", "How prayer times are calculated")</h1>
+    <p>@T("Salah Times viser tider i det valgte steds lokale tid, inklusive eventuel sommer- og vintertid. Tiderne beregnes ud fra stedets koordinater.",
+        "Salah Times shows the local time at the selected place, including any daylight saving changes. Times are calculated from the place’s coordinates.")</p>
+    <h2>@T("Solens position", "Position of the sun")</h2>
+    <p>@T("Astronomy Engine beregner solens position. Fajr indtræder, når den opgående sol når den valgte vinkel under horisonten. Isha indtræder, når den nedgående sol når den valgte vinkel.",
+        "Astronomy Engine calculates the sun’s position. Fajr begins when the rising sun reaches the selected angle below the horizon. Isha begins when the setting sun reaches its selected angle.")</p>
+    <p>@T($"Dine vinkler er {Model.Fajr.ToString("0.#", culture)}° for Fajr og {Model.Isha.ToString("0.#", culture)}° for Isha.",
+        $"Your angles are {Model.Fajr.ToString("0.#", culture)}° for Fajr and {Model.Isha.ToString("0.#", culture)}° for Isha.")
+        <a href="@Url.Content("~/")#fajr-isha">@T("Skift vinkler ved dagens bønnetider", "Change angles on today’s timetable")</a>.</p>
+    <p>@T("Ved solmiddag står solen højest på himlen. Dhuhr-bønnen indtræder, så snart solen har passeret det punkt og begynder at synke mod vest.",
+        "The sun is highest at solar noon. Dhuhr begins once the sun has cleared the meridian.")</p>
+    <p>@T("Solopgang og Maghrib følger solopgang og solnedgang. De beregnede tider rundes op til nærmeste hele minut.",
+        "Sunrise and Maghrib use the times of sunrise and sunset. Calculated times are rounded up to the next minute.")</p>
     <h2>Asr</h2>
-    <p>Asr er den islamiske eftermiddagsbøn. Med standardmetoden indtræder Asr, når skyggen af en lodret genstand er lige så lang som genstanden selv plus dens skyggelængde ved solmiddag. Med Hanafi-metoden lægger man to gange genstandens længde til skyggelængden ved solmiddag. Du kan vælge Asr-metode ved dagens bønnetider.</p>
-    <h2 id="lyse-naetter">Fajr og Isha under lyse nætter</h2>
-    <p>I en del af den danske sommer når solen ikke de vinkler, der bruges til Fajr eller Isha. En streg i bønneplanen viser, at tidspunktet skal fastsættes efter en metode for lyse nætter. Isha kan også falde efter midnat. Det fremgår ved tiden.</p>
-    <p>Din lokale moské eller en lærd, du har tillid til, kan hjælpe dig med at vælge en metode for de lyse nætter.</p>
+    <p>@T("Asr er den islamiske eftermiddagsbøn. Med standardmetoden indtræder Asr, når skyggen af en lodret genstand er lige så lang som genstanden selv plus dens skyggelængde ved solmiddag. Med Hanafi-metoden lægger man to gange genstandens længde til skyggelængden ved solmiddag. Du kan vælge Asr-metode ved dagens bønnetider.",
+        "Asr is the afternoon prayer. The Standard method adds one object length to its noon shadow. The Hanafi method adds two. You can choose the Asr method on today’s timetable.")</p>
+    <h2 id="lyse-naetter">@T("Fajr og Isha under lyse nætter", "Bright nights and polar days")</h2>
+    <p>@T("På lyse nætter kan solen blive over vinklen for Fajr eller Isha. På polardage kan solopgang eller solnedgang mangle. En streg markerer et tidspunkt, der ikke kan beregnes for stedet og datoen. Isha kan falde efter midnat. Det fremgår ved tiden.",
+        "On bright nights, the sun can stay above the angle for Fajr or Isha. During polar days there may be no sunrise or sunset. A dash marks a time that cannot be calculated for that place and date. Isha can fall after midnight and is marked when it does.")</p>
+    <p>@T("Spørg din lokale moské eller en lærd, du har tillid til, om en egnet bønneplan, når en tid mangler.",
+        "Ask your local mosque or a trusted scholar about an appropriate timetable when a prayer time is unavailable.")</p>
 </article>

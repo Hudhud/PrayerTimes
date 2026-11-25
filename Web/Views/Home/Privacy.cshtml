@@ -1,33 +1,31 @@
 @using Web.Controllers
 @{
-    ViewData["Title"] = "Privatliv og statistik";
+    ViewData["Title"] = T("Privatliv og statistik", "Privacy and analytics");
     var statistics = Context.Request.Cookies[HomeController.AnalyticsCookie];
 }
 
 <section class="readable">
-    <h1>Privatliv og statistik</h1>
-    <p>Salah Times gemmer dit valg af by og dit valg om besøgsstatistik i din browser i op til 180 dage.</p>
-    <h2>Placering</h2>
-    <p>Når browseren angiver din placering med en præcision på højst én kilometer, åbner siden bønnetiderne
-        for et dansk sted i nærheden. Ved en grovere placering kan du selv bekræfte det foreslåede sted.
-        Hvis browseren stadig giver adgang, tjekker siden placeringen igen, når du vender tilbage til den
-        automatisk valgte bønneplan. Du kan slå det fra med Stop automatisk placering eller ved at vælge et sted selv.</p>
-    <p>Din position behandles i browseren. Browseren gemmer indstillingen, stedets id og tidspunktet for
-        det seneste tjek. Salah Times modtager stedets id, når bønnetiderne åbnes.</p>
-    <p>Browseren gemmer de senest viste steder, så du kan finde dem ved næste søgning.
-        Dine valg af Asr-metode og vinkler for Fajr og Isha gemmes i cookies i op til 180 dage.</p>
-    <h2>Offline bønnetider</h2>
-    <p>Når du gemmer syv dages tider offline, gemmer browseren bønneplanen med sted, Asr-metode, Fajr- og Isha-vinkler og datoer på enheden.
-        Den nyeste gemte plan erstatter den forrige.</p>
+    <h1>@T("Privatliv og statistik", "Privacy and analytics")</h1>
+    <p>@T("Salah Times gemmer dit valg af by, sprog og besøgsstatistik i din browser i op til 180 dage.",
+        "Salah Times saves your city, language, and analytics settings in your browser for up to 180 days.")</p>
+    <h2>@T("Placering", "Location")</h2>
+    <p>@T("Når browseren angiver din placering med en præcision på højst én kilometer, åbner siden bønnetiderne for et sted i nærheden. Ved en grovere placering kan du selv bekræfte det foreslåede sted. Hvis browseren stadig giver adgang, tjekker siden placeringen igen, når du vender tilbage til den automatisk valgte bønneplan. Du kan slå det fra med Stop automatisk placering eller ved at vælge et sted selv.",
+        "If your browser reports your position within one kilometre, the site opens prayer times for a nearby place. With a less precise position, you can confirm the suggestion yourself. If you still allow access, the site checks your location when you return to the timetable chosen automatically. You can stop automatic location or choose a place yourself.")</p>
+    <p>@T("Din position behandles i browseren. Browseren gemmer indstillingen, stedets id og tidspunktet for det seneste tjek. Salah Times modtager stedets id, når bønnetiderne åbnes.",
+        "Your position is processed in your browser. The browser saves the setting, place ID, and time of the last check. Salah Times receives the place ID when you open the timetable.")</p>
+    <p>@T("Browseren gemmer de senest viste steder. Dit valg af Asr-metode og vinkler for Fajr og Isha gemmes i cookies i op til 180 dage.",
+        "Your browser saves recently viewed places. Your Asr method and Fajr and Isha angle preferences are stored in cookies for up to 180 days.")</p>
+    <h2>@T("Offline bønnetider", "Offline prayer times")</h2>
+    <p>@T("Når du gemmer syv dages tider offline, gemmer browseren bønneplanen med sted, Asr-metode, vinkler og datoer på enheden. Den nyeste plan for hvert sprog erstatter den forrige.",
+        "When you save seven days offline, your browser stores the timetable on your device with the place, Asr method, angles, and dates. The latest timetable for each language replaces the previous one.")</p>
     <h2>Google Analytics</h2>
-    <p>Hvis du siger ja, bruger vi Google Analytics til at se antal besøg og viste sider.
-        Google Analytics kan gemme sine målingscookies i op til 180 dage. Du kan ændre dit valg her. Hvis du
-        trækker dit samtykke tilbage, stopper målingen fra næste sidevisning.</p>
-    <p><a href="https://policies.google.com/technologies/partner-sites?hl=da">Sådan bruger Google oplysninger fra websteder</a></p>
-    <p><strong>Dit valg</strong> @(statistics == "yes" ? "Tilladt" : statistics == "no" ? "Afvist" : "Intet valg gemt")</p>
+    <p>@T("Hvis du siger ja, bruger vi Google Analytics til at se antal besøg og viste sider. Google Analytics kan gemme sine målingscookies i op til 180 dage. Du kan ændre dit valg her. Hvis du trækker dit samtykke tilbage, stopper målingen fra næste sidevisning.",
+        "If you agree, we use Google Analytics to count visits and page views. Google Analytics can store measurement cookies for up to 180 days. You can change your choice here. If you withdraw consent, measurement stops with the next page view.")</p>
+    <p><a href="https://policies.google.com/technologies/partner-sites?hl=@T("da", "en")">@T("Sådan bruger Google oplysninger fra websteder", "How Google uses information from websites")</a></p>
+    <p><strong>@T("Dit valg", "Your choice")</strong> @(statistics == "yes" ? T("Tilladt", "Allowed") : statistics == "no" ? T("Afvist", "Declined") : T("Intet valg gemt", "No saved choice"))</p>
     <form method="post" asp-controller="Home" asp-action="Statistics" class="actions">
-        <input type="hidden" name="returnUrl" value="/privatliv" />
-        <button class="button" name="choice" value="no">Afvis</button>
-        <button class="button" name="choice" value="yes">Tillad</button>
+        <input type="hidden" name="returnUrl" value="@Url.Action("Privacy")" />
+        <button class="button" name="choice" value="no">@T("Afvis", "Decline")</button>
+        <button class="button" name="choice" value="yes">@T("Tillad", "Allow")</button>
     </form>
 </section>

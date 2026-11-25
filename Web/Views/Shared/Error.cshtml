@@ -1,11 +1,11 @@
 @model Web.ViewModels.CustomErrorViewModel
 @{
-    ViewData["Title"] = "Noget gik galt";
+    ViewData["Title"] = T("Noget gik galt", "Something went wrong");
 }
 
 <section class="notice">
-    <h1>Noget gik galt</h1>
+    <h1>@T("Noget gik galt", "Something went wrong")</h1>
     <p>@Model.Message</p>
     <p>Reference @Model.RequestId</p>
-    <a href="/">Til forsiden</a>
+    <a href="@Url.Content("~/")">@T("Til forsiden", "Back to home")</a>
 </section>

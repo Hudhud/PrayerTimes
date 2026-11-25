@@ -2,17 +2,13 @@ namespace Application.Calendars;
 
 public sealed class DanishTime(TimeProvider clock)
 {
-    private static readonly TimeZoneInfo Zone = TimeZoneInfo.FindSystemTimeZoneById(
-        OperatingSystem.IsWindows() ? "Romance Standard Time" : "Europe/Copenhagen");
+    public const string ZoneId = "Europe/Copenhagen";
 
-    public DateTimeOffset Now => TimeZoneInfo.ConvertTime(clock.GetUtcNow(), Zone);
+    public DateTimeOffset Now => NowIn(ZoneId);
 
-    public static DateTimeOffset FromUtc(DateTime utc) =>
-        TimeZoneInfo.ConvertTime(new DateTimeOffset(utc, TimeSpan.Zero), Zone);
+    public DateTimeOffset NowIn(string zoneId) => LocalTime.FromUtc(clock.GetUtcNow(), zoneId);
 
-    public static DateTimeOffset At(DateOnly date, TimeOnly time)
-    {
-        var local = date.ToDateTime(time);
-        return new DateTimeOffset(local, Zone.GetUtcOffset(local));
-    }
+    public static DateTimeOffset FromUtc(DateTime utc) => LocalTime.FromUtc(utc, ZoneId);
+
+    public static DateTimeOffset At(DateOnly date, TimeOnly time) => LocalTime.At(date, time, ZoneId);
 }

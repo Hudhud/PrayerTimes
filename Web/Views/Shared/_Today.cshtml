@@ -2,7 +2,7 @@
 @using System.Globalization
 @using Web.ViewModels
 @{
-    var danish = CultureInfo.GetCultureInfo("da-DK");
+    var culture = CultureInfo.CurrentCulture;
     var day = Model.Day;
     var next = Model.Next;
     var current = Model.Current;
@@ -11,8 +11,8 @@
         city = Model.City.Slug, date = CalendarViewModel.DayParameter(Model.NextDate ?? Model.Date), prayer = next?.Name
     });
 }
-<section aria-label="Dagens bønnetider" class="today" data-current-place="@Model.City.Slug"
-         data-place-name="@Model.City.Name" data-today="@date" data-correction-url="@correctionUrl"
+<section aria-label="@T("Dagens bønnetider", "Today’s prayer times")" class="today" data-current-place="@Model.City.Slug"
+         data-place-name="@Model.City.Name" data-time-zone="@Model.City.TimeZoneId" data-today="@date" data-correction-url="@correctionUrl"
          data-asr-method="@Model.AsrMethod" data-midnight="@Model.Midnight.ToString("o", CultureInfo.InvariantCulture)"
          data-angles="@Model.Angles.PreferenceValue"
          data-refresh-url="@Url.RouteUrl("Today", new { city = Model.City.Slug, asr = Model.AsrMethod, angles = Model.Angles.PreferenceValue })"
@@ -20,7 +20,7 @@
          data-refresh-at="@Model.RefreshAt.ToString("o", CultureInfo.InvariantCulture)">
     <div class="next-prayer" data-next-prayer>
         <div>
-            <h2 tabindex="-1">Næste bøn</h2>
+            <h2 tabindex="-1">@T("Næste bøn", "Next prayer")</h2>
             @if (next?.StartsAt is { } nextStart)
             {
                 <p class="next-prayer-title" data-next-prayer-label>
@@ -28,27 +28,27 @@
                     <time datetime="@nextStart.ToString("o", CultureInfo.InvariantCulture)">@next.Time</time>
                     @if (Model.NextDate is { } nextDate && nextDate != Model.Date)
                     {
-                        <span class="next-date">i morgen, @nextDate.ToString("d. MMMM", danish)</span>
+                        <span class="next-date">@T("i morgen, ", "tomorrow, ")@nextDate.ToString(T("d. MMMM", "d MMMM"), culture)</span>
                     }
                 </p>
-                <p class="next-countdown" data-prayer-countdown role="timer" aria-label="Tid til næste bøn" hidden></p>
+                <p class="next-countdown" data-prayer-countdown role="timer" aria-label="@T("Tid til næste bøn", "Time until the next prayer")" hidden></p>
             }
             else if (Model.NextAffectedByBrightNights)
             {
-                <p class="next-detail" data-next-prayer-label>Tidspunktet afhænger af <a asp-action="Method" asp-fragment="lyse-naetter">metoden for lyse nætter</a>.</p>
+                <p class="next-detail" data-next-prayer-label>@T("Næste bønnetid er ikke tilgængelig.", "The next prayer time is unavailable.") <a asp-action="Method" asp-fragment="lyse-naetter">@T("Læs om manglende tider", "About unavailable times")</a>.</p>
             }
             else
             {
-                <p class="next-detail" data-next-prayer-label>Tidspunktet er midlertidigt utilgængeligt.</p>
+                <p class="next-detail" data-next-prayer-label>@T("Tidspunktet er midlertidigt utilgængeligt.", "The next prayer time is temporarily unavailable.")</p>
             }
         </div>
     </div>
     <p class="today-context">
-        <strong data-historical-times hidden>Historiske bønnetider</strong>
-        <time datetime="@date">@Model.Date.ToString("dddd d. MMMM yyyy", danish)</time>
+        <strong data-historical-times hidden>@T("Historiske bønnetider", "Historical prayer times")</strong>
+        <time datetime="@date">@Model.Date.ToString(T("dddd d. MMMM yyyy", "dddd d MMMM yyyy"), culture)</time>
         @if (current?.StartsAt?.Date < Model.Date.ToDateTime(TimeOnly.MinValue))
         {
-            <span class="prayer-stage prayer-stage-current" data-live-stage>Nu · @current.Name</span>
+            <span class="prayer-stage prayer-stage-current" data-live-stage>@T("Nu", "Now") · @current.Name</span>
         }
     </p>
 

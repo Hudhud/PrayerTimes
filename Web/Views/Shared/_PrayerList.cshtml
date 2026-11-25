@@ -6,7 +6,7 @@
     var prayers = PrayerDay.Events(Model.Day, Model.Hanafi).ToList();
     if (Model.ShowSunrise && Model.InlineSunrise)
     {
-        prayers.Insert(1, new PrayerEvent("Solopgang", PrayerDay.Sunrise(Model.Day)));
+        prayers.Insert(1, new PrayerEvent("Solopgang", PrayerDay.AvailableSunrise(Model.Day)));
     }
 }
 <dl class="prayer-list">
@@ -14,33 +14,33 @@
     {
         var stage = prayer == Model.Current ? "current" : prayer == Model.Next ? "next" : null;
         <div data-prayer-stage="@stage" class="@(prayer.Name == "Solopgang" ? "sunrise-tile" : null)">
-            <dt>@prayer.Name</dt>
+            <dt>@(prayer.Name == "Solopgang" ? T("Solopgang", "Sunrise") : prayer.Name)</dt>
             <dd>
                 @if (prayer.StartsAt is { } start)
                 {
                     <time datetime="@start.ToString("o", CultureInfo.InvariantCulture)">@prayer.Time</time>
                     @if (DateOnly.FromDateTime(start.Date) != date)
                     {
-                        <small>Næste døgn</small>
+                        <small>@T("Næste døgn", "Next day")</small>
                     }
                 }
                 else if (Model.InlineSunrise)
                 {
                     <span aria-hidden="true">—</span>
-                    <small class="bright-night-explanation"><a asp-action="Method" asp-fragment="lyse-naetter">Lyse nætter</a></small>
+                    <small class="bright-night-explanation"><a asp-action="Method" asp-fragment="lyse-naetter">@(Model.Day.HasUnavailableSunEvents ? T("Ikke tilgængelig", "Time unavailable") : T("Lyse nætter", "Bright nights"))</a></small>
                 }
                 else if (Model.ExplainBrightNights)
                 {
                     <span aria-hidden="true">- -</span>
-                    <small class="bright-night-explanation">Solens vinkel nås ikke. <a asp-action="Method" asp-fragment="lyse-naetter">Læs om lyse nætter</a>.</small>
+                    <small class="bright-night-explanation">@(Model.Day.HasUnavailableSunEvents ? T("Tiden kan ikke beregnes.", "The time cannot be calculated.") : T("Solens vinkel nås ikke.", "The sun does not reach the required angle.")) <a asp-action="Method" asp-fragment="lyse-naetter">@T("Læs om lyse nætter", "About unavailable times")</a>.</small>
                 }
                 else
                 {
-                    <partial name="_BrightNightTime" />
+                    <partial name="_BrightNightTime" model="Model.Day.HasUnavailableSunEvents" />
                 }
                 @if (stage is not null)
                 {
-                    <small class="prayer-stage prayer-stage-@stage" data-live-stage>@(stage == "current" ? "Nu" : "Næste")</small>
+                    <small class="prayer-stage prayer-stage-@stage" data-live-stage>@(stage == "current" ? T("Nu", "Now") : T("Næste", "Next"))</small>
                 }
             </dd>
         </div>
@@ -48,5 +48,5 @@
 </dl>
 @if (Model.ShowSunrise && !Model.InlineSunrise)
 {
-    <p class="sunrise">Solopgang (Shuruk) <time datetime="@Model.Day.SunriseTime">@Model.Day.SunriseTime</time></p>
+    <p class="sunrise">@T("Solopgang (Shuruk)", "Sunrise (Shuruk)") @if (string.IsNullOrEmpty(Model.Day.SunriseTime)) { <span>—</span> } else { <time datetime="@Model.Day.SunriseTime">@Model.Day.SunriseTime</time> }</p>
 }
