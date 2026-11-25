@@ -42,7 +42,13 @@ jobs:
           test -f "$app/prayer-cities-world.json"
           test -f "$app/PrivacyInfo.xcprivacy"
           ditto -c -k --keepParent "$app" "$RUNNER_TEMP/Salah-Times-iOS-Simulator.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: salah-times-ios-simulator
+          path: ${{ runner.temp }}/Salah-Times-iOS-Simulator.zip
+          if-no-files-found: error
       - name: Launch the app on iPhone
+        timeout-minutes: 8
         run: |
           app="$RUNNER_TEMP/salahtimes-build/SalahTimes.iOS.app"
           device=$(xcrun simctl list devices available -j | python3 -c '
@@ -61,7 +67,7 @@ jobs:
           pid=${launched##*: }
           sleep 5
           xcrun simctl io "$device" screenshot "$RUNNER_TEMP/Salah-Times-iOS.png"
-          if ! ps -p "$pid" -o command= | grep -F '/SalahTimes.iOS.app/SalahTimes.iOS'; then
+          if ! kill -0 "$pid"; then
             xcrun simctl spawn "$device" log show --last 3m --style compact \
               --predicate 'process == "SalahTimes.iOS" OR eventMessage CONTAINS "dk.salahtimes.ios"' \
               > "$RUNNER_TEMP/Salah-Times-iOS-launch.log" || true
@@ -71,9 +77,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: salah-times-ios-simulator
+          name: salah-times-ios-simulator-diagnostics
           path: |
             ${{ runner.temp }}/Salah-Times-iOS.png
             ${{ runner.temp }}/Salah-Times-iOS-launch.log
-            ${{ runner.temp }}/Salah-Times-iOS-Simulator.zip
-          if-no-files-found: error
+          if-no-files-found: warn
