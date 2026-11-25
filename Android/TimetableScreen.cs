@@ -66,7 +66,9 @@ public sealed partial class MainActivity
         content.AddView(hero, MatchWidth(top: 2));
         AddSectionTitle(T("Dagens tider", "Today’s times"));
         todayStatus = Label("", 13, CurrentAccent, bold: true);
-        content.AddView(todayStatus, MatchWidth(bottom: 6));
+        todayStatus.Background = Rounded(CurrentSurface, 8, CurrentOutline);
+        todayStatus.SetPadding(Dp(10), Dp(5), Dp(10), Dp(5));
+        content.AddView(todayStatus, new LinearLayout.LayoutParams(-2, -2) { BottomMargin = Dp(6) });
         todayTimes = new LinearLayout(this) { Orientation = Orientation.Vertical };
         content.AddView(todayTimes, MatchWidth());
         todayColumns = 3;
