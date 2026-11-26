@@ -33,7 +33,7 @@ jobs:
       - name: Build iPhone simulator app
         run: >-
           dotnet build iOS/SalahTimes.iOS.csproj -c Release
-          -p:RuntimeIdentifier=iossimulator-arm64 -p:UseInterpreter=true -p:EnableCodeSigning=false
+          -p:RuntimeIdentifier=iossimulator-arm64 -p:EnableCodeSigning=false
           -o "$RUNNER_TEMP/salahtimes-build"
       - name: Verify and archive simulator app
         run: |
