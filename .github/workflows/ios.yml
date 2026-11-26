@@ -41,8 +41,7 @@ jobs:
           test -f "$app/prayer-places.json"
           test -f "$app/prayer-cities-world.json"
           test -f "$app/PrivacyInfo.xcprivacy"
-          codesign --force --deep --sign - "$app"
-          codesign --verify --deep --strict "$app"
+          bash iOS/sign-simulator.sh "$app"
           ditto -c -k --keepParent "$app" "$RUNNER_TEMP/Salah-Times-iOS-Simulator.zip"
       - uses: actions/upload-artifact@v4
         with:

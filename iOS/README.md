@@ -10,7 +10,9 @@ The repository's [iOS workflow](../.github/workflows/ios.yml) builds with Xcode 
 
 ```sh
 dotnet workload install ios --version 10.0.401
-dotnet build iOS/SalahTimes.iOS.csproj -c Release -p:RuntimeIdentifier=iossimulator-arm64
+dotnet build iOS/SalahTimes.iOS.csproj -c Release -p:RuntimeIdentifier=iossimulator-arm64 \
+  -p:EnableCodeSigning=false -o /tmp/salahtimes-build
+bash iOS/sign-simulator.sh /tmp/salahtimes-build/SalahTimes.iOS.app
 ```
 
 [Microsoft's workload releases](https://github.com/dotnet/macios/releases) list the compatible workload set for each Xcode version.
