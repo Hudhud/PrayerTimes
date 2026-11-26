@@ -5,6 +5,7 @@ using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using Application.Calendars;
+using Calculation;
 
 namespace SalahTimes.AndroidApp;
 

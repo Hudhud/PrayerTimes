@@ -1,0 +1,97 @@
+name: Verify Salah Times for iOS
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'iOS/**'
+      - 'Application/**'
+      - 'Calculation/**'
+      - 'Domain/**'
+      - 'Web/wwwroot/data/**'
+      - '.github/workflows/ios.yml'
+      - 'global.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  simulator:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Select Xcode and install iOS workload
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_26.6.app/Contents/Developer
+          xcodebuild -version
+          dotnet workload install ios --version 10.0.401
+      - name: Build iPhone simulator app
+        run: >-
+          dotnet build iOS/SalahTimes.iOS.csproj -c Release
+          -p:RuntimeIdentifier=iossimulator-arm64 -p:EnableCodeSigning=false
+          -o "$RUNNER_TEMP/salahtimes-build"
+      - name: Verify and archive simulator app
+        run: |
+          app="$RUNNER_TEMP/salahtimes-build/SalahTimes.iOS.app"
+          test -f "$app/prayer-places.json"
+          test -f "$app/prayer-cities-world.json"
+          test -f "$app/PrivacyInfo.xcprivacy"
+          bash iOS/sign-simulator.sh "$app"
+          ditto -c -k --keepParent "$app" "$RUNNER_TEMP/Salah-Times-iOS-Simulator.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: salah-times-ios-simulator
+          path: ${{ runner.temp }}/Salah-Times-iOS-Simulator.zip
+          if-no-files-found: error
+      - name: Launch the app on iPhone
+        timeout-minutes: 8
+        run: |
+          app="$RUNNER_TEMP/salahtimes-build/SalahTimes.iOS.app"
+          device=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          choices = [device["udid"] for runtime, entries in devices.items()
+                     if runtime.endswith("iOS-26-5") for device in entries
+                     if device["name"] == "iPhone 17"]
+          print(choices[0])
+          ')
+          xcrun simctl boot "$device"
+          xcrun simctl bootstatus "$device" -b
+          xcrun simctl install "$device" "$app"
+          stdout="$RUNNER_TEMP/Salah-Times-iOS-stdout.log"
+          stderr="$RUNNER_TEMP/Salah-Times-iOS-stderr.log"
+          launched=$(xcrun simctl launch --stdout="$stdout" --stderr="$stderr" "$device" dk.salahtimes.ios)
+          printf '%s\n' "$launched"
+          pid=${launched##*: }
+          sleep 5
+          xcrun simctl io "$device" screenshot "$RUNNER_TEMP/Salah-Times-iOS.png"
+          if ! kill -0 "$pid"; then
+            for output in "$stdout" "$stderr"; do
+              if test -f "$output"; then
+                tail -100 "$output"
+              fi
+            done
+            xcrun simctl spawn "$device" log show --last 2m --style compact \
+              --predicate 'process == "SalahTimes.iOS" OR (process == "runningboardd" AND eventMessage CONTAINS "dk.salahtimes.ios")' \
+              > "$RUNNER_TEMP/Salah-Times-iOS-launch.log" || true
+            tail -100 "$RUNNER_TEMP/Salah-Times-iOS-launch.log"
+            find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -name 'SalahTimes.iOS*.ips' \
+              -mmin -5 -print -exec cp {} "$RUNNER_TEMP/" \; || true
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: salah-times-ios-simulator-diagnostics
+          path: |
+            ${{ runner.temp }}/Salah-Times-iOS.png
+            ${{ runner.temp }}/Salah-Times-iOS-launch.log
+            ${{ runner.temp }}/Salah-Times-iOS-stdout.log
+            ${{ runner.temp }}/Salah-Times-iOS-stderr.log
+            ${{ runner.temp }}/SalahTimes.iOS*.ips
+          if-no-files-found: warn
