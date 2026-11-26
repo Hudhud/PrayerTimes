@@ -1,3 +1,4 @@
+using Android.App;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
@@ -32,10 +33,14 @@ public sealed partial class MainActivity
         toggle.SetTextColor(Text);
         toggle.CheckedChange += (_, args) =>
         {
-            using var edit = preferences.Edit();
-            edit?.PutBoolean(PrayerLocationReceiver.BackgroundLocationKey, args.IsChecked)?.Apply();
-            PrayerLocationReceiver.Sync(this);
-            Show(Screen.Settings);
+            if (args.IsChecked)
+            {
+                ShowBackgroundLocationDisclosure();
+            }
+            else
+            {
+                SaveBackgroundLocation(false);
+            }
         };
         content.AddView(toggle, MatchWidth(top: 8));
 
@@ -52,6 +57,28 @@ public sealed partial class MainActivity
             content.AddView(Label(T("Widgetten og påmindelserne følger dit sted, også når appen er lukket.", "The widget and reminders follow your location even when the app is closed."),
                 14, Muted), MatchWidth(top: 8));
         }
+    }
+
+    private void ShowBackgroundLocationDisclosure()
+    {
+        var dialog = new AlertDialog.Builder(this)
+            .SetTitle(T("Placering i baggrunden", "Background location"))!
+            .SetMessage(T(
+                "Salah Times bruger din placering til at opdatere widgetten og bønnepåmindelserne, også når appen er lukket eller ikke er i brug. Placeringen behandles på din telefon.",
+                "Salah Times uses your location to update the widget and prayer reminders even when the app is closed or not in use. Your location is processed on your phone."))!
+            .SetNegativeButton(T("Annuller", "Cancel"), (_, _) => Show(Screen.Settings, scrollPosition: scroll.ScrollY))!
+            .SetPositiveButton(T("Fortsæt", "Continue"), (_, _) => SaveBackgroundLocation(true))!
+            .Create()!;
+        dialog.CancelEvent += (_, _) => Show(Screen.Settings, scrollPosition: scroll.ScrollY);
+        dialog.Show();
+    }
+
+    private void SaveBackgroundLocation(bool enabled)
+    {
+        using var edit = preferences.Edit();
+        edit?.PutBoolean(PrayerLocationReceiver.BackgroundLocationKey, enabled)?.Apply();
+        PrayerLocationReceiver.Sync(this);
+        Show(Screen.Settings, scrollPosition: scroll.ScrollY);
     }
 
     private void OpenBackgroundLocationSettings()

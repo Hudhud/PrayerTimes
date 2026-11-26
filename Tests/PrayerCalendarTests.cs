@@ -88,6 +88,23 @@ public sealed class PrayerCalendarTests
         Assert.Equal("Isha", PrayerDay.FindCurrentPrayer(days, date, overnight)?.Name);
     }
 
+    [Theory]
+    [InlineData(2026, 5, 5)]
+    [InlineData(2026, 12, 1)]
+    public void CurrentPrayerKeepsThePreviousDaysIshaUntilFajr(int year, int month, int day)
+    {
+        var date = new DateOnly(year, month, day);
+        var days = Around(date);
+        var previousIsha = PrayerDay.Events(days[date.AddDays(-1)])[^1];
+        var fajr = PrayerDay.Events(days[date])[0];
+        var midnight = DanishTime.At(date, TimeOnly.MinValue);
+        var start = previousIsha.StartsAt!.Value > midnight ? previousIsha.StartsAt.Value : midnight;
+
+        Assert.Equal(previousIsha, PrayerDay.FindCurrentPrayer(days, date, start));
+        Assert.Equal(previousIsha, PrayerDay.FindCurrentPrayer(days, date, fajr.StartsAt!.Value.AddSeconds(-1)));
+        Assert.Equal(fajr, PrayerDay.FindCurrentPrayer(days, date, fajr.StartsAt.Value));
+    }
+
     [Fact]
     public void CurrentPrayerDoesNotExtendMaghribAcrossAnUnknownIsha()
     {

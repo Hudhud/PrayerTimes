@@ -13,7 +13,7 @@
         "Astronomy Engine calculates the sun’s position. Fajr begins when the rising sun reaches the selected angle below the horizon. Isha begins when the setting sun reaches its selected angle.")</p>
     <p>@T($"Dine vinkler er {Model.Fajr.ToString("0.#", culture)}° for Fajr og {Model.Isha.ToString("0.#", culture)}° for Isha.",
         $"Your angles are {Model.Fajr.ToString("0.#", culture)}° for Fajr and {Model.Isha.ToString("0.#", culture)}° for Isha.")
-        <a href="@Url.Content("~/")#fajr-isha">@T("Skift vinkler ved dagens bønnetider", "Change angles on today’s timetable")</a>.</p>
+        <a asp-route="@SettingsRoute" asp-fragment="fajr-isha">@T("Skift vinkler i indstillinger", "Change angles in Settings")</a>.</p>
     <p>@T("Ved solmiddag står solen højest på himlen. Dhuhr-bønnen indtræder, så snart solen har passeret det punkt og begynder at synke mod vest.",
         "The sun is highest at solar noon. Dhuhr begins once the sun has cleared the meridian.")</p>
     <p>@T("Solopgang og Maghrib følger solopgang og solnedgang. De beregnede tider rundes op til nærmeste hele minut.",

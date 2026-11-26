@@ -44,6 +44,8 @@ public sealed partial class MainActivity
         AddSectionTitle(T("Om appen", "About"));
         content.AddView(Label(T("Tiderne beregnes på telefonen og vises i det valgte steds lokale tid.", "Prayer times are calculated on your phone and shown in the selected place’s time zone."), 14, Muted), MatchWidth(bottom: 10));
         content.AddView(ActionButton(T("Lokal tid og beregningsmetode", "Local time and calculation method"), OpenMethod), MatchWidth(bottom: 8));
+        content.AddView(ActionButton(T("Privatliv", "Privacy"), () => OpenUrl(
+            T("https://salahtimes.dk/privatliv#apps", "https://salahtimes.dk/en/privatliv#apps"))), MatchWidth(bottom: 8));
         content.AddView(ActionButton(T("Steddata fra GeoNames", "Place data from GeoNames"), () => OpenUrl("https://www.geonames.org/")), MatchWidth(bottom: 8));
         content.AddView(ActionButton(T("CC BY 4.0-licens", "CC BY 4.0 licence"), () => OpenUrl("https://creativecommons.org/licenses/by/4.0/")), MatchWidth());
     }
