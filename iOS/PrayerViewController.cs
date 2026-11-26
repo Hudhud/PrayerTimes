@@ -30,7 +30,7 @@ internal abstract class PrayerViewController(PrayerAppState state) : UIViewContr
             Content.BottomAnchor.ConstraintEqualTo(scroll.ContentLayoutGuide.BottomAnchor, -24),
             Content.LeadingAnchor.ConstraintEqualTo(scroll.ContentLayoutGuide.LeadingAnchor, 16),
             Content.TrailingAnchor.ConstraintEqualTo(scroll.ContentLayoutGuide.TrailingAnchor, -16),
-            Content.WidthAnchor.ConstraintEqualTo(scroll.FrameLayoutGuide.WidthAnchor, -32)
+            Content.WidthAnchor.ConstraintEqualTo(scroll.FrameLayoutGuide.WidthAnchor, multiplier: 1, constant: -32)
         ]);
         Render();
     }
