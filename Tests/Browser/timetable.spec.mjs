@@ -235,18 +235,26 @@ test('shared month, mobile calendar, method and calendar export', async ({ page,
     await expect(page.getByRole('heading', { name: 'Sådan beregnes bønnetiderne' })).toBeVisible();
 });
 
-test('saved Fajr and Isha angles apply to the calendar and export and can be reset', async ({ page, isMobile }) => {
-    await page.goto('/koebenhavn?month=2026-06&week=2026-06-21');
-    const settings = page.locator('#fajr-isha');
+test('Fajr and Isha angles can be edited only in Settings and apply to the calendar and export', async ({ page, isMobile }) => {
+    const timetable = '/koebenhavn?month=2026-06&week=2026-06-21';
+    await page.goto(timetable);
     const date = page.locator(`${isMobile ? 'details' : 'tr'}[data-calendar-date="2026-06-21"]`);
     await expect(date).toContainText('lyse nætter', { ignoreCase: true });
-    await settings.locator('summary').click();
+    await expect(page.getByLabel('Fajr (°)')).toHaveCount(0);
+    await expect(page.getByLabel('Isha (°)')).toHaveCount(0);
+
+    await page.getByRole('link', { name: 'Dansk lokal tid og beregningsmetode' }).click();
+    await expect(page.getByLabel('Fajr (°)')).toHaveCount(0);
+    await page.getByRole('link', { name: 'Skift vinkler i indstillinger' }).click();
+    await expect(page).toHaveURL(/\/indstillinger#fajr-isha$/);
+    const settings = page.getByRole('region', { name: 'Beregning', exact: true });
     await settings.getByLabel('Fajr (°)').fill('5,5');
     await settings.getByLabel('Isha (°)').fill('6.5');
     await settings.getByRole('button', { name: 'Gem vinkler' }).click();
-    await expect(settings.locator('summary')).toContainText('Fajr 5,5° · Isha 6,5°');
+    await expect(settings.getByLabel('Fajr (°)')).toHaveValue('5,5');
+    await expect(settings.getByLabel('Isha (°)')).toHaveValue('6,5');
+    await page.goto(timetable);
     await expect(date).not.toContainText('lyse nætter', { ignoreCase: true });
-    await page.reload();
     await expect(page.locator('[data-current-place="koebenhavn"]')).toHaveAttribute('data-angles', '5.5:6.5');
 
     const refreshUrl = await page.locator('[data-refresh-url]').getAttribute('data-refresh-url');
@@ -261,9 +269,11 @@ test('saved Fajr and Isha angles apply to the calendar and export and can be res
     expect(ics).toContain('UID:koebenhavn-2026-06-21-fajr@salahtimes.dk');
     expect(ics).toContain('UID:koebenhavn-2026-06-21-isha@salahtimes.dk');
 
-    await settings.locator('summary').click();
+    await page.getByRole('link', { name: 'Indstillinger', exact: true }).click();
     await settings.getByRole('button', { name: 'Nulstil til 18° og 17°' }).click();
-    await expect(settings.locator('summary')).toContainText('Fajr 18° · Isha 17°');
+    await expect(settings.getByLabel('Fajr (°)')).toHaveValue('18');
+    await expect(settings.getByLabel('Isha (°)')).toHaveValue('17');
+    await page.goto(timetable);
     await expect(date).toContainText('lyse nætter', { ignoreCase: true });
 });
 
@@ -497,8 +507,9 @@ test('a 503 keeps today’s times and retry only accepts the selected Asr method
     await expect(page.getByRole('heading', { name: 'Næste bøn' })).toBeVisible();
 });
 
-test('at Danish midnight the previous times are historical during a failed refresh', async ({ page }) => {
-    await page.clock.install({ time: new Date('2026-11-29T22:59:45Z') });
+test('at Danish midnight the previous times are historical and Isha stays current until Fajr during a failed refresh', async ({ page }) => {
+    await page.clock.install({ time: new Date('2026-11-29T22:59:40Z') });
+    await page.clock.pauseAt(new Date('2026-11-29T22:59:45Z'));
     await page.route('**/koebenhavn?month=2026-11', async route => {
         const response = await route.fetch();
         const body = (await response.text())
@@ -507,14 +518,19 @@ test('at Danish midnight the previous times are historical during a failed refre
             .replace(/data-refresh-at="[^"]+"/, 'data-refresh-at="2026-11-29T22:59:46Z"')
             .replace(/data-midnight="[^"]+"/, 'data-midnight="2026-11-29T23:00:00Z"')
             .replace(/(<p class="today-context">[\s\S]*?<time datetime=")[^"]+"[^<]+/,
-                (_, prefix) => `${prefix}2026-11-29">søndag 29. november 2026`);
+                (_, prefix) => `${prefix}2026-11-29">søndag 29. november 2026`)
+            .replace(/<span[^>]+data-current-summary=[\s\S]*?<\/span>/, '')
+            .replace(/(<p class="today-context">[\s\S]*?)(<\/p>)/, (_, context, end) => `${context}
+                <span data-current-summary="listed" data-overnight-until="2026-11-29T23:00:15Z" hidden>Nu · Isha</span>${end}`);
         await route.fulfill({ response, body });
     });
     await page.route('**/koebenhavn/i-dag?asr=standard&angles=*', route => route.fulfill({ status: 503 }));
 
     await page.goto('/koebenhavn?month=2026-11');
     const dates = page.locator('.today-context time');
+    const current = page.locator('[data-current-summary]');
     await expect(dates).toHaveAttribute('datetime', '2026-11-29');
+    await expect(current).toBeHidden();
     await page.clock.fastForward(3000);
     await expect(page.getByText(/Du ser de senest hentede tider for i dag/)).toBeVisible();
     await page.clock.fastForward(15000);
@@ -525,6 +541,10 @@ test('at Danish midnight the previous times are historical during a failed refre
     await expect(dates).toHaveAttribute('datetime', '2026-11-29');
     await expect(page.locator('.current-day').first()).toHaveAttribute('data-calendar-date', '2026-11-30');
     await expect(page.getByText('Dagens bønnetider kunne ikke hentes.')).toBeVisible();
+    await expect(current).toBeVisible();
+    await expect(current).toHaveText('Nu · Isha');
+    await page.clock.fastForward(12000);
+    await expect(current).toBeHidden();
 });
 
 test('a saved seven-day plan can be reopened without a connection', async ({ page, context, baseURL }) => {
@@ -546,11 +566,12 @@ test('a saved seven-day plan can be reopened without a connection', async ({ pag
     try {
         await page.goto(`${origin}/aarhus`);
         await page.getByRole('button', { name: 'Vis Hanafi' }).click();
-        const angles = page.locator('#fajr-isha');
-        await angles.locator('summary').click();
+        await page.getByRole('link', { name: 'Indstillinger', exact: true }).click();
+        const angles = page.getByRole('region', { name: 'Beregning', exact: true });
         await angles.getByLabel('Fajr (°)').fill('5,5');
         await angles.getByLabel('Isha (°)').fill('6,5');
         await angles.getByRole('button', { name: 'Gem vinkler' }).click();
+        await page.goto(`${origin}/aarhus`);
         const current = page.locator('.today');
         const now = await current.getAttribute('data-today');
         const asr = await current.locator('.prayer-list > div').filter({ hasText: 'Asr' }).locator('time').textContent();

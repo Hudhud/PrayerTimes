@@ -1,4 +1,5 @@
 @model Web.ViewModels.DailyPrayerTimesViewModel
+@using Application.Calendars
 @using System.Globalization
 @using Web.ViewModels
 @{
@@ -6,6 +7,9 @@
     var day = Model.Day;
     var next = Model.Next;
     var current = Model.Current;
+    var currentOutsideTimetable = current is not null && day is not null && !PrayerDay.Events(day, Model.Hanafi).Contains(current);
+    var overnightUntil = current?.Name == "Isha" && next is { Name: "Fajr", StartsAt: { } fajr }
+        ? fajr.ToString("o", CultureInfo.InvariantCulture) : null;
     var date = CalendarViewModel.DayParameter(Model.Date);
     var correctionUrl = Url.Action("Correction", "Home", new {
         city = Model.City.Slug, date = CalendarViewModel.DayParameter(Model.NextDate ?? Model.Date), prayer = next?.Name
@@ -46,9 +50,11 @@
     <p class="today-context">
         <strong data-historical-times hidden>@T("Historiske bønnetider", "Historical prayer times")</strong>
         <time datetime="@date">@Model.Date.ToString(T("dddd d. MMMM yyyy", "dddd d MMMM yyyy"), culture)</time>
-        @if (current?.StartsAt?.Date < Model.Date.ToDateTime(TimeOnly.MinValue))
+        @if (current is not null && (currentOutsideTimetable || overnightUntil is not null))
         {
-            <span class="prayer-stage prayer-stage-current" data-live-stage>@T("Nu", "Now") · @current.Name</span>
+            <span class="prayer-stage prayer-stage-current current-prayer-summary"
+                  data-current-summary="@(currentOutsideTimetable ? "outside" : "listed")"
+                  data-overnight-until="@overnightUntil" hidden="@(!currentOutsideTimetable)">@T("Nu", "Now") · @current.Name</span>
         }
     </p>
 
